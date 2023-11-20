@@ -32,7 +32,7 @@ struct SeasonalView: View {
                     // pinnedview (picker?)
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))]) {
                         ForEach(seasonalViewModel.animes, id: \.id) { anime in
-                            DiscoverCellView(item: anime, width: 100)
+                            DiscoverCellView(media: anime, width: 100)
                         }
                         
                         ProgressView()

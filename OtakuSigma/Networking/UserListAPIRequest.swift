@@ -36,11 +36,11 @@ struct UserListAPIRequest<T: Media, U: ListStatus>: APIRequest {
 }
 
 
-protocol Status: CaseIterable, Identifiable, Hashable {
+protocol MediaStatus: CaseIterable, Identifiable, Hashable {
     var rawValue: String { get }
 }
 
-enum AnimeStatus: String, Status, CaseIterable {
+enum AnimeStatus: String, MediaStatus, CaseIterable {
     case watching
     case completed
     case onHold = "on_hold"
@@ -50,7 +50,7 @@ enum AnimeStatus: String, Status, CaseIterable {
     var id: Self { self }
 }
 
-enum MangaStatus: String, Status, CaseIterable {
+enum MangaStatus: String, MediaStatus, CaseIterable {
     case reading
     case completed
     case onHold = "on_hold"

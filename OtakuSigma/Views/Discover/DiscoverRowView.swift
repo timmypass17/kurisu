@@ -36,7 +36,7 @@ struct DiscoverRowView<T: Media>: View {
                         NavigationLink {
                             MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(id: item.id, mediaService: MALService()))
                         } label: {
-                            DiscoverCellView(item: item)
+                            DiscoverCellView(media: item)
                         }
                         .buttonStyle(.plain)
                     }

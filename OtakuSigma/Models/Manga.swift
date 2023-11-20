@@ -6,9 +6,10 @@
 //
 
 import Foundation
-struct Manga: Media {    
+struct Manga: Media {
     var id: Int
     var title: String
+    var alternativeTitles: AlternativeTitles
     var numEpisodesOrChapters: Int { numChapters }
     var numChapters: Int
     var mainPicture: MainPicture
@@ -18,13 +19,45 @@ struct Manga: Media {
     var startDate: String?
     var endDate: String?
     var synopsis: String
+    var myListStatus: ListStatus? { nil }
+    var numVolumes: Int
+    var minutesOrVolumes: Int { numVolumes }
+    var mean: Float?
+    var rank: Int?
+    var popularity: Int
+    var numListUsers: Int
+    var relatedAnime: [RelatedItem]
+    var relatedManga: [RelatedItem]
+    var mediaType: String
+    var recommendations: [RecommendedItem]
+    var authors: [Author]
+}
+
+// Note: Decode for reading data. Encode for encoding (convert data to form that can be saved) saving data. Codable for both
+struct Author: Codable {
+    var node: AuthorNode
+    var role: String
+}
+
+struct AuthorNode: Codable {
+    var id: Int
+    var firstName: String
+    var lastName: String
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case firstName = "first_name"
+        case lastName = "last_name"
+    }
 }
 
 extension Manga: Decodable {
     static var baseURL: String { "https://api.myanimelist.net/v2/manga" }
     static var numEpisodesOrChaptersKey: String { CodingKeys.numChapters.rawValue }
-    static var fields: [String] { CodingKeys.allCases.map { $0.rawValue } + [numEpisodesOrChaptersKey] }
+    static var fields: [String] { CodingKeys.allCases.map { $0.rawValue } + [numEpisodesOrChaptersKey, ",authors{first_name,last_name}"] }
     static var episodeOrChaptersString: String { "Chapters" }
+    static var minutesOrVolumesString: String { "Volumes" }
+    static var relatedItemString: String { "Related Mangas" }
 
     enum CodingKeys: String, CodingKey, CaseIterable {
         case id
@@ -37,12 +70,24 @@ extension Manga: Decodable {
         case startDate = "start_date"
         case endDate = "end_date"
         case synopsis
+        case numVolumes = "num_volumes"
+        case mean
+        case rank
+        case popularity
+        case numListUsers = "num_list_users"
+        case alternativeTitles = "alternative_titles"
+        case relatedAnime = "related_anime"
+        case relatedManga = "related_manga"
+        case mediaType = "media_type"
+        case recommendations
+        case authors
     }
 
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         id = try values.decode(Int.self, forKey: .id)
         title = try values.decode(String.self, forKey: .title)
+        alternativeTitles = try values.decode(AlternativeTitles.self, forKey: .alternativeTitles)
         numChapters = try values.decode(Int.self, forKey: .numChapters)
         mainPicture = try values.decode(MainPicture.self, forKey: .mainPicture)
         genres = try values.decode([Genre].self, forKey: .genres)
@@ -62,6 +107,16 @@ extension Manga: Decodable {
             }
         }
         synopsis = try values.decode(String.self, forKey: .synopsis)
+        numVolumes = try values.decode(Int.self, forKey: .numVolumes)
+        mean = try values.decode(Float.self, forKey: .mean)
+        rank = try values.decode(Int.self, forKey: .rank)
+        popularity = try values.decode(Int.self, forKey: .popularity)
+        numListUsers = try values.decode(Int.self, forKey: .numListUsers)
+        relatedAnime = try values.decodeIfPresent([RelatedItem].self, forKey: .relatedAnime) ?? []  // could be missing, add default value instead of nil
+        relatedManga = try values.decodeIfPresent([RelatedItem].self, forKey: .relatedManga) ?? []
+        mediaType = try values.decode(String.self, forKey: .mediaType)
+        recommendations = try values.decodeIfPresent([RecommendedItem].self, forKey: .recommendations) ?? []
+        authors = try values.decode([Author].self, forKey: .authors)
     }
 }
 

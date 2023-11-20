@@ -20,11 +20,11 @@ class HomeViewModel: ObservableObject {
     @Published var filteredUserAnimeList: [UserNode<Anime, AnimeListStatus>] = []
     @Published var filteredUserMangaList: [UserNode<Manga, MangaListStatus>] = []
 
-    let authService: OAuthService
+    var authService: OAuthService
     let mediaService: MediaService
     
     var mediaImage: String {
-        selectedMediaType == .anime ? "tv" : "book"
+        selectedMediaType == .anime ? "book" : "tv"
     }
     
     init(authService: OAuthService, mediaService: MediaService) {
@@ -32,22 +32,32 @@ class HomeViewModel: ObservableObject {
         self.mediaService = mediaService
         
         Task {
-            guard let tokenLastUpdated = Settings.shared.accessTokenLastUpdated else { return }
-            
-            print("User has access token")
-            // Check if access token expired
-            let tokenExpirationDate = tokenLastUpdated.addingTimeInterval(Settings.accessTokenDurationInSeconds)
-            let isTokenExpired = tokenExpirationDate < .now
-            if isTokenExpired {
-                print("Token Expired... refresing access token")
-                await authService.refreshAccessToken()
+            if authService.isLoggedIn {
+                print("user is logged in")
+                await getUserAnimeList()
+                await getUserMangaList()
+                print(userAnimeList)
+            } else {
+                print("user is not logged in")
             }
-            
-            print("Initalizing user data")
-            // Initalize user's data
-            await getUserAnimeList()
-            await getUserMangaList()
         }
+//        Task {
+//            guard let tokenLastUpdated = Settings.shared.accessTokenLastUpdated else { return }
+//
+//            print("User has access token")
+//            // Check if access token expired
+//            let tokenExpirationDate = tokenLastUpdated.addingTimeInterval(Settings.accessTokenDurationInSeconds)
+//            let isTokenExpired = tokenExpirationDate < .now
+//            if isTokenExpired {
+//                print("Token Expired... refresing access token")
+//                await authService.refreshAccessToken()
+//            }
+//
+//            print("Initalizing user data")
+//            // Initalize user's data
+//            await getUserAnimeList()
+//            await getUserMangaList()
+//        }
     }
     
     func filterTextValueChanged() {
@@ -59,6 +69,7 @@ class HomeViewModel: ObservableObject {
     }
     
     func getUserAnimeList() async {
+        print("getUserAnimeList()")
         do {
             userAnimeList = try await mediaService.getUserList(status: selectedAnimeStatus.rawValue, sort: AnimeSort.animeTitle.rawValue).data
         } catch {
@@ -79,9 +90,14 @@ class HomeViewModel: ObservableObject {
         UIApplication.shared.open(authorizationURL)
     }
     
+    // Returns true if user authorizes app
     func generateAccessToken(from url: URL) async {
         guard let codeVerifier = authService.codeVerifier else { return }
-        await authService.generateAccessToken(from: url, codeVerifier: codeVerifier)
+        authService.isLoggedIn = await authService.generateAccessToken(from: url, codeVerifier: codeVerifier)
+        if authService.isLoggedIn {
+            // Load user list
+            await getUserAnimeList()
+        }
     }
     
     func mediaButtonTapped() {

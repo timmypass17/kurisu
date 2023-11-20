@@ -16,7 +16,7 @@ struct WatchListCell<T: Media, U: ListStatus>: View {
             PosterView(imageURL: item.node.mainPicture.medium, width: 85, height: 135)
 
             VStack(alignment: .leading, spacing: 0) {
-                Text(item.node.startSeasonFormatted)
+                Text(item.node.startSeasonString)
                     .foregroundColor(.secondary)
                     .font(.caption)
                 

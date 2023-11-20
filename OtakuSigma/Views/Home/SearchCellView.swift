@@ -17,7 +17,7 @@ struct SearchCellView: View {
             
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
-                    Text("\(item.startSeasonFormatted)")
+                    Text(item.startSeasonString)
                         .foregroundColor(.secondary)
                         .font(.caption)
                     

@@ -1,5 +1,5 @@
 //
-//  LoginViewModel.swift
+//  ProfileViewModel.swift
 //  OtakuSigma
 //
 //  Created by Timmy Nguyen on 10/25/23.
@@ -8,17 +8,18 @@
 import Foundation
 import UIKit
 
-class LoginViewModel: ObservableObject {
-
+class ProfileViewModel: ObservableObject {
+    @Published var isLoggedIn = false
+    
     let authService: OAuthService
     
     init(authService: OAuthService) {
         self.authService = authService
     }
     
-    func authorizeButtonTapped() {
+    func loginButtonTapped() {
         guard let authorizationURL = authService.buildAuthorizationURL() else { return }
-        UIApplication.shared.open(authorizationURL)
+        UIApplication.shared.open(authorizationURL) // open myanimelist login
     }
     
     func generateAccessToken(from url: URL) async {

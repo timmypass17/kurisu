@@ -24,15 +24,10 @@ struct HomeView: View {
                     
                     WatchListView(items: homeViewModel.userMangaList)
                 }
-
-                Button("Login") {
-                    homeViewModel.authorizeButtonTapped()
-                }
             }
             .onOpenURL { url in
                 Task {
                     await homeViewModel.generateAccessToken(from: url)
-                    await homeViewModel.getUserAnimeList()  // will do nothing if access token not created
                 }
             }
             .searchable(text: $homeViewModel.filteredText, prompt: "Filter by title") {
@@ -63,6 +58,16 @@ struct HomeView: View {
                     Image(systemName: homeViewModel.mediaImage)
                 }
 
+            }
+        }
+        .overlay {
+            if !homeViewModel.authService.isLoggedIn {
+                VStack(alignment: .center) {
+                    Text("Log into My Anime List")
+                    Text("Go to Profile to authorize MyAnimeList account to use app's full functionality")
+                }
+                .foregroundColor(.secondary)
+                    
             }
         }
     }

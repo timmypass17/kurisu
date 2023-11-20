@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct StatusPickerView<T: Status>: View {
+struct StatusPickerView<T: MediaStatus>: View {
     @Binding var selectedStatus: T
 //
 //    var allStatus: [T] {

@@ -21,45 +21,46 @@ struct MediaDetailView<T: Media>: View {
                         .font(.caption)
                         .padding(.top)
 
-                    DetailProgressView(
-                        media: media,
-                        progress: mediaDetailViewModel.listStatus?.progress ?? 0
-                    )
-                    .padding(.top)
+                    DetailProgressView(media: media)
+                        .padding(.top)
 
-                    //                    DetailTabView(selectedTab: $detailViewModel.selectedTab)
-                    //                        .padding(.top)
+                    DetailTabView(selectedTab: $mediaDetailViewModel.selectedTab)
+                        .padding(.top)
                     
-                    //                    switch detailViewModel.selectedTab {
-                    //                    case .background:
-                    //                        Synopsis(animeNode: item)
-                    //                            .padding(.top)
-                    //
-                    //                        if let relatedAnimes = (item as? Anime)?.related_anime {
-                    //                            RelatedRow(
-                    //                                relatedItems: relatedAnimes,
-                    //                                type: .anime
-                    //                            )
-                    //                            .padding(.top)
-                    //                        }
-                    //
-                    //                        if let relatedMangas = (item as? Manga)?.related_manga {
-                    //                            RelatedRow(
-                    //                                relatedItems: relatedMangas,
-                    //                                type: .manga
-                    //                            )
-                    //                            .padding(.top)
-                    //                        }
-                    //                    case .statistic:
-                    //                        AnimeStats(item: item)
-                    //                            .padding(.top)
-                    //                    case .recommendation:
-                    //                        RecommendationRow(
-                    //                            recommendedItems: item?.recommendations ?? [],
-                    //                            type: type
-                    //                        )
-                    //                        .padding(.top)
-                    //                    }
+                    switch mediaDetailViewModel.selectedTab {
+                    case .background:
+                        SynopsisView(text: media.synopsis)
+                            .padding(.top)
+                        
+                        if !media.relatedAnime.isEmpty {
+                            RelatedRowView<Anime>(relatedItems: media.relatedAnime)
+                                .padding(.top)
+                        }
+                        
+                        if !media.relatedManga.isEmpty {
+                            RelatedRowView<Manga>(relatedItems: media.relatedManga)
+                                .padding(.top)
+                        }
+                        
+                        if !media.recommendations.isEmpty {
+                            RecommendedRowView<T>(recommendedItems: media.recommendations)
+                                .padding(.top)
+                        }
+                    case .info:
+                        InfoView(media: media)
+                            .padding(.top)
+                        
+                        
+                    case .statistic:
+                        StatsView(media: media)
+                            .padding(.top)
+                        
+                        if let anime = media as? Anime {
+                            // TODO: Maybe use charts
+                            UserStatsView(anime: anime)
+                                .padding(.top)
+                        }
+                    }
                     
                     
                 }
@@ -74,7 +75,7 @@ struct MediaDetailView<T: Media>: View {
                 Spacer()
             }
             .edgesIgnoringSafeArea(.top)
-            //            .navigationTitle(item?.getTitle() ?? "")
+            .navigationTitle(media.title)
             .navigationBarTitleDisplayMode(.inline)
             //            .sheet(isPresented: $detailViewModel.isShowingSheet, onDismiss: { /** Save data **/ }, content: {
             //                NavigationView {

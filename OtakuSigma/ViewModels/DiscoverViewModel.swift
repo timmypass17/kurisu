@@ -7,6 +7,69 @@
 
 import Foundation
 
+@MainActor
+class DiscoverViewModel: ObservableObject {
+    @Published var selectedMediaType: MediaType = .anime
+    @Published var searchText = ""
+    @Published var animeSearchResult: [Anime] = []
+    @Published var mangaSearchResult: [Manga] = []
+    @Published var animeList: [MediaSection<Anime>] = []
+    @Published var mangaList: [MediaSection<Manga>] = []
+
+    var searchResult: [Media] { selectedMediaType == .anime ? animeSearchResult : mangaSearchResult }
+    
+    let mediaService: MediaService
+    
+    // Dependency Injection (allows different implementations, modular)
+    init(mediaService: MediaService) {
+        self.mediaService = mediaService
+        
+        Task {
+            do {
+                for ranking in AnimeRanking.allCases {
+                    let animes = try await mediaService.getMediaRanking(rankingType: ranking.type, limit: 10, offset: 0) as [Anime]
+                    let section = MediaSection(ranking: ranking, items: animes)
+                    print("\(ranking.rawValue): \(animes.count)")
+                    animeList.append(section)
+                }
+                
+                for ranking in MangaRanking.allCases {
+                    let mangas = try await mediaService.getMediaRanking(rankingType: ranking.type,  limit: 10, offset: 0) as [Manga]
+                    let section = MediaSection(ranking: ranking, items: mangas)
+                    mangaList.append(section)
+                }
+                
+            } catch {
+                print("[DiscoverViewModel] Error loading animes: \(error)")
+            }
+        }
+    }
+    
+    func submitButtonTapped() {
+        fetchAnimeOrManga()
+    }
+    
+    func searchTextValueChanged() {
+        fetchAnimeOrManga()
+    }
+    
+    private func fetchAnimeOrManga() {
+        guard !searchText.isEmpty else { return }
+        Task {
+            do {
+                if selectedMediaType == .anime {
+                    animeSearchResult = try await mediaService.getMediaItems(title: searchText)
+                } else {
+                    mangaSearchResult = try await mediaService.getMediaItems(title: searchText)
+                }
+            } catch {
+                print("Error fetching: \(error)")
+                selectedMediaType == .anime ? animeSearchResult.removeAll() : mangaSearchResult.removeAll()
+            }
+        }
+    }
+}
+
 enum MediaType: String, CaseIterable, Identifiable {
     case anime, manga
     var id: Self { self }
@@ -72,62 +135,3 @@ struct MediaSection<T: Media>: Identifiable {
     var items: [T]
     var id: UUID { UUID() }
 }
-
-@MainActor
-class DiscoverViewModel: ObservableObject {
-    @Published var selectedMediaType: MediaType = .anime
-    @Published var searchText = ""
-    @Published var animeSearchResult: [Anime] = []
-    @Published var mangaSearchResult: [Manga] = []
-    @Published var animeList: [MediaSection<Anime>] = []
-    @Published var mangaList: [MediaSection<Manga>] = []
-
-    var searchResult: [Media] { selectedMediaType == .anime ? animeSearchResult : mangaSearchResult }
-    
-    let mediaService: MediaService
-    
-    // Dependency Injection (allows different implementations, modular)
-    init(mediaService: MediaService) {
-        self.mediaService = mediaService
-        
-        Task {
-            for ranking in AnimeRanking.allCases {
-                let animes = try await mediaService.getMediaRanking(rankingType: ranking.type, limit: 10, offset: 0) as [Anime]
-                let section = MediaSection(ranking: ranking, items: animes)
-                animeList.append(section)
-            }
-            
-            for ranking in MangaRanking.allCases {
-                let mangas = try await mediaService.getMediaRanking(rankingType: ranking.type,  limit: 10, offset: 0) as [Manga]
-                let section = MediaSection(ranking: ranking, items: mangas)
-                mangaList.append(section)
-            }
-        }
-    }
-    
-    func submitButtonTapped() {
-        fetchAnimeOrManga()
-    }
-    
-    func searchTextValueChanged() {
-        fetchAnimeOrManga()
-    }
-    
-    private func fetchAnimeOrManga() {
-        guard !searchText.isEmpty else { return }
-        Task {
-            do {
-                if selectedMediaType == .anime {
-                    animeSearchResult = try await mediaService.getMediaItems(title: searchText)
-                } else {
-                    mangaSearchResult = try await mediaService.getMediaItems(title: searchText)
-                }
-            } catch {
-                print("Error fetching: \(error)")
-                selectedMediaType == .anime ? animeSearchResult.removeAll() : mangaSearchResult.removeAll()
-            }
-        }
-    }
-}
-
-

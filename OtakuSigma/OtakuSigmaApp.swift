@@ -11,13 +11,15 @@ import SwiftUI
 struct OtakuSigmaApp: App {
     @StateObject var homeViewModel: HomeViewModel
     @StateObject var discoverViewModel: DiscoverViewModel
-
+    @StateObject var profileViewModel: ProfileViewModel
+    
     init() {
         let mediaService = MALService()
         let authService = MALAuthService()
         
         _homeViewModel = StateObject(wrappedValue: HomeViewModel(authService: authService, mediaService: mediaService))
         _discoverViewModel = StateObject(wrappedValue: DiscoverViewModel(mediaService: mediaService))
+        _profileViewModel = StateObject(wrappedValue: ProfileViewModel(authService: authService))
     }
     
     var body: some Scene {
@@ -37,6 +39,7 @@ struct OtakuSigmaApp: App {
                 
                 NavigationStack {
                     ProfileView()
+                        .environmentObject(profileViewModel)
                 }
                 .tabItem { Label("Profile", systemImage: "person") }
             }
