@@ -30,7 +30,7 @@ struct DiscoverCellView<T: Media>: View {
                 .lineLimit(1)
                 .padding(.top, 4)
 
-            Text("\(media.mediaType.uppercased()) - \(media.numEpisodesOrChapters) \(T.episodeOrChaptersString)")
+            Text("\(media.mediaType.uppercased()) - \(media.numEpisodesOrChapters) \(T.episodesOrChaptersString)")
                 .foregroundColor(.secondary)
                 .font(.system(size: 10))
             

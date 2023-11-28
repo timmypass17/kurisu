@@ -30,7 +30,7 @@ struct DetailTopSection<T: Media>: View {
                     .lineLimit(1)
                 
                 HStack {
-                    Label("\(media.numEpisodesOrChapters) \(T.episodeOrChaptersString)", systemImage: "tv")
+                    Label("\(media.numEpisodesOrChapters) \(T.episodesOrChaptersString)", systemImage: "tv")
                         .font(.system(size: 12))
                     
                     Circle()

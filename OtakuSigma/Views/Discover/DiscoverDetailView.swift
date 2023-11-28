@@ -15,11 +15,11 @@ struct DiscoverDetailView<T: Media>: View {
         ScrollView {
             LazyVGrid(columns: columns) {
                 ForEach(discoverDetailViewModel.items, id: \.id) { item in
-                    NavigationLink {
-                        MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(id: item.id, mediaService: MALService()))
-                    } label: {
-                        DiscoverDetailCellView(item: item)
-                    }
+//                    NavigationLink {
+//                        MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(id: item.id, mediaService: MALService()), didSaveMedia: { _ in })
+//                    } label: {
+//                        DiscoverDetailCellView(item: item)
+//                    }
                 }
                 
                 ProgressView()

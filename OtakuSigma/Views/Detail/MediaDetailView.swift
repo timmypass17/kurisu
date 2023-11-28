@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MediaDetailView<T: Media>: View {
     @StateObject var mediaDetailViewModel: MediaDetailViewModel<T>
+    var didSaveMedia: (T) -> () // pass work even further hehe
 
     var body: some View {
         switch mediaDetailViewModel.state {
@@ -65,76 +66,37 @@ struct MediaDetailView<T: Media>: View {
                     
                 }
                 .padding()
-                .padding(.top, 115) // 45
-                .background(alignment: .top) {
-                    //                    if let url = item?.main_picture?.large {
-                    //                        DetailBackground(url: url)
-                    //                    }
-                }
-                
+                .padding(.top)
                 Spacer()
             }
-            .edgesIgnoringSafeArea(.top)
             .navigationTitle(media.title)
             .navigationBarTitleDisplayMode(.inline)
-            //            .sheet(isPresented: $detailViewModel.isShowingSheet, onDismiss: { /** Save data **/ }, content: {
-            //                NavigationView {
-            //                    EpisodeSheet(item: $item, isShowingSheet: $detailViewModel.isShowingSheet, type: type)
-            //                }
-            //                .presentationDetents([.medium])
-            //            })
-            .toolbar {
-                ToolbarItemGroup {
-                    //                if animeViewModel.animeData.contains(where: { $0.node.id == id }) {
-                    //                    Button(role: .destructive) {
-                    //                        showDeleteAlert = true
-                    //                    } label: {
-                    //                        Image(systemName: "trash")
-                    //
-                    //                    }
-                    //                }
-                    
-                    Button(action: { /** detailViewModel.isShowingSheet.toggle()  **/ }) {
-                        Image(systemName: "plus") // plus.square
-                            .imageScale(.large)
-                        
+            .sheet(isPresented: $mediaDetailViewModel.isShowingAddMediaView, content: {
+                NavigationStack {
+                    AddMediaView(addMediaViewModel: AddMediaViewModel(media: media)) { media in
+                        mediaDetailViewModel.state = .success(media: media as! T)
+                        didSaveMedia(media)
                     }
                 }
+            })
+            .toolbar {
+                ToolbarItemGroup {
+                    Button {
+                        mediaDetailViewModel.isShowingAddMediaView = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+
+                }
             }
-            //            .onAppear {
-            //                Task {
-            //                    //                isLoading = true
-            //                    item = await animeViewModel.fetchWeebItem(id: id, type: type)
-            //                    detailViewModel.isLoading = false
-            //                }
-            //            }
-            //            .alert(
-            //                "Delete Progress",
-            //                isPresented: $detailViewModel.showDeleteAlert,
-            //                presenting: item
-            //            ) { animeNode in
-            //                Button(role: .destructive) {
-            //                    Task {
-            //    //                    await animeViewModel.deleteAnime(animeNode: item)
-            //                    }
-            //                } label: {
-            //                    Text("Delete")
-            //                }
-            //
-            //                Button(role: .cancel) {
-            //
-            //                } label: {
-            //                    Text("Cancel")
-            //                }
-            //            } message: { item in
-            //                Text("Are you sure you want to delete your progress for \"\(item.getTitle())\"?")
-            //            }
-            //        .animation(.easeInOut, value: 1.0)
+            .background(Color.ui.background)
+
         case .loading:
             ProgressView()
         case .failure(let error):
             Text("\(error.localizedDescription)")
         }
+        
     }
 }
 
@@ -145,6 +107,8 @@ struct MediaDetailView_Previews: PreviewProvider {
         return vm
     }
     static var previews: some View {
-        MediaDetailView<Anime>(mediaDetailViewModel: viewmodel)
+        NavigationStack {
+            MediaDetailView<Anime>(mediaDetailViewModel: viewmodel, didSaveMedia: {_ in})
+        }
     }
 }

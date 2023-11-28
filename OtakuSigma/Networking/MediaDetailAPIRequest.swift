@@ -14,7 +14,7 @@ struct MediaDetailAPIRequest<T: Media>: APIRequest {
     var urlRequest: URLRequest {
         var urlComponents = URLComponents(string: "\(T.baseURL)/\(id)")!
         urlComponents.queryItems = [
-            "fields": fields.joined(separator: ",") + ",my_list_status"
+            "fields": fields.joined(separator: ",") + ",my_list_status{comments}"
         ].map { URLQueryItem(name: $0.key, value: $0.value) }
         var request = URLRequest(url: urlComponents.url!)
         if let accessToken = Settings.shared.accessToken {

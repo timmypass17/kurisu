@@ -46,3 +46,12 @@ struct OtakuSigmaApp: App {
         }
     }
 }
+
+
+extension Color {
+    static let ui = Color.UI()
+    
+    struct UI {
+        let background = Color("background")
+    }
+}

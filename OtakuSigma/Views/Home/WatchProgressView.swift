@@ -20,23 +20,28 @@ struct WatchProgressView<T: Media>: View {
             HStack(spacing: 4) {
                 AiringStatusView(status: status)
                     .font(.caption)
+
+//                Label("8", systemImage: "star.fill")
+//                    .foregroundColor(.secondary)
+//                    .font(.caption)
                 
                 Spacer()
-                HStack {
+
+                HStack(spacing: 4) {
                     
-                    Text(T.episodeOrChaptersString)
-                    .foregroundColor(.secondary)
-                    .font(.caption)
-                
-                Text("\(progress) /") // TOOD: Use user's watchlist
-                    .foregroundColor(.secondary)
-                    .font(.caption)
-                
-                Text("\(numEpisodesOrChapters)")
-                    .foregroundColor(.secondary)
-                    .font(.caption)
+                    Text("\(T.episodesOrChaptersString):")
+                        .foregroundColor(.secondary)
+                        .font(.caption)
+                    
+                    Text("\(progress) /") // TOOD: Use user's watchlist
+                        .foregroundColor(.secondary)
+                        .font(.caption)
+                    
+                    Text("\(numEpisodesOrChapters)")
+                        .foregroundColor(.secondary)
+                        .font(.caption)
                 }
-                .borderedTag()
+//                .borderedTag()
             }
             
         }

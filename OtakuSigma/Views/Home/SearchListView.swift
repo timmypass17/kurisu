@@ -15,10 +15,12 @@ struct SearchListView<T: Media>: View {
         LazyVStack(spacing: 0) {
             ForEach(discoverViewModel.searchResult, id: \.id) { item in
                 NavigationLink {
-                    MediaDetailView(mediaDetailViewModel: MediaDetailViewModel<T>(id: item.id, mediaService: MALService()))
+                    MediaDetailView(mediaDetailViewModel: MediaDetailViewModel<T>(id: item.id, mediaService: MALService()), didSaveMedia: { _ in })
                 } label: {
                     SearchCellView(item: item)
                 }
+                .buttonStyle(.plain)
+                
                 Divider()
             }
         }

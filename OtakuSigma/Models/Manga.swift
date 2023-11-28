@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 struct Manga: Media {
     var id: Int
     var title: String
@@ -19,7 +20,11 @@ struct Manga: Media {
     var startDate: String?
     var endDate: String?
     var synopsis: String
-    var myListStatus: ListStatus? { nil }
+    var myMangaListStatus: MangaListStatus?
+    var myListStatus: ListStatus? {
+        get { return myMangaListStatus }
+        set {  myMangaListStatus = newValue as? MangaListStatus }
+    }
     var numVolumes: Int
     var minutesOrVolumes: Int { numVolumes }
     var mean: Float?
@@ -31,6 +36,10 @@ struct Manga: Media {
     var mediaType: String
     var recommendations: [RecommendedItem]
     var authors: [Author]
+    
+    mutating func updateListStatus(status: String, score: Int, progress: Int, comments: String?) {
+        myListStatus = MangaListStatus(status: status, score: score, numChaptersRead: progress, comments: comments)
+    }
 }
 
 // Note: Decode for reading data. Encode for encoding (convert data to form that can be saved) saving data. Codable for both
@@ -53,9 +62,11 @@ struct AuthorNode: Codable {
 
 extension Manga: Decodable {
     static var baseURL: String { "https://api.myanimelist.net/v2/manga" }
+    static var userBaseURL: String { "https://api.myanimelist.net/v2/users/@me/mangalist" }
     static var numEpisodesOrChaptersKey: String { CodingKeys.numChapters.rawValue }
     static var fields: [String] { CodingKeys.allCases.map { $0.rawValue } + [numEpisodesOrChaptersKey, ",authors{first_name,last_name}"] }
-    static var episodeOrChaptersString: String { "Chapters" }
+    static var episodeOrChapterString: String { "Chapters" }
+    static var episodesOrChaptersString: String { "Chapter" }
     static var minutesOrVolumesString: String { "Volumes" }
     static var relatedItemString: String { "Related Mangas" }
 
@@ -81,6 +92,7 @@ extension Manga: Decodable {
         case mediaType = "media_type"
         case recommendations
         case authors
+        case myMangaListStatus = "my_list_status"
     }
 
     init(from decoder: Decoder) throws {
@@ -108,8 +120,8 @@ extension Manga: Decodable {
         }
         synopsis = try values.decode(String.self, forKey: .synopsis)
         numVolumes = try values.decode(Int.self, forKey: .numVolumes)
-        mean = try values.decode(Float.self, forKey: .mean)
-        rank = try values.decode(Int.self, forKey: .rank)
+        mean = try values.decodeIfPresent(Float.self, forKey: .mean) ?? -1.0
+        rank = try values.decodeIfPresent(Int.self, forKey: .rank) ?? -1
         popularity = try values.decode(Int.self, forKey: .popularity)
         numListUsers = try values.decode(Int.self, forKey: .numListUsers)
         relatedAnime = try values.decodeIfPresent([RelatedItem].self, forKey: .relatedAnime) ?? []  // could be missing, add default value instead of nil
@@ -117,6 +129,7 @@ extension Manga: Decodable {
         mediaType = try values.decode(String.self, forKey: .mediaType)
         recommendations = try values.decodeIfPresent([RecommendedItem].self, forKey: .recommendations) ?? []
         authors = try values.decode([Author].self, forKey: .authors)
+        myMangaListStatus = try values.decodeIfPresent(MangaListStatus.self, forKey: .myMangaListStatus)
     }
 }
 

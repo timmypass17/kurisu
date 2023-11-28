@@ -11,9 +11,11 @@ struct DiscoverListView<T: Media>: View {
     var sections: [MediaSection<T>]
     
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             ForEach(sections) { section in
                 DiscoverRowView(ranking: section.ranking, items: section.items)
+                
+                Divider()
             }
         }
     }

@@ -24,7 +24,7 @@ struct DetailProgressView<T: Media>: View {
 
                     Spacer()
                     
-                    Text("\(T.episodeOrChaptersString):")
+                    Text("\(T.episodesOrChaptersString):")
                         .font(.caption)
                     
                     Text("\(progress) /")

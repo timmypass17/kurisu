@@ -18,11 +18,6 @@ struct RecommendedCellView: View {
                     .scaledToFill()
                     .frame(width: 100, height: 150)
                     .clipShape(RoundedRectangle(cornerRadius: 5))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 5)
-                            .stroke(.secondary)
-                    }
-                    .shadow(radius: 2)
             } placeholder: {
                 ProgressView()
                     .frame(width: 100, height: 150)

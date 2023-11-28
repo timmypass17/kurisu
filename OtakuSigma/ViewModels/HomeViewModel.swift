@@ -10,15 +10,15 @@ import UIKit
 
 @MainActor
 class HomeViewModel: ObservableObject {
-    @Published var userAnimeList: [UserNode<Anime, AnimeListStatus>] = []
-    @Published var userMangaList: [UserNode<Manga, MangaListStatus>] = []
+    // TODO: Maybe move collection to tabview level (higher level) and inject array into viewmodel so that when user modifies array (like adding a new anime), the changes will be reflected in here aswell.
+    @Published var userAnimeList: [Anime] = []
+    @Published var userMangaList: [Manga] = []
     @Published var filteredText = ""
     @Published var selectedMediaType: MediaType = .anime
     @Published var selectedAnimeStatus: AnimeStatus = .watching
     @Published var selectedMangaStatus: MangaStatus = .reading
-    
-    @Published var filteredUserAnimeList: [UserNode<Anime, AnimeListStatus>] = []
-    @Published var filteredUserMangaList: [UserNode<Manga, MangaListStatus>] = []
+    @Published var filteredUserAnimeList: [Anime] = []
+    @Published var filteredUserMangaList: [Manga] = []
 
     var authService: OAuthService
     let mediaService: MediaService
@@ -62,16 +62,16 @@ class HomeViewModel: ObservableObject {
     
     func filterTextValueChanged() {
         if selectedMediaType == .anime {
-            filteredUserAnimeList = userAnimeList.filter { $0.node.title.lowercased().contains(filteredText.lowercased()) }
+            filteredUserAnimeList = userAnimeList.filter { $0.title.lowercased().contains(filteredText.lowercased()) }
         } else {
-            filteredUserMangaList = userMangaList.filter { $0.node.title.lowercased().contains(filteredText.lowercased()) }
+            filteredUserMangaList = userMangaList.filter { $0.title.lowercased().contains(filteredText.lowercased()) }
         }
     }
     
     func getUserAnimeList() async {
         print("getUserAnimeList()")
         do {
-            userAnimeList = try await mediaService.getUserList(status: selectedAnimeStatus.rawValue, sort: AnimeSort.animeTitle.rawValue).data
+            userAnimeList = try await mediaService.getUserList(status: selectedAnimeStatus.rawValue, sort: AnimeSort.animeTitle.rawValue)
         } catch {
             print("Error getting user anime list. Check if access token is valid: \(error)")
         }
@@ -79,7 +79,7 @@ class HomeViewModel: ObservableObject {
     
     func getUserMangaList() async {
         do {
-            userMangaList = try await mediaService.getUserList(status: selectedMangaStatus.rawValue, sort: MangaSort.mangaTitle.rawValue).data
+            userMangaList = try await mediaService.getUserList(status: selectedMangaStatus.rawValue, sort: MangaSort.mangaTitle.rawValue)
         } catch {
             print("Error getting user manga list. Check if access token is valid: \(error)")
         }

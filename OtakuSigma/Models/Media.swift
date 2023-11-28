@@ -10,9 +10,11 @@ import SwiftUI
 
 protocol WeebItemConfiguration {
     static var baseURL: String { get }
+    static var userBaseURL: String{ get }
     static var numEpisodesOrChaptersKey: String { get }
     static var fields: [String] { get }
-    static var episodeOrChaptersString: String { get }
+    static var episodesOrChaptersString: String { get }
+    static var episodeOrChapterString: String { get }
     static var minutesOrVolumesString: String { get }
     static var relatedItemString: String { get }
 }
@@ -30,7 +32,7 @@ protocol Media: Codable, WeebItemConfiguration {
     var startDate: String? { get }
     var endDate: String? { get }
     var synopsis: String { get }
-    var myListStatus: ListStatus? { get }
+    var myListStatus: ListStatus? { get set }
     var minutesOrVolumes: Int { get }
     var mean: Float? { get }
     var rank: Int? { get }
@@ -40,6 +42,8 @@ protocol Media: Codable, WeebItemConfiguration {
     var relatedManga: [RelatedItem] { get }
     var mediaType: String { get }
     var recommendations: [RecommendedItem] { get }
+    
+    mutating func updateListStatus(status: String, score: Int, progress: Int, comments: String?)
 }
 
 extension Media {
@@ -208,8 +212,7 @@ let sampleAnimes: [Anime] = [
     )
 ]
 
-let sampleListStatus = AnimeListStatus(status: "watching", score: 8, numEpisodesWatched: 11, updatedAt: "2017-11-11T19:52:16+00:00")
-let sampleUserNode = UserNode(node: sampleAnimes[0], listStatus: sampleListStatus)
+let sampleListStatus = AnimeListStatus(status: "watching", score: 8, numEpisodesWatched: 11, comments: "")
 
 extension String {
     func snakeToRegularCase() -> String {

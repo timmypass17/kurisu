@@ -8,14 +8,14 @@
 import Foundation
 
 
-struct UserListAPIRequest<T: Media, U: ListStatus>: APIRequest {
+struct UserListAPIRequest<T: Media>: APIRequest {
     // TODO: Move Status and Sort into Media (like fields ex. T.fields)
     var status: String
     var sort: String
     // limit, offset (may need to add for pagination)
     
     var urlRequest: URLRequest {
-        var urlComponents = URLComponents(string: U.baseURL)!
+        var urlComponents = URLComponents(string: T.userBaseURL)!
         urlComponents.queryItems = [
             "status": status,
             "sort": sort ,
@@ -28,10 +28,10 @@ struct UserListAPIRequest<T: Media, U: ListStatus>: APIRequest {
         return request
     }
 
-    func decodeResponse(data: Data) throws -> UserListResponse<T, U> {
+    func decodeResponse(data: Data) throws -> [T] {
         let decoder = JSONDecoder()
-        let weebItemResponse = try decoder.decode(UserListResponse<T, U>.self, from: data)
-        return weebItemResponse
+        let weebItemResponse = try decoder.decode(MediaListResponse<T>.self, from: data)
+        return weebItemResponse.data.map { $0.node }
     }
 }
 
@@ -40,7 +40,7 @@ protocol MediaStatus: CaseIterable, Identifiable, Hashable {
     var rawValue: String { get }
 }
 
-enum AnimeStatus: String, MediaStatus, CaseIterable {
+enum AnimeStatus: String, MediaStatus {
     case watching
     case completed
     case onHold = "on_hold"
@@ -50,7 +50,7 @@ enum AnimeStatus: String, MediaStatus, CaseIterable {
     var id: Self { self }
 }
 
-enum MangaStatus: String, MediaStatus, CaseIterable {
+enum MangaStatus: String, MediaStatus {
     case reading
     case completed
     case onHold = "on_hold"

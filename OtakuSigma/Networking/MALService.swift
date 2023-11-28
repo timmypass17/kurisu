@@ -8,17 +8,19 @@
 import Foundation
 
 protocol MediaService {
-    func getUserList<T: Media, U: ListStatus>(status: String, sort: String) async throws -> UserListResponse<T, U>
+    func getUserList<T: Media>(status: String, sort: String) async throws -> [T]
     func getMediaItems<T: Media>(title: String) async throws -> [T]
     func getMediaRanking<T: Media>(rankingType: String, limit: Int, offset: Int) async throws -> [T]
     func getSeasonalAnime<T: Media>(year: String, season: Season, sort: RankingSort, limit: Int, offset: Int) async throws -> [T]
     func getMediaDetail<T: Media>(id: Int, fields: [String]) async throws -> T
+    func updateMediaListStatus<T: UpdateResponse>(id: Int, status: String, score: Int, progress: Int, comments: String) async throws -> T
+    func deleteMediaItem<T: Media>(id: Int) async throws -> T?  // return not used
 }
 
 struct MALService: MediaService {
     
-    func getUserList<T: Media, U: ListStatus>(status: String, sort: String) async throws -> UserListResponse<T, U> {
-        let request = UserListAPIRequest<T, U>(status: status, sort: sort)
+    func getUserList<T: Media>(status: String, sort: String) async throws -> [T] {
+        let request = UserListAPIRequest<T>(status: status, sort: sort)
         let animeListResponse = try await sendRequest(request)
         return animeListResponse
     }
@@ -45,6 +47,18 @@ struct MALService: MediaService {
         let request = MediaDetailAPIRequest<T>(id: id, fields: fields)
         let data = try await sendRequest(request)
         return data
+    }
+    
+    func updateMediaListStatus<T: UpdateResponse>(id: Int, status: String, score: Int, progress: Int, comments: String) async throws -> T {
+        let request = UpdateMediaListStatusAPIRequest<T>(id: id, status: status, score: score, progress: progress, comments: comments)
+        let data = try await sendRequest(request)
+        return data
+    }
+    
+    func deleteMediaItem<T: Media>(id: Int) async throws -> T? {
+        let request = DeleteMediaAPIRequest<T>(id: id)
+        try await sendRequest(request)
+        return nil
     }
 }
 

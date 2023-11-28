@@ -54,6 +54,7 @@ struct DiscoverView: View {
                 }
 
             }
+            .background(Color.ui.background)
         }
     }
 }

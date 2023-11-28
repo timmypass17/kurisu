@@ -28,13 +28,13 @@ struct DiscoverRowView<T: Media>: View {
                 .padding(.horizontal)
             }
             .buttonStyle(.plain)
-            .padding(.vertical, 4)
+            .padding(.bottom, 4)
             
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack {
                     ForEach(items, id: \.id) { item in
                         NavigationLink {
-                            MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(id: item.id, mediaService: MALService()))
+                            MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(id: item.id, mediaService: MALService()), didSaveMedia: {_ in})
                         } label: {
                             DiscoverCellView(media: item)
                         }
@@ -43,10 +43,8 @@ struct DiscoverRowView<T: Media>: View {
                 }
                 .padding(.horizontal)
             }
-            .frame(minHeight: 175)
-            
-            Divider()
         }
+        .padding(.vertical, 10)
     }
 }
 struct DiscoverRowView_Previews: PreviewProvider {

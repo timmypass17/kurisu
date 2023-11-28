@@ -18,7 +18,7 @@ struct RecommendedRowView<T: Media>: View {
                 HStack(alignment: .top) {
                     ForEach(recommendedItems, id: \.node.id) { item in
                         NavigationLink {
-                            MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(id: item.node.id, mediaService: MALService()))
+                            MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(id: item.node.id, mediaService: MALService()), didSaveMedia: { _ in})
                         } label: {
                             RecommendedCellView(recommendedItem: item)
                         }

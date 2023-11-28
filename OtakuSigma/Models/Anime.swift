@@ -22,7 +22,10 @@ struct Anime: Media {
     var endDate: String?
     var synopsis: String
     var myAnimeListStatus: AnimeListStatus?
-    var myListStatus: ListStatus? { myAnimeListStatus }
+    var myListStatus: ListStatus? {
+        get { return myAnimeListStatus }
+        set {  myAnimeListStatus = newValue as? AnimeListStatus }
+    }
     var averageEpisodeDuration: Int
     var minutesOrVolumes: Int { averageEpisodeDuration / 60 }
     var mean: Float?
@@ -61,6 +64,11 @@ struct Anime: Media {
             return "?"
         }
     }
+    
+    mutating func updateListStatus(status: String, score: Int, progress: Int, comments: String?) {
+        myAnimeListStatus = AnimeListStatus(status: status, score: score, numEpisodesWatched: progress, comments: comments)
+    }
+    
 }
 
 struct Statistics: Codable {
@@ -96,9 +104,11 @@ struct Studio: Codable {
 
 extension Anime: Decodable {
     static var baseURL: String { "https://api.myanimelist.net/v2/anime" }
+    static var userBaseURL: String { "https://api.myanimelist.net/v2/users/@me/animelist" }
     static var numEpisodesOrChaptersKey: String { CodingKeys.numEpisodes.rawValue }
     static var fields: [String] { CodingKeys.allCases.map { $0.rawValue } }
-    static var episodeOrChaptersString: String { "Episodes" }
+    static var episodesOrChaptersString: String { "Episodes" }
+    static var episodeOrChapterString: String { "Episode" }
     static var minutesOrVolumesString: String { "Minutes" }
     static var relatedItemString: String { "Related Animes" }
     

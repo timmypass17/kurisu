@@ -8,76 +8,195 @@
 import SwiftUI
 
 struct AddMediaView<T: Media>: View {
-    let media: T
+    @Environment(\.dismiss) private var dismiss
+    @StateObject var addMediaViewModel: AddMediaViewModel<T>
+    let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+    
+    var didSaveMedia: (T) -> () // delegate func to DetailView
     
     var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                Text("Episode Progression")
-                    .font(.title)
-                    .bold()
-            }
-            
-            Text("Keep track of episodes watched!")
-                .foregroundColor(.secondary)
-            
-//            WatchListCell(item: UserNode(node: media, listStatus: media.myListStatus))
-//                .padding(.top)
-//                .padding(.bottom, 8)
-                            
+        ScrollView {
+            VStack(alignment: .leading) {
+                
+                WatchListCell(item: addMediaViewModel.media)
+                
                 Divider()
                     .padding(.bottom, 8)
                 
-                // TODO: Turn this into 1 view
-//                if anime.getNumEpisodes() > 0 {
-//                    ProgressionSlider(
-//                        item: anime,
-//                        progress: $progress,
-//                        maxEpisodeOrChapter: anime.getNumEpisodes()
-//                    )
-//                } else {
-//                    ProgressionStepper(
-//                        item: anime,
-//                        progress: $progress,
-//                        maxEpisodeOrChapter: anime.getNumEpisodes()
-//                    )
-//                }
-            
-            Spacer()
-            
-//            Button{
-//                print("")
-//            } {
-//                // save to icloud
-//                Group {
-////                    if isLoading {
-////                        ProgressView()
-////                    } else {
-//                        Text("Save")
-////                    }
-//                }
-//                .foregroundColor(.white)
-//                .frame(maxWidth: .infinity, minHeight: 40)
-//                .background(Color.accentColor)
-//                .cornerRadius(10)
-//            }
-            .buttonStyle(.plain)
-//            .disabled(isLoading)
+                Text("Status")
+                    .font(.system(size: 18))
+                    .bold()
+                
+                VStack {
+                    HStack {
+                        Spacer()
+                        
+                        if addMediaViewModel.media is Anime {
+                            Button {
+                                addMediaViewModel.selectedStatus = .watching
+                            } label: {
+                                Text("\(SelectedStatus.watching.rawValue.capitalized.replacingOccurrences(of: "_", with: " "))")
+                            }
+                            .buttonStyle(StatusButton(isSelected: addMediaViewModel.selectedStatus == .watching))
+                        } else {
+                            Button {
+                                addMediaViewModel.selectedStatus = .reading
+                            } label: {
+                                Text("\(SelectedStatus.reading.rawValue.capitalized.replacingOccurrences(of: "_", with: " "))")
+                            }
+                            .buttonStyle(StatusButton(isSelected: addMediaViewModel.selectedStatus == .reading))
+                        }
+                        
+                        
+                        Button {
+                            addMediaViewModel.selectedStatus = .completed
+                            
+                        } label: {
+                            Text("\(SelectedStatus.completed.rawValue.capitalized.replacingOccurrences(of: "_", with: " "))")
+                        }
+                        .buttonStyle(StatusButton(isSelected: addMediaViewModel.selectedStatus == .completed))
+                        
+                        
+                        Button {
+                            addMediaViewModel.selectedStatus = .on_hold
+                            
+                        } label: {
+                            Text("\(SelectedStatus.on_hold.rawValue.capitalized.replacingOccurrences(of: "_", with: " "))")
+                        }
+                        .buttonStyle(StatusButton(isSelected: addMediaViewModel.selectedStatus == .on_hold))
+                        
+                        
+                        Spacer()
+                        
+                    }
+                    HStack {
+                        Spacer()
+                        
+                        Button {
+                            addMediaViewModel.selectedStatus = .dropped
+                            
+                        } label: {
+                            Text("\(SelectedStatus.dropped.rawValue.capitalized.replacingOccurrences(of: "_", with: " "))")
+                        }
+                        .buttonStyle(StatusButton(isSelected: addMediaViewModel.selectedStatus == .dropped))
+                        
+                        if addMediaViewModel.media is Anime {
+                            Button {
+                                addMediaViewModel.selectedStatus = .plan_to_watch
+                                
+                            } label: {
+                                Text("\(SelectedStatus.plan_to_watch.rawValue.capitalized.replacingOccurrences(of: "_", with: " "))")
+                            }
+                            .buttonStyle(StatusButton(isSelected: addMediaViewModel.selectedStatus == .plan_to_watch))
+                        } else {
+                            Button {
+                                addMediaViewModel.selectedStatus = .plan_to_read
+                                
+                            } label: {
+                                Text("\(SelectedStatus.plan_to_read.rawValue.capitalized.replacingOccurrences(of: "_", with: " "))")
+                            }
+                            .buttonStyle(StatusButton(isSelected: addMediaViewModel.selectedStatus == .plan_to_read))
+                        }
+                        
+                        
+                        Spacer()
+                        
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                
+                Divider()
+                    .padding(.vertical, 8)
+                
+                
+                Text(T.episodesOrChaptersString)
+                    .font(.system(size: 18))
+                    .bold()
+                
+                ProgressSliderView(media: addMediaViewModel.media, progress: $addMediaViewModel.progress)
+                
+                Divider()
+                    .padding(.vertical, 8)
+                
+                Text("Score")
+                    .font(.system(size: 18))
+                    .bold()
+                
+                ScoreSliderView(progress: $addMediaViewModel.score)
+                
+                Divider()
+                    .padding(.vertical, 8)
+                
+                Text("Notes")
+                    .font(.system(size: 18))
+                    .bold()
+                
+                TextField("Write your thoughts here...", text: $addMediaViewModel.comments, axis: .vertical)
+                
+            }
+            .padding()
+            .navigationTitle(addMediaViewModel.media.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        Task {
+                            if let updatedMedia = await addMediaViewModel.saveButtonTapped() {
+                                didSaveMedia(updatedMedia)
+                            }
+                            dismiss()
+                        }
+                    } label: {
+                        Text("Save")
+                    }
+                    
+                }
+                
+                
+                ToolbarItem(placement: .cancellationAction) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Text("Cancel")
+                    }
+                }
+            }
         }
-        .padding()
-        .padding(.top)
-//        .alert(isPresented: $appState.showAlert) {
-//            switch appState.activeAlert {
-//            case .iCloudNotLoggedIn:
-//                return Alert(
-//                    title: Text("Unable to save progress!"),
-//                      message: Text("Please verify that you are logged into your iCloud account by going to Settings > iCloud on your device.")
-//                )
-//            }
-//        }
+        .background(Color.ui.background)
     }
 }
 
-//#Preview {
-//    AddMediaView()
-//}
+#Preview("AddMediaView") {
+    NavigationStack {
+        AddMediaView(addMediaViewModel: AddMediaViewModel(media: sampleAnimes[0]), didSaveMedia: {_ in })
+    }
+}
+
+struct StatusButton: ButtonStyle {
+    var isSelected: Bool
+    
+    func makeBody(configuration: Configuration) -> some View {
+        Group {
+            if isSelected {
+                configuration.label
+                    .foregroundStyle(.white)
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+                    .background {
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(.blue)
+                    }
+            } else {
+                configuration.label
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+                    .background {
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(.regularMaterial)
+                    }
+            }
+        }
+        .font(.system(size: 14))
+    }
+}
+struct NoShape: Shape { func path(in rect: CGRect) -> Path { return Path() } }

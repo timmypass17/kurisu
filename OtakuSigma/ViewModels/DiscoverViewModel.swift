@@ -27,14 +27,14 @@ class DiscoverViewModel: ObservableObject {
         Task {
             do {
                 for ranking in AnimeRanking.allCases {
-                    let animes = try await mediaService.getMediaRanking(rankingType: ranking.type, limit: 10, offset: 0) as [Anime]
+                    let animes: [Anime] = try await mediaService.getMediaRanking(rankingType: ranking.type, limit: 10, offset: 0)
                     let section = MediaSection(ranking: ranking, items: animes)
                     print("\(ranking.rawValue): \(animes.count)")
                     animeList.append(section)
                 }
                 
                 for ranking in MangaRanking.allCases {
-                    let mangas = try await mediaService.getMediaRanking(rankingType: ranking.type,  limit: 10, offset: 0) as [Manga]
+                    let mangas: [Manga] = try await mediaService.getMediaRanking(rankingType: ranking.type,  limit: 10, offset: 0)
                     let section = MediaSection(ranking: ranking, items: mangas)
                     mangaList.append(section)
                 }
@@ -55,10 +55,12 @@ class DiscoverViewModel: ObservableObject {
     
     private func fetchAnimeOrManga() {
         guard !searchText.isEmpty else { return }
+        
         Task {
             do {
                 if selectedMediaType == .anime {
                     animeSearchResult = try await mediaService.getMediaItems(title: searchText)
+                    print(animeSearchResult.count)
                 } else {
                     mangaSearchResult = try await mediaService.getMediaItems(title: searchText)
                 }
