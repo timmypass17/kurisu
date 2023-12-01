@@ -29,7 +29,6 @@ class DiscoverViewModel: ObservableObject {
                 for ranking in AnimeRanking.allCases {
                     let animes: [Anime] = try await mediaService.getMediaRanking(rankingType: ranking.type, limit: 10, offset: 0)
                     let section = MediaSection(ranking: ranking, items: animes)
-                    print("\(ranking.rawValue): \(animes.count)")
                     animeList.append(section)
                 }
                 

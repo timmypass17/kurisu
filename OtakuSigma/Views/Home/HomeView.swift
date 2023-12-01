@@ -25,11 +25,6 @@ struct HomeView: View {
                     WatchListView(items: $homeViewModel.userMangaList)
                 }
             }
-            .onOpenURL { url in
-                Task {
-                    await homeViewModel.generateAccessToken(from: url)
-                }
-            }
             .searchable(text: $homeViewModel.filteredText, prompt: "Filter by title") {
                 if homeViewModel.selectedMediaType == .anime {
                     WatchListView(items: $homeViewModel.filteredUserAnimeList)
@@ -61,14 +56,21 @@ struct HomeView: View {
             }
         }
         .overlay {
-            if !homeViewModel.authService.isLoggedIn {
+            if case .unregistered = homeViewModel.appState.state {
                 VStack(alignment: .center) {
-                    Text("Log into My Anime List")
+                    Text("Log into MyAnimeList")
+                        .font(.title2)
+                        .fontWeight(.semibold)
                     Text("Go to Profile to authorize MyAnimeList account to use app's full functionality")
+                        .multilineTextAlignment(.center)
                 }
                 .foregroundColor(.secondary)
+                .padding()
                     
             }
+        }
+        .onAppear {
+            print(homeViewModel.appState.state)
         }
         .background(Color.ui.background)
     }
@@ -78,7 +80,7 @@ struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             HomeView()
-                .environmentObject(HomeViewModel(authService: MALAuthService(), mediaService: MALService()))
+                .environmentObject(HomeViewModel(appState: AppState(), mediaService: MALService()))
         }
     }
 }

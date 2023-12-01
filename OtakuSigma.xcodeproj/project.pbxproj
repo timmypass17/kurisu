@@ -72,8 +72,11 @@
 		32B002152B08185000D9C5D6 /* RecommendedRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B002142B08185000D9C5D6 /* RecommendedRowView.swift */; };
 		32B002172B08188D00D9C5D6 /* RecommendedCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B002162B08188D00D9C5D6 /* RecommendedCellView.swift */; };
 		32BA95F82B14512600EFC84D /* DeleteMediaAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BA95F72B14512600EFC84D /* DeleteMediaAPIRequest.swift */; };
+		32CCAB3D2B16B08400C5C18C /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CCAB3C2B16B08400C5C18C /* App.swift */; };
+		32CCAB3F2B16B0E500C5C18C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CCAB3E2B16B0E500C5C18C /* User.swift */; };
+		32CCAB412B16B15B00C5C18C /* UserAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CCAB402B16B15B00C5C18C /* UserAPIRequest.swift */; };
 		32F37ECE2B0969470015F225 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F37ECD2B0969470015F225 /* StatsView.swift */; };
-		32F37ED02B0972E40015F225 /* UserStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F37ECF2B0972E40015F225 /* UserStatsView.swift */; };
+		32F37ED02B0972E40015F225 /* BarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F37ECF2B0972E40015F225 /* BarChartView.swift */; };
 		32F37ED22B0C24830015F225 /* AddMediaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F37ED12B0C24830015F225 /* AddMediaView.swift */; };
 		32F37ED42B0C2E940015F225 /* ProgressSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F37ED32B0C2E940015F225 /* ProgressSliderView.swift */; };
 		32F37ED62B0D70EA0015F225 /* AddMediaViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F37ED52B0D70EA0015F225 /* AddMediaViewModel.swift */; };
@@ -148,8 +151,11 @@
 		32B002142B08185000D9C5D6 /* RecommendedRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendedRowView.swift; sourceTree = "<group>"; };
 		32B002162B08188D00D9C5D6 /* RecommendedCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendedCellView.swift; sourceTree = "<group>"; };
 		32BA95F72B14512600EFC84D /* DeleteMediaAPIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteMediaAPIRequest.swift; sourceTree = "<group>"; };
+		32CCAB3C2B16B08400C5C18C /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
+		32CCAB3E2B16B0E500C5C18C /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		32CCAB402B16B15B00C5C18C /* UserAPIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPIRequest.swift; sourceTree = "<group>"; };
 		32F37ECD2B0969470015F225 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
-		32F37ECF2B0972E40015F225 /* UserStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStatsView.swift; sourceTree = "<group>"; };
+		32F37ECF2B0972E40015F225 /* BarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartView.swift; sourceTree = "<group>"; };
 		32F37ED12B0C24830015F225 /* AddMediaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMediaView.swift; sourceTree = "<group>"; };
 		32F37ED32B0C2E940015F225 /* ProgressSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressSliderView.swift; sourceTree = "<group>"; };
 		32F37ED52B0D70EA0015F225 /* AddMediaViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMediaViewModel.swift; sourceTree = "<group>"; };
@@ -215,7 +221,7 @@
 				32B002142B08185000D9C5D6 /* RecommendedRowView.swift */,
 				32B002162B08188D00D9C5D6 /* RecommendedCellView.swift */,
 				32F37ECD2B0969470015F225 /* StatsView.swift */,
-				32F37ECF2B0972E40015F225 /* UserStatsView.swift */,
+				32F37ECF2B0972E40015F225 /* BarChartView.swift */,
 				32F37ED12B0C24830015F225 /* AddMediaView.swift */,
 				32F37ED32B0C2E940015F225 /* ProgressSliderView.swift */,
 				32F37ED72B0D74C20015F225 /* ScoreSliderView.swift */,
@@ -264,6 +270,7 @@
 			children = (
 				326CA7352AE9E0F6004EFB16 /* Info.plist */,
 				322BBF5B2AE5BD7500DB9ACD /* OtakuSigmaApp.swift */,
+				32CCAB3C2B16B08400C5C18C /* App.swift */,
 				32A2A4B02AEC54440083DA44 /* Settings.swift */,
 				323E4D7A2AF1BDA4001F2CA1 /* Style.swift */,
 				322BBF7B2AE5DDC000DB9ACD /* Views */,
@@ -293,6 +300,7 @@
 				326CA72F2AE9843A004EFB16 /* Manga.swift */,
 				32A2A4AE2AEC515B0083DA44 /* TokenResponse.swift */,
 				326CC9672AFD9D3400EAEFDC /* ListStatus.swift */,
+				32CCAB3E2B16B0E500C5C18C /* User.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -312,6 +320,7 @@
 				323E4D8A2AF5AE6A001F2CA1 /* SeasonalAnimeAPIRequest.swift */,
 				3288E2022B0E8AEF00074E14 /* UpdateMediaListStatusAPIRequest.swift */,
 				32BA95F72B14512600EFC84D /* DeleteMediaAPIRequest.swift */,
+				32CCAB402B16B15B00C5C18C /* UserAPIRequest.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -433,6 +442,7 @@
 				326CA7392AEB09A1004EFB16 /* AuthSerivce.swift in Sources */,
 				322BBF7A2AE5DD4E00DB9ACD /* HomeViewModel.swift in Sources */,
 				326CC9602AFD897200EAEFDC /* DetailTopSection.swift in Sources */,
+				32CCAB3F2B16B0E500C5C18C /* User.swift in Sources */,
 				323E4D832AF304AD001F2CA1 /* DiscoverRowView.swift in Sources */,
 				323E4D8B2AF5AE6A001F2CA1 /* SeasonalAnimeAPIRequest.swift in Sources */,
 				323E4D872AF30BFA001F2CA1 /* RankingAPIRequest.swift in Sources */,
@@ -445,6 +455,7 @@
 				322BBF742AE5CEDF00DB9ACD /* APIRequest.swift in Sources */,
 				32A2A4AD2AEC51480083DA44 /* RefreshTokenAPIRequest.swift in Sources */,
 				326CA7322AE9D475004EFB16 /* LoginView.swift in Sources */,
+				32CCAB3D2B16B08400C5C18C /* App.swift in Sources */,
 				32F37ED42B0C2E940015F225 /* ProgressSliderView.swift in Sources */,
 				322BBF5E2AE5BD7500DB9ACD /* HomeView.swift in Sources */,
 				320EE2092B05BF8E00041382 /* SynopsisView.swift in Sources */,
@@ -459,6 +470,7 @@
 				323E4D852AF3052D001F2CA1 /* DiscoverCellView.swift in Sources */,
 				32B002132B06BD6300D9C5D6 /* InfoView.swift in Sources */,
 				32B002172B08188D00D9C5D6 /* RecommendedCellView.swift in Sources */,
+				32CCAB412B16B15B00C5C18C /* UserAPIRequest.swift in Sources */,
 				326CA7302AE9843A004EFB16 /* Manga.swift in Sources */,
 				322BBF892AE5F94300DB9ACD /* WeebResponse.swift in Sources */,
 				326CC95A2AF96F7400EAEFDC /* DiscoverDetailViewModel.swift in Sources */,
@@ -470,7 +482,7 @@
 				322BBF7D2AE5DE9D00DB9ACD /* DiscoverView.swift in Sources */,
 				326CA72E2AE98433004EFB16 /* Anime.swift in Sources */,
 				326CC9682AFD9D3400EAEFDC /* ListStatus.swift in Sources */,
-				32F37ED02B0972E40015F225 /* UserStatsView.swift in Sources */,
+				32F37ED02B0972E40015F225 /* BarChartView.swift in Sources */,
 				3288E2032B0E8AEF00074E14 /* UpdateMediaListStatusAPIRequest.swift in Sources */,
 				326CA7372AEB03D9004EFB16 /* AccessTokenAPIRequest.swift in Sources */,
 				322BBF812AE5DEE300DB9ACD /* DiscoverViewModel.swift in Sources */,

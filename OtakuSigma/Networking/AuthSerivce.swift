@@ -8,8 +8,8 @@
 import Foundation
 
 protocol OAuthService {
-    var isLoggedIn: Bool { get set }
-    func isUserLoggedIn() async -> Bool
+//    var isLoggedIn: Bool { get set }
+//    func refreshTokenIfNeeded() async -> Bool
     var codeVerifier: String? { get set }
     func generateAccessToken(from url: URL, codeVerifier: String) async -> Bool
     func buildAuthorizationURL() -> URL?
@@ -18,34 +18,27 @@ protocol OAuthService {
 
 class MALAuthService: OAuthService {
     var codeVerifier: String? = nil
-    var isLoggedIn: Bool = false
-    
-    init() {
-        Task {
-            isLoggedIn = await isUserLoggedIn()
-        }
-    }
 
     let clientID = "9e125d96227fd516e34636ecf192b7f6"
     let redirectURI = "myanimeapp://auth" // same value from mal redirect uri
     
-    func isUserLoggedIn() async -> Bool {
-        // Check if access token was created
-        guard let token = Settings.shared.accessToken,
-              let tokenLastUpdated = Settings.shared.accessTokenLastUpdated
-        else { return false }
-        
-        print("User has access token")
-        // Refresh access token (if expired)
-        let tokenExpirationDate = tokenLastUpdated.addingTimeInterval(Settings.accessTokenDurationInSeconds)
-        let isTokenExpired = tokenExpirationDate < .now
-        if isTokenExpired {
-            print("Token Expired... refresing access token")
-            await refreshAccessToken()
-        }
-        
-        return true
-    }
+//    func refreshTokenIfNeeded() async -> Bool {
+//        // Check if access token was created
+//        guard let token = Settings.shared.accessToken,
+//              let tokenLastUpdated = Settings.shared.accessTokenLastUpdated
+//        else { return false }
+//        
+//        print("User has access token")
+//        // Refresh access token (if expired)
+//        let tokenExpirationDate = tokenLastUpdated.addingTimeInterval(Settings.accessTokenDurationInSeconds)
+//        let isTokenExpired = tokenExpirationDate < .now
+//        if isTokenExpired {
+//            print("Token Expired... refresing access token")
+//            await refreshAccessToken()
+//        }
+//        
+//        return true
+//    }
     
     func generateAccessToken(from url: URL, codeVerifier: String) async -> Bool {
         print("generateAccessToken()")
@@ -60,12 +53,13 @@ class MALAuthService: OAuthService {
         
         do {
             let tokenResponse = try await sendRequest(tokenRequest)
+            print(tokenResponse)
             Settings.shared.accessToken = tokenResponse.accessToken
             Settings.shared.refreshToken = tokenResponse.refreshToken
             let firstTimeLogIn = Settings.shared.accessTokenLastUpdated == nil
             if firstTimeLogIn {
                 // Initalize last updated to today
-                Settings.shared.accessTokenLastUpdated = Date()
+                Settings.shared.accessTokenLastUpdated = .now
             }
             return true
         } catch {
@@ -93,18 +87,28 @@ class MALAuthService: OAuthService {
     }
     
     // Note: Access Token lasts 1 hour. Refresh Token last 31 days.
-    // - Refresh token used to refresh access token which extends the user's session without them having to log in again.
+    // - Refresh token is used to create a new access token (and new refresh token?) which extends the user's session without them having to log in again.
     func refreshAccessToken() async {
-        guard let refreshToken = Settings.shared.refreshToken else { return }
-
+        guard let refreshToken = Settings.shared.refreshToken,
+              let tokenLastUpdated = Settings.shared.accessTokenLastUpdated
+        else { return }
+        
         do {
-            let refreshRequest = RefreshTokenAPIRequest(clientID: clientID, refreshToken: refreshToken)
-            let tokenResponse = try await sendRequest(refreshRequest)
-            
-            // Update tokens with new values
-            Settings.shared.accessToken = tokenResponse.accessToken
-            Settings.shared.refreshToken = tokenResponse.refreshToken
-            Settings.shared.accessTokenLastUpdated = Date()
+            print("User has access token")
+            // Refresh access token (expires every month)
+            let oneMonth: TimeInterval = 2682000    // 2592000
+            let tokenExpirationDate = tokenLastUpdated.addingTimeInterval(oneMonth)
+            let isTokenExpired = tokenExpirationDate < .now
+            if isTokenExpired {
+                print("Token Expired...refreshing token")
+                let refreshRequest = RefreshTokenAPIRequest(clientID: clientID, refreshToken: refreshToken)
+                let tokenResponse = try await sendRequest(refreshRequest)
+                print("Successfully refreshed token")
+                // Update tokens with new values
+                Settings.shared.accessToken = tokenResponse.accessToken
+                Settings.shared.refreshToken = tokenResponse.refreshToken
+                Settings.shared.accessTokenLastUpdated = Date()
+            }
         } catch {
             print("Error refreshing access token: \(error)")
         }

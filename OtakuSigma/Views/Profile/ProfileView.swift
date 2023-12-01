@@ -8,31 +8,59 @@
 import SwiftUI
 
 struct ProfileView: View {
-        @EnvironmentObject var profileViewModel: ProfileViewModel
-        @Environment(\.openURL) private var openURL
+    @EnvironmentObject var profileViewModel: ProfileViewModel
     
-        var body: some View {
-            VStack {
-                if profileViewModel.authService.isLoggedIn {
-                    Button("Log Out") {
-                        print("log out")
-                    }
-                } else {
-                    Button("Login") {
-                        profileViewModel.loginButtonTapped()
+    var body: some View {
+        switch profileViewModel.appState.state {
+        case .unregistered:
+            Button("Login") {
+                profileViewModel.loginButtonTapped()
+            }
+        case .loggedIn(let user):
+            ScrollView {
+                VStack(alignment: .leading) {
+//                    Text("Recently Updated")
+//                        .font(.title2)
+//                        .fontWeight(.semibold)
+//
+//                    
+                    
+                    Text("Anime")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+
+                    BarChartView(data: user.animeStatistics.toChartData())
+                    
+                    Text("Genres")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .padding(.top)
+
+                }
+                .padding()
+            }
+            .navigationTitle(user.name)
+            .navigationBarTitleDisplayMode(.inline)
+            .background(Color.ui.background)
+            .toolbar {
+                ToolbarItem {
+                    Button("Settings", systemImage: "gearshape.fill") {
+                        
                     }
                 }
             }
-            .onOpenURL { url in
-                Task {
-                    await profileViewModel.generateAccessToken(from: url)
-                }
-            }
+        
+        case .sessionExpired(_):
+            Text("Refresh Token")
         }
+    }
 }
 
-struct SettingsView_Previews: PreviewProvider {
-    static var previews: some View {
+#Preview("ProfileView") {
+    let appState = AppState()
+    appState.state = .loggedIn(User.sampleUser)
+    return NavigationStack {
         ProfileView()
+            .environmentObject(ProfileViewModel(appState: appState, mediaService: MALService()))
     }
 }

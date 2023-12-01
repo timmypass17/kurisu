@@ -57,9 +57,9 @@ struct MediaDetailView<T: Media>: View {
                             .padding(.top)
                         
                         if let anime = media as? Anime {
-                            // TODO: Maybe use charts
-                            UserStatsView(anime: anime)
+                            BarChartView(data: anime.statistics.toChartData())
                                 .padding(.top)
+//                                .frame(width: .infinity)
                         }
                     }
                     

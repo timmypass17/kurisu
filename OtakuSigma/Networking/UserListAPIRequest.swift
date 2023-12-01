@@ -12,6 +12,8 @@ struct UserListAPIRequest<T: Media>: APIRequest {
     // TODO: Move Status and Sort into Media (like fields ex. T.fields)
     var status: String
     var sort: String
+    var fields: [String]
+    var limit: Int = 100
     // limit, offset (may need to add for pagination)
     
     var urlRequest: URLRequest {
@@ -19,7 +21,8 @@ struct UserListAPIRequest<T: Media>: APIRequest {
         urlComponents.queryItems = [
             "status": status,
             "sort": sort ,
-            "fields": T.fields.joined(separator: ",") + ",list_status"
+            "fields": fields.joined(separator: ",")
+//            "fields": T.fields.joined(separator: ",") + ",list_status"
         ].map { URLQueryItem(name: $0.key, value: $0.value) }
         var request = URLRequest(url: urlComponents.url!)
         if let accessToken = Settings.shared.accessToken {

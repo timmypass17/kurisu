@@ -79,6 +79,16 @@ struct Statistics: Codable {
         case status
         case numListUsers = "num_list_users"
     }
+    
+    func toChartData() -> [BarChartItem] {
+        let watching = BarChartItem(value: Double(status.watching) ?? 0.0, category: "Watching")
+        let completed = BarChartItem(value: Double(status.completed) ?? 0.0, category: "Completed")
+        let onHold = BarChartItem(value: Double(status.onHold) ?? 0.0, category: "On Hold")
+        let planToWatch = BarChartItem(value: Double(status.planToWatch) ?? 0.0, category: "Plan To Watch")
+        let dropped = BarChartItem(value: Double(status.dropped) ?? 0.0, category: "Dropped")
+
+        return [watching, completed, onHold, planToWatch, dropped]
+    }
 }
 
 struct Status: Codable {
@@ -168,6 +178,6 @@ extension Anime: Decodable {
         source = try values.decode(String.self, forKey: .source)
         recommendations = try values.decodeIfPresent([RecommendedItem].self, forKey: .recommendations) ?? []
         rating = (try values.decodeIfPresent(String.self, forKey: .rating) ?? "?").uppercased().replacingOccurrences(of: "_", with: " ")
-        statistics = (try values.decodeIfPresent(Statistics.self, forKey: .statistics)) ?? Statistics(status: Status(watching: "0", completed: "0", onHold: "0", dropped: "0", planToWatch: "0"), numListUsers: 0)
+        statistics = (try values.decodeIfPresent(Statistics.self, forKey: .statistics)) ?? Statistics(status: Status(watching: "212346", completed: "87", onHold: "3144", dropped: "1970", planToWatch: "115187"), numListUsers: 0)
     }
 }
