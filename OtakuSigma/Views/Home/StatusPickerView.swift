@@ -13,8 +13,8 @@ struct StatusPickerView<T: MediaStatus>: View {
     
     var body: some View {
         Picker("View Status", selection: $selectedStatus) {
-            ForEach(Array(T.allCases)) { status in
-                Text(status.rawValue.capitalized.replacingOccurrences(of: "_", with: " "))
+            ForEach(Array(T.tabItems)) { status in
+                Text(status.key.capitalized.replacingOccurrences(of: "_", with: " "))
             }
         }
         .pickerStyle(.segmented)

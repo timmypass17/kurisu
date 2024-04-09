@@ -8,16 +8,9 @@
 import SwiftUI
 
 
-struct WatchListCell<T: Media>: View {
-    var item: T
-    
-    var score: String {
-        if let score = item.myListStatus?.score, score != 0{
-            return "\(score)"
-        }
-        return "-"
-    }
-    
+struct WatchListCell: View {
+    var item: Media
+
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
             
@@ -81,7 +74,7 @@ struct WatchListCell<T: Media>: View {
 
 struct WatchListCell_Previews: PreviewProvider {
     static var previews: some View {
-        WatchListCell<Anime>(item: sampleAnimes[0])
+        WatchListCell(item: sampleAnimes[0])
             .previewLayout(.sizeThatFits)
         
     }

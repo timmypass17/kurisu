@@ -11,20 +11,15 @@ import SwiftUI
 struct OtakuSigmaApp: App {
     @StateObject var homeViewModel: HomeViewModel
     @StateObject var discoverViewModel: DiscoverViewModel
-    @StateObject var profileViewModel: ProfileViewModel
+//    @StateObject var profileViewModel: ProfileViewModel
     let authService = MALAuthService()
-    
+    let mediaService = MALService()
+
     init() {
-        let mediaService = MALService()
-        let appState = AppState()
-    
-        _homeViewModel = StateObject(wrappedValue: HomeViewModel(appState: appState, mediaService: mediaService))
-        _discoverViewModel = StateObject(wrappedValue: DiscoverViewModel(mediaService: mediaService))
-        _profileViewModel = StateObject(wrappedValue: ProfileViewModel(appState: appState, mediaService: mediaService))
-        
-//        Task {
-//            await authService.refreshAccessToken()
-//        }
+        let homeViewModel = HomeViewModel(mediaService: mediaService, authService: authService)
+        let discoverViewModel = DiscoverViewModel(mediaService: mediaService)
+        _homeViewModel = StateObject(wrappedValue: homeViewModel)
+        _discoverViewModel = StateObject(wrappedValue: discoverViewModel)
     }
     
     var body: some Scene {
@@ -44,53 +39,32 @@ struct OtakuSigmaApp: App {
                 
                 NavigationStack {
                     ProfileView()
-                        .environmentObject(profileViewModel)
+//                        .environmentObject(profileViewModel)
                 }
                 .tabItem { Label("Profile", systemImage: "person") }
             }
             .onOpenURL { url in
-                // called from ProfileView
                 Task {
-                    if await generateAccessToken(from: url) {
-                        await loadUserData()
-                    }
+                    await handleLogin(url)
                 }
             }
-            .onAppear {
-                // Have to init in onAppear() because AuthService is a class and StateObject() init has @escaping and it doesnt like that
-                homeViewModel.authService = authService
-                profileViewModel.authService = authService
-                
-                Task {
-                    // Refresh access token if needed
-                    await authService.refreshAccessToken()
-                }
-            }
+//            .onAppear {
+//                Task {
+//                    // Refresh access token if needed
+//                    await authService.refreshAccessToken()
+//                }
+//            }
         }
     }
     
-    func generateAccessToken(from url: URL) async -> Bool {
-        guard let codeVerifier = authService.codeVerifier else { return false }
-        return await authService.generateAccessToken(from: url, codeVerifier: codeVerifier)
-    }
-    
-    func loadUserData() async {
+    func handleLogin(_ url: URL) async {
+        guard let tokenResponse = await authService.handleLogin(url: url) else { return }
         do {
-            let service = MALService()
-            let user = try await service.getUser()
-            profileViewModel.appState.state = .loggedIn(user)
-            await homeViewModel.getUserAnimeList()
-//            let additionalUserAnimeListInfo: [AnimeGenreItem] = try await service.getAdditionalUserListInfo()
-//            let genres = additionalUserAnimeListInfo.reduce(into: [String : Int]()) { category, item in
-//                item.node.genre.forEach { genre in
-//                    category[genre.name, default: 0] += 1
-//                }
-//            }
-//            print(genres.count)
-//            print(genres.forEach { print("\($0.key) \($0.value)") })
-
+            let user = try await mediaService.getUser(accessToken: tokenResponse.accessToken)
+            AppState.shared.state = .loggedIn(user)
+            await homeViewModel.loadUserAnimeList()
         } catch {
-            print("error loading user data: \(error)")
+            AppState.shared.state = .unregistered
         }
     }
 }

@@ -7,21 +7,22 @@
 
 import Foundation
 
+// any MediaStatus. 'any' is used because MediaStatus is a protocol
 protocol MediaService {
-    func getUserList<T: Media>(status: String, sort: String, fields: [String]) async throws -> [T]
+    func getUserList<T: Media>(status: any MediaStatus, sort: any MediaSort, fields: [String]) async throws -> [T]
     func getMediaItems<T: Media>(title: String) async throws -> [T]
     func getMediaRanking<T: Media>(rankingType: String, limit: Int, offset: Int) async throws -> [T]
     func getSeasonalAnime<T: Media>(year: String, season: Season, sort: RankingSort, limit: Int, offset: Int) async throws -> [T]
     func getMediaDetail<T: Media>(id: Int, fields: [String]) async throws -> T
     func updateMediaListStatus<T: UpdateResponse>(id: Int, status: String, score: Int, progress: Int, comments: String) async throws -> T
     func deleteMediaItem<T: Media>(id: Int) async throws -> T?  // return not used
-    func getUser() async throws -> User
+    func getUser(accessToken: String) async throws -> User
     func getAdditionalUserListInfo<T: GenreItemProtocol>() async throws -> [T]
 }
 
 struct MALService: MediaService {
     
-    func getUserList<T: Media>(status: String, sort: String, fields: [String]) async throws -> [T] {
+    func getUserList<T: Media>(status: any MediaStatus, sort: any MediaSort, fields: [String]) async throws -> [T] {
         let request = UserListAPIRequest<T>(status: status, sort: sort, fields: fields)
         let animeListResponse = try await sendRequest(request)
         return animeListResponse
@@ -63,8 +64,8 @@ struct MALService: MediaService {
         return nil
     }
     
-    func getUser() async throws -> User {
-        let request = UserAPIRequest()
+    func getUser(accessToken: String) async throws -> User {
+        let request = UserAPIRequest(accessToken: accessToken)
         let user = try await sendRequest(request)
         return user
     }

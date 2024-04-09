@@ -6,13 +6,10 @@
 //
 
 import Foundation
+import UIKit
 
 protocol OAuthService {
-//    var isLoggedIn: Bool { get set }
-//    func refreshTokenIfNeeded() async -> Bool
-    var codeVerifier: String? { get set }
-    func generateAccessToken(from url: URL, codeVerifier: String) async -> Bool
-    func buildAuthorizationURL() -> URL?
+    func showLogin()
     func refreshAccessToken() async
 }
 
@@ -22,38 +19,33 @@ class MALAuthService: OAuthService {
     let clientID = "9e125d96227fd516e34636ecf192b7f6"
     let redirectURI = "myanimeapp://auth" // same value from mal redirect uri
     
-//    func refreshTokenIfNeeded() async -> Bool {
-//        // Check if access token was created
-//        guard let token = Settings.shared.accessToken,
-//              let tokenLastUpdated = Settings.shared.accessTokenLastUpdated
-//        else { return false }
-//        
-//        print("User has access token")
-//        // Refresh access token (if expired)
-//        let tokenExpirationDate = tokenLastUpdated.addingTimeInterval(Settings.accessTokenDurationInSeconds)
-//        let isTokenExpired = tokenExpirationDate < .now
-//        if isTokenExpired {
-//            print("Token Expired... refresing access token")
-//            await refreshAccessToken()
-//        }
-//        
-//        return true
-//    }
+    func showLogin() {
+        print(#function)
+        guard let authorizationURL = buildAuthorizationURL() else { return }    // creates codeVerifier
+        UIApplication.shared.open(authorizationURL) // open myanimelist login
+    }
     
-    func generateAccessToken(from url: URL, codeVerifier: String) async -> Bool {
-        print("generateAccessToken()")
+    // Returns access token on success
+    func handleLogin(url: URL) async -> TokenResponse? {
+        print(#function)
+        guard let codeVerifier = codeVerifier else { return nil }
+        return await generateAccessToken(from: url, codeVerifier: codeVerifier)
+    }
+
+    private func generateAccessToken(from url: URL, codeVerifier: String) async -> TokenResponse? {
+        print(#function)
         // Capture the redirection and extract the authorization code
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
               let authorizationCode = components.queryItems?.first(where: { $0.name == "code" })?.value
         else {
-            return false
+            return nil
         }
 
         let tokenRequest = AccessTokenAPIRequest(clientID: clientID, code: authorizationCode, codeVerifier: codeVerifier)
         
         do {
             let tokenResponse = try await sendRequest(tokenRequest)
-            print(tokenResponse)
+            
             Settings.shared.accessToken = tokenResponse.accessToken
             Settings.shared.refreshToken = tokenResponse.refreshToken
             let firstTimeLogIn = Settings.shared.accessTokenLastUpdated == nil
@@ -61,15 +53,15 @@ class MALAuthService: OAuthService {
                 // Initalize last updated to today
                 Settings.shared.accessTokenLastUpdated = .now
             }
-            return true
+            return tokenResponse
         } catch {
             print("Erroring generating access token: \(error)")
-            return false
+            return nil
         }
     }
     
-    func buildAuthorizationURL() -> URL? {
-        print("buildAuthorizationURL()")
+    private func buildAuthorizationURL() -> URL? {
+        print(#function)
         let codeVerifier = createCodeVerifier()
         self.codeVerifier = codeVerifier    // side effect: store and used to generate access token later
         let baseURLString = "https://myanimelist.net/v1/oauth2/authorize"
@@ -113,19 +105,20 @@ class MALAuthService: OAuthService {
             print("Error refreshing access token: \(error)")
         }
     }
-}
+    
+    private func createCodeVerifier() -> String {
+        let length = 128
+        let allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~"
+        
+        var codeVerifier = ""
+        
+        for _ in 0..<length {
+            let randomIndex = Int(arc4random_uniform(UInt32(allowedChars.count)))
+            let randomChar = allowedChars[String.Index(utf16Offset: randomIndex, in: allowedChars)]
+            codeVerifier.append(randomChar)
+        }
 
-func createCodeVerifier() -> String {
-    let length = 128
-    let allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~"
-    
-    var codeVerifier = ""
-    
-    for _ in 0..<length {
-        let randomIndex = Int(arc4random_uniform(UInt32(allowedChars.count)))
-        let randomChar = allowedChars[String.Index(utf16Offset: randomIndex, in: allowedChars)]
-        codeVerifier.append(randomChar)
+        return codeVerifier
     }
 
-    return codeVerifier
 }

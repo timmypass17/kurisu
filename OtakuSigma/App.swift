@@ -9,6 +9,8 @@ import Foundation
 
 class AppState {
     var state: State = .unregistered
+    
+    static let shared = AppState()
 
     enum State {
         case unregistered
@@ -24,9 +26,9 @@ class AppState {
     
     func loadUser() async {
         do {
+            guard let accessToken = Settings.shared.accessToken else { return }
             let mediaService = MALService()
-            
-            let user = try await mediaService.getUser()
+            let user = try await mediaService.getUser(accessToken: accessToken)
             state = .loggedIn(user)
         } catch {
             print("[ProfileViewModel] Error fetching user: \(error)")

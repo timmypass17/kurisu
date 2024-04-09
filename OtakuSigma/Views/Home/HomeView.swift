@@ -12,8 +12,8 @@ struct HomeView: View {
     @Environment(\.openURL) private var openURL
     
     var body: some View {
-        ScrollView {
-            VStack {
+        ScrollView(.vertical) {
+            Group {
                 if homeViewModel.selectedMediaType == .anime {
                     StatusPickerView(selectedStatus: $homeViewModel.selectedAnimeStatus)
                         .padding(.horizontal)
@@ -32,55 +32,29 @@ struct HomeView: View {
                     WatchListView(items: $homeViewModel.filteredUserMangaList)
                 }
             }
-            .onChange(of: homeViewModel.filteredText, perform: { newValue in
-                homeViewModel.filterTextValueChanged()
-            })
-            .navigationTitle("Anime Tracker")
-            .onChange(of: homeViewModel.selectedAnimeStatus) { _ in
-                Task {
-                    await homeViewModel.getUserAnimeList()
-                }
-            }
-            .onChange(of: homeViewModel.selectedMangaStatus) { _ in
-                Task {
-                    await homeViewModel.getUserMangaList()
-                }
-            }
             .toolbar {
                 Button {
-                    homeViewModel.mediaButtonTapped()
+                    homeViewModel.didTapMediaButton()
                 } label: {
                     Image(systemName: homeViewModel.mediaImage)
                 }
-
             }
         }
+        .navigationTitle("Anime Tracker")
         .overlay {
             if case .unregistered = homeViewModel.appState.state {
-                VStack(alignment: .center) {
-                    Text("Log into MyAnimeList")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                    Text("Go to Profile to authorize MyAnimeList account to use app's full functionality")
-                        .multilineTextAlignment(.center)
-                }
-                .foregroundColor(.secondary)
-                .padding()
-                    
+                LoginOverlayView()
             }
-        }
-        .onAppear {
-            print(homeViewModel.appState.state)
         }
         .background(Color.ui.background)
     }
 }
 
-struct HomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            HomeView()
-                .environmentObject(HomeViewModel(appState: AppState(), mediaService: MALService()))
-        }
-    }
-}
+//struct HomeView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        NavigationStack {
+//            HomeView()
+//                .environmentObject(HomeViewModel(appState: AppState(), mediaService: MALService()))
+//        }
+//    }
+//}

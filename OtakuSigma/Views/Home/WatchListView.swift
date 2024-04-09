@@ -28,6 +28,8 @@ struct WatchListView<T: Media>: View {
                 } label: {
                     WatchListCell(item: item)
                 }
+                .padding(.horizontal, 16)
+
                 .buttonStyle(.plain)
                 .sheet(isPresented: Binding(
                     get: { isShowingAddMediaView[item.id] ?? false },
@@ -58,10 +60,10 @@ struct WatchListView<T: Media>: View {
 
 
                 Divider()
+                    .padding(.horizontal, 16)
             }
         }
         .padding(.top, 8)
-        .padding(.horizontal, 16)
 
     }
     

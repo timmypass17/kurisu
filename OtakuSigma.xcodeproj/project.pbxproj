@@ -11,6 +11,9 @@
 		320EE2092B05BF8E00041382 /* SynopsisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE2082B05BF8E00041382 /* SynopsisView.swift */; };
 		320EE20B2B06ADF200041382 /* RelatedRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE20A2B06ADF200041382 /* RelatedRowView.swift */; };
 		320EE20D2B06BB5100041382 /* RelatedCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320EE20C2B06BB5100041382 /* RelatedCellView.swift */; };
+		3219EE4E2BC5A58800F57A95 /* MediaStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3219EE4D2BC5A58800F57A95 /* MediaStatus.swift */; };
+		3219EE502BC5B1D300F57A95 /* LoginOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3219EE4F2BC5B1D300F57A95 /* LoginOverlayView.swift */; };
+		3219EE522BC5B6EE00F57A95 /* MediaSort.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3219EE512BC5B6EE00F57A95 /* MediaSort.swift */; };
 		322BBF5C2AE5BD7500DB9ACD /* OtakuSigmaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322BBF5B2AE5BD7500DB9ACD /* OtakuSigmaApp.swift */; };
 		322BBF5E2AE5BD7500DB9ACD /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322BBF5D2AE5BD7500DB9ACD /* HomeView.swift */; };
 		322BBF602AE5BD7700DB9ACD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 322BBF5F2AE5BD7700DB9ACD /* Assets.xcassets */; };
@@ -45,7 +48,6 @@
 		323E4D8B2AF5AE6A001F2CA1 /* SeasonalAnimeAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323E4D8A2AF5AE6A001F2CA1 /* SeasonalAnimeAPIRequest.swift */; };
 		326CA72E2AE98433004EFB16 /* Anime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326CA72D2AE98433004EFB16 /* Anime.swift */; };
 		326CA7302AE9843A004EFB16 /* Manga.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326CA72F2AE9843A004EFB16 /* Manga.swift */; };
-		326CA7322AE9D475004EFB16 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326CA7312AE9D475004EFB16 /* LoginView.swift */; };
 		326CA7342AE9D504004EFB16 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326CA7332AE9D504004EFB16 /* ProfileViewModel.swift */; };
 		326CA7372AEB03D9004EFB16 /* AccessTokenAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326CA7362AEB03D9004EFB16 /* AccessTokenAPIRequest.swift */; };
 		326CA7392AEB09A1004EFB16 /* AuthSerivce.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326CA7382AEB09A1004EFB16 /* AuthSerivce.swift */; };
@@ -91,6 +93,9 @@
 		320EE2082B05BF8E00041382 /* SynopsisView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynopsisView.swift; sourceTree = "<group>"; };
 		320EE20A2B06ADF200041382 /* RelatedRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedRowView.swift; sourceTree = "<group>"; };
 		320EE20C2B06BB5100041382 /* RelatedCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedCellView.swift; sourceTree = "<group>"; };
+		3219EE4D2BC5A58800F57A95 /* MediaStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaStatus.swift; sourceTree = "<group>"; };
+		3219EE4F2BC5B1D300F57A95 /* LoginOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginOverlayView.swift; sourceTree = "<group>"; };
+		3219EE512BC5B6EE00F57A95 /* MediaSort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaSort.swift; sourceTree = "<group>"; };
 		322BBF582AE5BD7500DB9ACD /* OtakuSigma.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OtakuSigma.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		322BBF5B2AE5BD7500DB9ACD /* OtakuSigmaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtakuSigmaApp.swift; sourceTree = "<group>"; };
 		322BBF5D2AE5BD7500DB9ACD /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -126,7 +131,6 @@
 		323E4D8A2AF5AE6A001F2CA1 /* SeasonalAnimeAPIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonalAnimeAPIRequest.swift; sourceTree = "<group>"; };
 		326CA72D2AE98433004EFB16 /* Anime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Anime.swift; sourceTree = "<group>"; };
 		326CA72F2AE9843A004EFB16 /* Manga.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manga.swift; sourceTree = "<group>"; };
-		326CA7312AE9D475004EFB16 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		326CA7332AE9D504004EFB16 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		326CA7352AE9E0F6004EFB16 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		326CA7362AEB03D9004EFB16 /* AccessTokenAPIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessTokenAPIRequest.swift; sourceTree = "<group>"; };
@@ -190,6 +194,7 @@
 				322BBF6E2AE5C9C000DB9ACD /* WatchListCell.swift */,
 				322BBF692AE5C08400DB9ACD /* WatchListView.swift */,
 				322BBF902AE8B35600DB9ACD /* WatchProgressView.swift */,
+				3219EE4F2BC5B1D300F57A95 /* LoginOverlayView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -249,7 +254,6 @@
 		320EE2052B056F8200041382 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
-				326CA7312AE9D475004EFB16 /* LoginView.swift */,
 				323E4D7E2AF30129001F2CA1 /* ProfileView.swift */,
 				32B82BD12B1FF7870079A724 /* ProfileStatView.swift */,
 			);
@@ -309,6 +313,8 @@
 				326CC9672AFD9D3400EAEFDC /* ListStatus.swift */,
 				32CCAB3E2B16B0E500C5C18C /* User.swift */,
 				328382302B197D9400EFCE1F /* AnimeGenre.swift */,
+				3219EE4D2BC5A58800F57A95 /* MediaStatus.swift */,
+				3219EE512BC5B6EE00F57A95 /* MediaSort.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -434,6 +440,7 @@
 				32A2A4B12AEC54440083DA44 /* Settings.swift in Sources */,
 				32F37ED82B0D74C20015F225 /* ScoreSliderView.swift in Sources */,
 				326CC95E2AFD71F100EAEFDC /* MediaDetailViewModel.swift in Sources */,
+				3219EE4E2BC5A58800F57A95 /* MediaStatus.swift in Sources */,
 				323E4D772AF02A8D001F2CA1 /* SearchCellView.swift in Sources */,
 				326CA7342AE9D504004EFB16 /* ProfileViewModel.swift in Sources */,
 				326CC9502AF877C600EAEFDC /* ArchiveViewModel.swift in Sources */,
@@ -463,7 +470,6 @@
 				326CC9662AFD9C2700EAEFDC /* DetailProgressView.swift in Sources */,
 				322BBF742AE5CEDF00DB9ACD /* APIRequest.swift in Sources */,
 				32A2A4AD2AEC51480083DA44 /* RefreshTokenAPIRequest.swift in Sources */,
-				326CA7322AE9D475004EFB16 /* LoginView.swift in Sources */,
 				32CCAB3D2B16B08400C5C18C /* App.swift in Sources */,
 				32F37ED42B0C2E940015F225 /* ProgressSliderView.swift in Sources */,
 				322BBF5E2AE5BD7500DB9ACD /* HomeView.swift in Sources */,
@@ -473,6 +479,7 @@
 				322BBF872AE5EC1400DB9ACD /* WeebListAPIRequest.swift in Sources */,
 				323E4D792AF18997001F2CA1 /* StatusPickerView.swift in Sources */,
 				32BA95F82B14512600EFC84D /* DeleteMediaAPIRequest.swift in Sources */,
+				3219EE522BC5B6EE00F57A95 /* MediaSort.swift in Sources */,
 				326CC95C2AFD6EA900EAEFDC /* MediaDetailView.swift in Sources */,
 				320EE2072B05BECD00041382 /* DetailTabView.swift in Sources */,
 				322BBF5C2AE5BD7500DB9ACD /* OtakuSigmaApp.swift in Sources */,
@@ -482,6 +489,7 @@
 				32B82BD22B1FF7870079A724 /* ProfileStatView.swift in Sources */,
 				32CCAB412B16B15B00C5C18C /* UserAPIRequest.swift in Sources */,
 				326CA7302AE9843A004EFB16 /* Manga.swift in Sources */,
+				3219EE502BC5B1D300F57A95 /* LoginOverlayView.swift in Sources */,
 				328382332B198ACF00EFCE1F /* UserAddtionalAPIRequest.swift in Sources */,
 				322BBF892AE5F94300DB9ACD /* WeebResponse.swift in Sources */,
 				326CC95A2AF96F7400EAEFDC /* DiscoverDetailViewModel.swift in Sources */,

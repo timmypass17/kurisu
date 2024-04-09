@@ -12,7 +12,7 @@ struct AccessTokenAPIRequest: APIRequest {
     let code: String
     let codeVerifier: String
     let grantType = "authorization_code"
-    let redirectURI = "myanimeapp://auth" //"myanimeapp://auth"
+    let redirectURI = "myanimeapp://auth"
     
     var urlRequest: URLRequest {
         var urlComponents = URLComponents(string: "https://myanimelist.net/v1/oauth2/token")!

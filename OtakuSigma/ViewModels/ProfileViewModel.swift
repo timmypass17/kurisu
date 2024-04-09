@@ -239,10 +239,10 @@ class ProfileViewModel: ObservableObject {
 
     }
     
-    func loginButtonTapped() {
-        guard let authorizationURL = authService.buildAuthorizationURL() else { return }
-        UIApplication.shared.open(authorizationURL) // open myanimelist login
-    }
+//    func loginButtonTapped() {
+//        guard let authorizationURL = authService.buildAuthorizationURL() else { return }
+//        UIApplication.shared.open(authorizationURL) // open myanimelist login
+//    }
     
     func convertToCamelCase(_ input: String) -> String {
         // Remove parentheses

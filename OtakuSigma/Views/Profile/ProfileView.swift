@@ -16,7 +16,7 @@ struct ProfileView: View {
         switch profileViewModel.appState.state {
         case .unregistered:
             Button("Login") {
-                profileViewModel.loginButtonTapped()
+//                profileViewModel.loginButtonTapped()
             }
         case .loggedIn(let user):
             
