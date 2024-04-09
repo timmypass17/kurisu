@@ -8,13 +8,19 @@
 import SwiftUI
 import Charts
 
-struct BarChartItem {
+struct BarChartItem: Identifiable, Comparable {
     var value: Double
     var category: String
+    var id = UUID()
+    
+    static func < (lhs: BarChartItem, rhs: BarChartItem) -> Bool {
+        return lhs.value > rhs.value
+    }
 }
 
 struct BarChartView: View {
     let data: [BarChartItem]
+    var showAnnotations = false
 
     var maxChartValue: Double {
         data.map { $0.value }.reduce(0, +)
@@ -22,15 +28,24 @@ struct BarChartView: View {
     
     var body: some View {
         VStack {
-            Chart(data, id: \.category) {
+            Chart(data) { item in
                 
                 BarMark(
-                    x: .value("Value", $0.value)
+                    x: .value("Value", item.value)
                 )
-                .foregroundStyle(by: .value("Category", $0.category))
-                
+                .cornerRadius(0)
+                .foregroundStyle(by: .value("Category", "\(item.category) (\(Int(item.value)))"))
+                .annotation(position: .overlay, alignment: .center) {
+//                    if showAnnotations {
+//                        Text("\(Int(item.value))")
+//                            .font(.caption)
+//                            .fontWeight(.semibold)
+//                    }
+                }
             }
             .frame(height: 75)
+            .chartLegend(spacing: 10)
+//            .frame(height: 75)
             .chartXScale(domain: 0...maxChartValue)
         }
     }
@@ -39,5 +54,5 @@ struct BarChartView: View {
 
 
 #Preview {
-    BarChartView(data: sampleAnimes[0].statistics.toChartData())
+    BarChartView(data: sampleAnimes[0].statistics?.toChartData() ?? [])
 }

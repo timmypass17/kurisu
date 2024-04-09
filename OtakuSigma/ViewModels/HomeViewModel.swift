@@ -49,7 +49,7 @@ class HomeViewModel: ObservableObject {
     func getUserAnimeList() async {
         print("getUserAnimeList()")
         do {
-            userAnimeList = try await mediaService.getUserList(status: selectedAnimeStatus.rawValue, sort: AnimeSort.animeTitle.rawValue, fields: Anime.fields)
+            userAnimeList = try await mediaService.getUserList(status: selectedAnimeStatus.rawValue, sort: AnimeSort.listUpdatedAt.rawValue, fields: Anime.fields)
         } catch {
             print("Error getting user anime list. Check if access token is valid: \(error)")
         }
@@ -57,7 +57,7 @@ class HomeViewModel: ObservableObject {
     
     func getUserMangaList() async {
         do {
-            userMangaList = try await mediaService.getUserList(status: selectedMangaStatus.rawValue, sort: MangaSort.mangaTitle.rawValue, fields: Manga.fields)
+            userMangaList = try await mediaService.getUserList(status: selectedMangaStatus.rawValue, sort: MangaSort.listUpdatedAt.rawValue, fields: Manga.fields)
         } catch {
             print("Error getting user manga list. Check if access token is valid: \(error)")
         }

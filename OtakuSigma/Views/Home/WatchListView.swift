@@ -17,7 +17,9 @@ struct WatchListView<T: Media>: View {
     let service = MALService()
     
     var body: some View {
-        LazyVStack(spacing: 0) {
+        LazyVStack(spacing: 16) {
+            Divider()
+            
             ForEach(items, id: \.id) { item in
                 NavigationLink {
                     MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(id: item.id, mediaService: MALService())) { updatedMedia in
@@ -25,24 +27,6 @@ struct WatchListView<T: Media>: View {
                     }
                 } label: {
                     WatchListCell(item: item)
-                }
-                .overlay(alignment: .topTrailing) {
-                    Menu {
-                        Button("Edit") {
-                            isShowingAddMediaView[item.id] = true
-                        }
-                        
-                        Button("Remove", role: .destructive) {
-                            isShowingDeleteAlert = true
-                            print(isShowingDeleteAlert)
-                        }
-
-                    } label: {
-                        Label("Options", systemImage: "ellipsis")
-                            .labelStyle(.iconOnly)
-                    }
-                    .foregroundStyle(.secondary)
-                    .padding()
                 }
                 .buttonStyle(.plain)
                 .sheet(isPresented: Binding(
@@ -76,6 +60,9 @@ struct WatchListView<T: Media>: View {
                 Divider()
             }
         }
+        .padding(.top, 8)
+        .padding(.horizontal, 16)
+
     }
     
     func handleUpdatedMedia(media: Media, updatedMedia: Media) {

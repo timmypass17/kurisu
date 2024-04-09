@@ -57,8 +57,8 @@ enum MangaStatus: String, MediaStatus {
     case reading
     case completed
     case onHold = "on_hold"
-    case dropped
     case planToRead = "plan_to_read"
+    case dropped
     
     var id: Self { self }}
 

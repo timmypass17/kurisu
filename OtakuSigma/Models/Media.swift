@@ -38,10 +38,10 @@ protocol Media: Codable, WeebItemConfiguration {
     var rank: Int? { get }
     var popularity: Int { get }
     var numListUsers: Int { get }
-    var relatedAnime: [RelatedItem] { get }
-    var relatedManga: [RelatedItem] { get }
+    var relatedAnime: [RelatedItem]? { get }
+    var relatedManga: [RelatedItem]? { get }
     var mediaType: String { get }
-    var recommendations: [RecommendedItem] { get }
+    var recommendations: [RecommendedItem]? { get }
     
     mutating func updateListStatus(status: String, score: Int, progress: Int, comments: String?)
 }
@@ -109,9 +109,9 @@ extension Media {
     }
     
     var airingStatusColor: Color {
-        if status == "Currently Airing" || status == "Currently Publishing" {
+        if status == "currently_airing" || status == "currently_publishing" {
             return .green
-        } else if status == "Finished Airing" || status == "Finished" {
+        } else if status == "finished_airing" || status == "finished" {
             return .indigo
         } else {
             return .orange

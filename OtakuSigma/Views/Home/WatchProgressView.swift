@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct WatchProgressView<T: Media>: View {
+    let score: String
     let progress: Int
     let numEpisodesOrChapters: Int
     let status: String
@@ -18,13 +19,26 @@ struct WatchProgressView<T: Media>: View {
             total: Float(numEpisodesOrChapters)
         ) {
             HStack(spacing: 4) {
-                AiringStatusView(status: status)
-                    .font(.caption)
-
-//                Label("8", systemImage: "star.fill")
-//                    .foregroundColor(.secondary)
+//                AiringStatusView(status: status.capitalized.replacingOccurrences(of: "_", with: " "))
 //                    .font(.caption)
                 
+                HStack(spacing: 4) {
+                    Image(systemName: "star.fill")
+                    Text("\(score)")
+                }
+                .font(.caption)
+
+//                HStack(spacing: 4) {
+//                    
+//                    Text("Score:")
+//                        .foregroundColor(.secondary)
+//                        .font(.caption)
+//                    
+//                    Text("9")
+//                        .foregroundColor(.secondary)
+//                        .font(.caption)
+//                }
+//                
                 Spacer()
 
                 HStack(spacing: 4) {
@@ -34,11 +48,9 @@ struct WatchProgressView<T: Media>: View {
                         .font(.caption)
                     
                     Text("\(progress) /") // TOOD: Use user's watchlist
-                        .foregroundColor(.secondary)
                         .font(.caption)
                     
                     Text("\(numEpisodesOrChapters)")
-                        .foregroundColor(.secondary)
                         .font(.caption)
                 }
 //                .borderedTag()
@@ -52,6 +64,6 @@ struct WatchProgressView<T: Media>: View {
 
 struct WatchProgressView_Previews: PreviewProvider {
     static var previews: some View {
-        WatchProgressView<Anime>(progress: 6, numEpisodesOrChapters: 12, status: "Finished Airing")
+        WatchProgressView<Anime>(score: "8", progress: 6, numEpisodesOrChapters: 12, status: "Finished Airing")
     }
 }

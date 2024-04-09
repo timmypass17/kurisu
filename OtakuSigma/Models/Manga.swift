@@ -31,10 +31,10 @@ struct Manga: Media {
     var rank: Int?
     var popularity: Int
     var numListUsers: Int
-    var relatedAnime: [RelatedItem]
-    var relatedManga: [RelatedItem]
+    var relatedAnime: [RelatedItem]? = []
+    var relatedManga: [RelatedItem]? = []
     var mediaType: String
-    var recommendations: [RecommendedItem]
+    var recommendations: [RecommendedItem]? = []
     var authors: [Author]
     
     mutating func updateListStatus(status: String, score: Int, progress: Int, comments: String?) {

@@ -45,15 +45,15 @@ struct DiscoverView: View {
                 discoverViewModel.searchTextValueChanged()
             }
             .navigationTitle("Discover Anime")
-            .toolbar {
-                NavigationLink {
-                    ArchiveView()
-                } label: {
-                    Image(systemName: "archivebox")
-
-                }
-
-            }
+//            .toolbar {
+//                NavigationLink {
+//                    ArchiveView()
+//                } label: {
+//                    Image(systemName: "archivebox")
+//
+//                }
+//
+//            }
             .background(Color.ui.background)
         }
     }

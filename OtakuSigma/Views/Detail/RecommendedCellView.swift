@@ -23,7 +23,7 @@ struct RecommendedCellView: View {
                     .frame(width: 100, height: 150)
             }
             
-            Label("\(recommendedItem.numRecommendations) Recs", systemImage: "person")
+            Label("+\(recommendedItem.numRecommendations) Recs", systemImage: "person")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 //            Text("\(recommendedItem.numRecommendations)")

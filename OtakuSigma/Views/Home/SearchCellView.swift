@@ -9,6 +9,13 @@ import SwiftUI
 
 struct SearchCellView: View {
     var item: Media
+    var scoreString: String {
+        if let score = item.mean {
+            return String(format: "%.2f", score)
+        }
+        
+        return "-"
+    }
     
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
@@ -23,9 +30,9 @@ struct SearchCellView: View {
                     
                     Spacer()
                     
-                    Label("8.64", systemImage: "star.fill")
-                        .foregroundColor(.secondary)
-                        .font(.caption)
+//                    Label("8.64", systemImage: "star.fill")
+//                        .foregroundColor(.secondary)
+//                        .font(.caption)
                 }
                 
                 HStack(spacing: 4){
@@ -41,16 +48,21 @@ struct SearchCellView: View {
                     .padding(.bottom, 10)
                 
                 HStack {
+                    Label(scoreString, systemImage: "star.fill")
+                        .foregroundColor(.secondary)
+                        .font(.caption)
+                    
+                    Circle()
+                        .frame(width: 3)
+                    
+                    
                     Label("\(item.numEpisodesOrChapters) Episodes",
                           systemImage: "tv"
                     )
                     .font(.system(size: 12))
                     
-                    Circle()
-                        .frame(width: 3)
-                    
-                    Label("24 mins", systemImage: "clock")
-                        .font(.system(size: 12))
+//                    Label("24 mins", systemImage: "clock")
+//                        .font(.system(size: 12))
                 }
                 .foregroundColor(.secondary)
                 

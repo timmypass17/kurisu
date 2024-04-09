@@ -26,20 +26,20 @@ struct Anime: Media {
         get { return myAnimeListStatus }
         set {  myAnimeListStatus = newValue as? AnimeListStatus }
     }
-    var averageEpisodeDuration: Int
+    var averageEpisodeDuration: Int = 0
     var minutesOrVolumes: Int { averageEpisodeDuration / 60 }
     var mean: Float?
     var rank: Int?
     var popularity: Int
     var numListUsers: Int
-    var relatedAnime: [RelatedItem]
-    var relatedManga: [RelatedItem]
+    var relatedAnime: [RelatedItem]?   // relatedAnime key may not exist so its nil.
+    var relatedManga: [RelatedItem]?
     var mediaType: String
     var studios: [Studio]
     var source: String
-    var recommendations: [RecommendedItem]
-    var rating: String
-    var statistics: Statistics
+    var recommendations: [RecommendedItem]?
+    var rating: String?
+    var statistics: Statistics?
 
     var broadcastString: String {
         guard let startDate, let startTime = broadcast?.startTime else { return "?" }
@@ -151,33 +151,33 @@ extension Anime: Decodable {
         case statistics
     }
 
-    init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
-        id = try values.decode(Int.self, forKey: .id)
-        title = try values.decode(String.self, forKey: .title)
-        alternativeTitles = try values.decode(AlternativeTitles.self, forKey: .alternativeTitles)
-        numEpisodes = try values.decode(Int.self, forKey: .numEpisodes)
-        mainPicture = try values.decode(MainPicture.self, forKey: .mainPicture)
-        genres = try values.decode([Genre].self, forKey: .genres)
-        status = try values.decode(String.self, forKey: .status).snakeToRegularCase()
-        startSeason = try values.decodeIfPresent(StartSeason.self, forKey: .startSeason)
-        broadcast = try values.decodeIfPresent(Broadcast.self, forKey: .broadcast)
-        startDate = try values.decodeIfPresent(String.self, forKey: .startDate)
-        endDate = try values.decodeIfPresent(String.self, forKey: .endDate)
-        synopsis = try values.decode(String.self, forKey: .synopsis)
-        myAnimeListStatus = try values.decodeIfPresent(AnimeListStatus.self, forKey: .myAnimeListStatus)
-        averageEpisodeDuration = try values.decode(Int.self, forKey: .averageEpisodeDuration)
-        mean = try values.decodeIfPresent(Float.self, forKey: .mean)
-        rank = try values.decodeIfPresent(Int.self, forKey: .rank)
-        popularity = try values.decode(Int.self, forKey: .popularity)
-        numListUsers = try values.decode(Int.self, forKey: .numListUsers)
-        relatedAnime = try values.decodeIfPresent([RelatedItem].self, forKey: .relatedAnime) ?? []  // could be missing, add default value instead of nil
-        relatedManga = try values.decodeIfPresent([RelatedItem].self, forKey: .relatedManga) ?? []
-        mediaType = try values.decode(String.self, forKey: .mediaType)
-        studios = try values.decode([Studio].self, forKey: .studios)
-        source = try values.decode(String.self, forKey: .source)
-        recommendations = try values.decodeIfPresent([RecommendedItem].self, forKey: .recommendations) ?? []
-        rating = (try values.decodeIfPresent(String.self, forKey: .rating) ?? "?").uppercased().replacingOccurrences(of: "_", with: " ")
-        statistics = (try values.decodeIfPresent(Statistics.self, forKey: .statistics)) ?? Statistics(status: Status(watching: "212346", completed: "87", onHold: "3144", dropped: "1970", planToWatch: "115187"), numListUsers: 0)
-    }
+//    init(from decoder: Decoder) throws {
+//        let values = try decoder.container(keyedBy: CodingKeys.self)
+//        id = try values.decode(Int.self, forKey: .id)
+//        title = try values.decode(String.self, forKey: .title)
+//        alternativeTitles = try values.decode(AlternativeTitles.self, forKey: .alternativeTitles)
+//        numEpisodes = try values.decode(Int.self, forKey: .numEpisodes)
+//        mainPicture = try values.decode(MainPicture.self, forKey: .mainPicture)
+//        genres = try values.decode([Genre].self, forKey: .genres)
+//        status = try values.decode(String.self, forKey: .status).snakeToRegularCase()
+//        startSeason = try values.decodeIfPresent(StartSeason.self, forKey: .startSeason)
+//        broadcast = try values.decodeIfPresent(Broadcast.self, forKey: .broadcast)
+//        startDate = try values.decodeIfPresent(String.self, forKey: .startDate)
+//        endDate = try values.decodeIfPresent(String.self, forKey: .endDate)
+//        synopsis = try values.decode(String.self, forKey: .synopsis)
+//        myAnimeListStatus = try values.decodeIfPresent(AnimeListStatus.self, forKey: .myAnimeListStatus)
+//        averageEpisodeDuration = try values.decode(Int.self, forKey: .averageEpisodeDuration)
+//        mean = try values.decodeIfPresent(Float.self, forKey: .mean)
+//        rank = try values.decodeIfPresent(Int.self, forKey: .rank)
+//        popularity = try values.decode(Int.self, forKey: .popularity)
+//        numListUsers = try values.decode(Int.self, forKey: .numListUsers)
+//        relatedAnime = try values.decodeIfPresent([RelatedItem].self, forKey: .relatedAnime) ?? []  // could be missing, add default value instead of nil
+//        relatedManga = try values.decodeIfPresent([RelatedItem].self, forKey: .relatedManga) ?? []
+//        mediaType = try values.decode(String.self, forKey: .mediaType)
+//        studios = try values.decode([Studio].self, forKey: .studios)
+//        source = try values.decode(String.self, forKey: .source)
+//        recommendations = try values.decodeIfPresent([RecommendedItem].self, forKey: .recommendations) ?? []
+//        rating = (try values.decodeIfPresent(String.self, forKey: .rating) ?? "?").uppercased().replacingOccurrences(of: "_", with: " ")
+//        statistics = (try values.decodeIfPresent(Statistics.self, forKey: .statistics)) ?? Statistics(status: Status(watching: "212346", completed: "87", onHold: "3144", dropped: "1970", planToWatch: "115187"), numListUsers: 0)
+//    }
 }

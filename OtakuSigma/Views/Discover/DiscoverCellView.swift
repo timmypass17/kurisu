@@ -34,7 +34,7 @@ struct DiscoverCellView<T: Media>: View {
                 .foregroundColor(.secondary)
                 .font(.system(size: 10))
             
-            StatusView(status: media.status, color: media.airingStatusColor)
+            StatusView(status: media.status.capitalized.replacingOccurrences(of: "_", with: " "), color: media.airingStatusColor)
                 .padding(.top, 2)
                         
         }

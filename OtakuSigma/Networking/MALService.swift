@@ -16,6 +16,7 @@ protocol MediaService {
     func updateMediaListStatus<T: UpdateResponse>(id: Int, status: String, score: Int, progress: Int, comments: String) async throws -> T
     func deleteMediaItem<T: Media>(id: Int) async throws -> T?  // return not used
     func getUser() async throws -> User
+    func getAdditionalUserListInfo<T: GenreItemProtocol>() async throws -> [T]
 }
 
 struct MALService: MediaService {
@@ -67,6 +68,13 @@ struct MALService: MediaService {
         let user = try await sendRequest(request)
         return user
     }
+    
+    func getAdditionalUserListInfo<T: GenreItemProtocol>() async throws -> [T] {
+        let request = UserAddtionalAPIRequest<T>()
+        let data = try await sendRequest(request)
+        return data
+    }
+
 }
 
 enum TokenError: Error {

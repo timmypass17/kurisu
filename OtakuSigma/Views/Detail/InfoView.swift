@@ -27,7 +27,7 @@ struct InfoView<T: Media>: View {
                 // theme
                 // demographic
                 StatsCell(title: "Duration", image: "calendar", value: "\(anime.minutesOrVolumes) min. per epi.")
-                StatsCell(title: "Rating", image: "calendar", value: anime.rating)
+                StatsCell(title: "Rating", image: "calendar", value: anime.rating ?? "-")
             } else if let manga = media as? Manga {
                 StatsCell(title: "Type", image: "magnifyingglass", value: manga.mediaType.uppercased())
                 StatsCell(title: "Volumes", image: "magnifyingglass", value: manga.minutesOrVolumes)

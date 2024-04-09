@@ -76,9 +76,19 @@ struct OtakuSigmaApp: App {
     
     func loadUserData() async {
         do {
-            let user = try await MALService().getUser()
+            let service = MALService()
+            let user = try await service.getUser()
             profileViewModel.appState.state = .loggedIn(user)
             await homeViewModel.getUserAnimeList()
+//            let additionalUserAnimeListInfo: [AnimeGenreItem] = try await service.getAdditionalUserListInfo()
+//            let genres = additionalUserAnimeListInfo.reduce(into: [String : Int]()) { category, item in
+//                item.node.genre.forEach { genre in
+//                    category[genre.name, default: 0] += 1
+//                }
+//            }
+//            print(genres.count)
+//            print(genres.forEach { print("\($0.key) \($0.value)") })
+
         } catch {
             print("error loading user data: \(error)")
         }

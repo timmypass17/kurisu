@@ -18,14 +18,14 @@ struct GenreView: View {
                     TagView(text: tag.name)
                 }
                 
-                if item.genres.count > maxTags {
-                    HStack(spacing: 0) {
-                        Image(systemName: "plus")
-                        Text("\((item.genres.count) - maxTags) more")
-                    }
-                    .foregroundColor(.secondary)
-                    .padding(.leading, 2)
-                }
+//                if item.genres.count > maxTags {
+//                    HStack(spacing: 0) {
+//                        Image(systemName: "plus")
+//                        Text("\((item.genres.count) - maxTags) more")
+//                    }
+//                    .foregroundColor(.secondary)
+//                    .padding(.leading, 2)
+//                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

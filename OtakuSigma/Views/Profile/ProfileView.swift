@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import Charts
 
 struct ProfileView: View {
     @EnvironmentObject var profileViewModel: ProfileViewModel
+    @State var selectedStat: StatPicker = .all
     
     var body: some View {
         switch profileViewModel.appState.state {
@@ -17,27 +19,47 @@ struct ProfileView: View {
                 profileViewModel.loginButtonTapped()
             }
         case .loggedIn(let user):
+            
             ScrollView {
                 VStack(alignment: .leading) {
-//                    Text("Recently Updated")
-//                        .font(.title2)
-//                        .fontWeight(.semibold)
-//
-//                    
+                    Picker("Statistic", selection: $selectedStat) {
+                        ForEach(StatPicker.allCases) { stat in
+                            Text(stat.rawValue.capitalized)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .padding([.horizontal, .top])
                     
-                    Text("Anime")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-
-                    BarChartView(data: user.animeStatistics.toChartData())
                     
-                    Text("Genres")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .padding(.top)
+                    switch selectedStat {
+                    case .all:
+                        ProfileStatView(
+                            statPicker: selectedStat,
+                            listStatusData: profileViewModel.allListStatusData,
+                            genreData: profileViewModel.allGenresData,
+                            themeData: profileViewModel.allThemesData,
+                            demographicData: profileViewModel.allDemographicData
+                        )
+                    case .anime:
+                        ProfileStatView(
+                            statPicker: selectedStat,
+                            listStatusData: user.animeStatistics.toChartData(),
+                            genreData: profileViewModel.animeGenres,
+                            themeData: profileViewModel.animeThemes,
+                            demographicData: profileViewModel.animeDemographics
+                        )
+                    case .manga:
+                        ProfileStatView(
+                            statPicker: selectedStat,
+                            listStatusData: profileViewModel.mangaListStatusData,
+                            genreData: profileViewModel.mangaGenres,
+                            themeData: profileViewModel.mangaThemes,
+                            demographicData: profileViewModel.mangaDemographics
+                        )
+                    }
 
                 }
-                .padding()
+                
             }
             .navigationTitle(user.name)
             .navigationBarTitleDisplayMode(.inline)
@@ -49,7 +71,7 @@ struct ProfileView: View {
                     }
                 }
             }
-        
+            
         case .sessionExpired(_):
             Text("Refresh Token")
         }
@@ -63,4 +85,10 @@ struct ProfileView: View {
         ProfileView()
             .environmentObject(ProfileViewModel(appState: appState, mediaService: MALService()))
     }
+}
+
+enum StatPicker: String, CaseIterable, Identifiable {
+    case all, anime, manga
+    
+    var id: Self { self }
 }
