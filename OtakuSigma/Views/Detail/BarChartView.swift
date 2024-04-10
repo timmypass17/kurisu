@@ -54,5 +54,5 @@ struct BarChartView: View {
 
 
 #Preview {
-    BarChartView(data: sampleAnimes[0].statistics?.toChartData() ?? [])
+    BarChartView(data: sampleAnimes[0].statistics.toChartData())
 }

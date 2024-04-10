@@ -27,7 +27,7 @@ protocol Media: Codable, WeebItemConfiguration {
     var numEpisodesOrChapters: Int { get }
     var mainPicture: MainPicture { get }
     var genres: [Genre] { get }
-    var status: String { get }
+    var status: MediaStatus { get }
     var startSeason: StartSeason? { get }
     var startDate: String? { get }
     var endDate: String? { get }
@@ -38,16 +38,21 @@ protocol Media: Codable, WeebItemConfiguration {
     var rank: Int? { get }
     var popularity: Int { get }
     var numListUsers: Int { get }
-    var relatedAnime: [RelatedItem]? { get }
-    var relatedManga: [RelatedItem]? { get }
+    var relatedAnime: [RelatedItem] { get }
+    var relatedManga: [RelatedItem] { get }
     var mediaType: String { get }
-    var recommendations: [RecommendedItem]? { get }
+    var recommendations: [RecommendedItem] { get }
+    
+    func episodeOrChapterString() -> String
     
     mutating func updateListStatus(status: String, score: Int, progress: Int, comments: String?)
+    
+    var nextReleaseString: String { get }
 }
 
 extension Media {
     // Default implementations
+    
     var startSeasonString: String {
         if let startSeason {
             return "\(startSeason.season.capitalized) \(startSeason.year)"
@@ -55,12 +60,9 @@ extension Media {
         return "No Date"
     }
     
-    var nextEpisodeFormatted: String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        
-        return "X days"
-    }
+//    var nextEpisodeFormatted: String {
+//
+//    }
     
     var scoreString: String {
         if let mean {
@@ -105,16 +107,6 @@ extension Media {
             return outputDateString
         } else {
             return "?"
-        }
-    }
-    
-    var airingStatusColor: Color {
-        if status == "currently_airing" || status == "currently_publishing" {
-            return .green
-        } else if status == "finished_airing" || status == "finished" {
-            return .indigo
-        } else {
-            return .orange
         }
     }
 }
@@ -189,7 +181,7 @@ let sampleAnimes: [Anime] = [
             medium: "https://cdn.myanimelist.net/images/anime/1806/126216.jpg",
             large: "https://cdn.myanimelist.net/images/anime/1806/126216l.jpg"),
         genres: ["Action", "Fantasy", "Gore", "Shounen"].map { Genre(name: $0) },
-        status: "Finished Airing",
+        animeStatus: .finishedAiring,
         startSeason: StartSeason(year: 2022, season: "fall"),
         broadcast: Broadcast(
             dayOfTheWeek: "wednesday",

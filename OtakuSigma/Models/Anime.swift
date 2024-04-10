@@ -15,49 +15,54 @@ struct Anime: Media {
     var numEpisodes: Int
     var mainPicture: MainPicture
     var genres: [Genre]
-    var status: String
+    var status: MediaStatus {
+        get { animeStatus }
+    }
+    var animeStatus: AnimeStatus
+    
     var startSeason: StartSeason?
     var broadcast: Broadcast?
     var startDate: String?
     var endDate: String?
     var synopsis: String
     var myAnimeListStatus: AnimeListStatus?
+    
     var myListStatus: ListStatus? {
         get { return myAnimeListStatus }
         set {  myAnimeListStatus = newValue as? AnimeListStatus }
     }
-    var averageEpisodeDuration: Int = 0
+    var averageEpisodeDuration: Int
     var minutesOrVolumes: Int { averageEpisodeDuration / 60 }
     var mean: Float?
     var rank: Int?
     var popularity: Int
     var numListUsers: Int
-    var relatedAnime: [RelatedItem]?   // relatedAnime key may not exist so its nil.
-    var relatedManga: [RelatedItem]?
+    var relatedAnime: [RelatedItem]   // relatedAnime key may not exist so its nil.
+    var relatedManga: [RelatedItem]
     var mediaType: String
     var studios: [Studio]
     var source: String
-    var recommendations: [RecommendedItem]?
+    var recommendations: [RecommendedItem]
     var rating: String?
-    var statistics: Statistics?
-
+    var statistics: Statistics
+    
     var broadcastString: String {
         guard let startDate, let startTime = broadcast?.startTime else { return "?" }
-
+        
         let combinedDateString = "\(startDate) \(startTime)"
-
+        
         // Parse the combined date and time string
         let combinedDateFormatter = DateFormatter()
         combinedDateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
         combinedDateFormatter.timeZone = TimeZone(identifier: "Asia/Tokyo")
-
+        
         if let combinedDate = combinedDateFormatter.date(from: combinedDateString) {
             // Convert to the user's local time zone
             let userTimeZone = TimeZone.current
             let userDateFormatter = DateFormatter()
             userDateFormatter.dateFormat = "EEEE 'at' h:mma (zzz)"
             userDateFormatter.timeZone = userTimeZone
-
+            
             let userDateString = userDateFormatter.string(from: combinedDate)
             return userDateString
         } else {
@@ -69,6 +74,42 @@ struct Anime: Media {
         myAnimeListStatus = AnimeListStatus(status: status, score: score, numEpisodesWatched: progress, comments: comments)
     }
     
+    func episodeOrChapterString() -> String {
+        return "Episodes"
+    }
+    
+    var nextReleaseString: String {
+        switch animeStatus {
+        case .currentlyAiring:
+            guard let weekday = broadcast?.dayOfTheWeek,
+                  let startTime = broadcast?.startTime,
+                  let nextEpisodeDate = getNextEpisodeDate(weekday: weekday, militaryTime: startTime)
+            else { return "No next" }
+            
+            return nextEpisodeDate.formatted(date: .abbreviated, time: .shortened)
+        case .notYetAired:
+            guard let startDateString = startDate else { return "No airing date found" }
+            let startTime = broadcast?.startTime ?? "12:00" // estimate start
+            // Create a date formatter
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            
+            if var jspDate = dateFormatter.date(from: startDateString) {
+                var dateComponents = DateComponents()
+                let militaryTimeComponents = startTime.split(separator: ":")
+                if militaryTimeComponents.count == 2,
+                   let hour = Int(militaryTimeComponents[0]),
+                   let minute = Int(militaryTimeComponents[1]) {
+                    jspDate = Calendar.current.date(bySettingHour: hour, minute: minute, second: 0, of: jspDate)!
+                }
+                let pstDate = jspDate.convertToTimeZone(initTimeZone: TimeZone(identifier: "JST")!, timeZone: TimeZone.current)
+                return pstDate.formatted(date: .abbreviated, time: .shortened)
+            }
+            return "Failed to convert JSP to PST"
+        case .finishedAiring:
+            return "Finished Airing"
+        }
+    }
 }
 
 struct Statistics: Codable {
@@ -86,7 +127,7 @@ struct Statistics: Codable {
         let onHold = BarChartItem(value: Double(status.onHold) ?? 0.0, category: "On Hold")
         let planToWatch = BarChartItem(value: Double(status.planToWatch) ?? 0.0, category: "Plan To Watch")
         let dropped = BarChartItem(value: Double(status.dropped) ?? 0.0, category: "Dropped")
-
+        
         return [watching, completed, onHold, planToWatch, dropped]
     }
 }
@@ -129,7 +170,7 @@ extension Anime: Decodable {
         case numEpisodes = "num_episodes"
         case mainPicture = "main_picture"
         case genres
-        case status
+        case animeStatus = "status"
         case startSeason = "start_season"
         case broadcast
         case startDate = "start_date"
@@ -150,34 +191,86 @@ extension Anime: Decodable {
         case rating
         case statistics
     }
+    
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        id = try values.decode(Int.self, forKey: .id)
+        title = try values.decode(String.self, forKey: .title)
+        alternativeTitles = try values.decode(AlternativeTitles.self, forKey: .alternativeTitles)
+        numEpisodes = try values.decode(Int.self, forKey: .numEpisodes)
+        mainPicture = try values.decode(MainPicture.self, forKey: .mainPicture)
+        genres = try values.decode([Genre].self, forKey: .genres)
+        animeStatus = try values.decode(AnimeStatus.self, forKey: .animeStatus)
+        startSeason = try values.decodeIfPresent(StartSeason.self, forKey: .startSeason)
+        broadcast = try values.decodeIfPresent(Broadcast.self, forKey: .broadcast)
+        startDate = try values.decodeIfPresent(String.self, forKey: .startDate)
+        endDate = try values.decodeIfPresent(String.self, forKey: .endDate)
+        synopsis = try values.decode(String.self, forKey: .synopsis)
+        myAnimeListStatus = try values.decodeIfPresent(AnimeListStatus.self, forKey: .myAnimeListStatus)
+        averageEpisodeDuration = try values.decode(Int.self, forKey: .averageEpisodeDuration)
+        mean = try values.decodeIfPresent(Float.self, forKey: .mean)
+        rank = try values.decodeIfPresent(Int.self, forKey: .rank)
+        popularity = try values.decode(Int.self, forKey: .popularity)
+        numListUsers = try values.decode(Int.self, forKey: .numListUsers)
+        relatedAnime = try values.decodeIfPresent([RelatedItem].self, forKey: .relatedAnime) ?? []
+        relatedManga = try values.decodeIfPresent([RelatedItem].self, forKey: .relatedManga) ?? []
+        mediaType = try values.decode(String.self, forKey: .mediaType)
+        studios = try values.decode([Studio].self, forKey: .studios)
+        source = try values.decode(String.self, forKey: .source)
+        recommendations = try values.decodeIfPresent([RecommendedItem].self, forKey: .recommendations) ?? []
+        rating = (try values.decodeIfPresent(String.self, forKey: .rating) ?? "?").uppercased().replacingOccurrences(of: "_", with: " ")
+        statistics = (try values.decodeIfPresent(Statistics.self, forKey: .statistics)) ?? Statistics(status: Status(watching: "0", completed: "0", onHold: "0", dropped: "0", planToWatch: "0"), numListUsers: 0)
+    }
+}
 
-//    init(from decoder: Decoder) throws {
-//        let values = try decoder.container(keyedBy: CodingKeys.self)
-//        id = try values.decode(Int.self, forKey: .id)
-//        title = try values.decode(String.self, forKey: .title)
-//        alternativeTitles = try values.decode(AlternativeTitles.self, forKey: .alternativeTitles)
-//        numEpisodes = try values.decode(Int.self, forKey: .numEpisodes)
-//        mainPicture = try values.decode(MainPicture.self, forKey: .mainPicture)
-//        genres = try values.decode([Genre].self, forKey: .genres)
-//        status = try values.decode(String.self, forKey: .status).snakeToRegularCase()
-//        startSeason = try values.decodeIfPresent(StartSeason.self, forKey: .startSeason)
-//        broadcast = try values.decodeIfPresent(Broadcast.self, forKey: .broadcast)
-//        startDate = try values.decodeIfPresent(String.self, forKey: .startDate)
-//        endDate = try values.decodeIfPresent(String.self, forKey: .endDate)
-//        synopsis = try values.decode(String.self, forKey: .synopsis)
-//        myAnimeListStatus = try values.decodeIfPresent(AnimeListStatus.self, forKey: .myAnimeListStatus)
-//        averageEpisodeDuration = try values.decode(Int.self, forKey: .averageEpisodeDuration)
-//        mean = try values.decodeIfPresent(Float.self, forKey: .mean)
-//        rank = try values.decodeIfPresent(Int.self, forKey: .rank)
-//        popularity = try values.decode(Int.self, forKey: .popularity)
-//        numListUsers = try values.decode(Int.self, forKey: .numListUsers)
-//        relatedAnime = try values.decodeIfPresent([RelatedItem].self, forKey: .relatedAnime) ?? []  // could be missing, add default value instead of nil
-//        relatedManga = try values.decodeIfPresent([RelatedItem].self, forKey: .relatedManga) ?? []
-//        mediaType = try values.decode(String.self, forKey: .mediaType)
-//        studios = try values.decode([Studio].self, forKey: .studios)
-//        source = try values.decode(String.self, forKey: .source)
-//        recommendations = try values.decodeIfPresent([RecommendedItem].self, forKey: .recommendations) ?? []
-//        rating = (try values.decodeIfPresent(String.self, forKey: .rating) ?? "?").uppercased().replacingOccurrences(of: "_", with: " ")
-//        statistics = (try values.decodeIfPresent(Statistics.self, forKey: .statistics)) ?? Statistics(status: Status(watching: "212346", completed: "87", onHold: "3144", dropped: "1970", planToWatch: "115187"), numListUsers: 0)
-//    }
+func getNextEpisodeDate(weekday: String, militaryTime: String) -> Date? {
+    let formatter = DateFormatter()
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    formatter.dateFormat = "yyyy-MM-dd HH:mm"
+    formatter.timeZone = TimeZone.current
+    
+    // Get the current date and time in JSP timezone
+    var dateComponents = DateComponents()
+    dateComponents.weekday = getWeekdayNumber(weekday: weekday)
+    let militaryTimeComponents = militaryTime.split(separator: ":")
+    if militaryTimeComponents.count == 2,
+       let hour = Int(militaryTimeComponents[0]),
+       let minute = Int(militaryTimeComponents[1]) {
+        dateComponents.hour = hour
+        dateComponents.minute = minute
+    } else {
+        return nil
+    }
+    
+    let jspDate = Calendar.current.nextDate(after: Date(), matching: dateComponents, matchingPolicy: .nextTime, direction: .forward)!
+    
+    // Convert JSP time to PST
+    let pstDate = jspDate.convertToTimeZone(initTimeZone: TimeZone(identifier: "JST")!, timeZone: TimeZone.current)
+    
+    return pstDate
+}
+
+func getWeekdayNumber(weekday: String) -> Int {
+    let formatter = DateFormatter()
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    formatter.dateFormat = "EEEE"
+    guard let date = formatter.date(from: weekday) else {
+        return 1 // Default to Monday if unable to parse
+    }
+    let calendar = Calendar.current
+    return calendar.component(.weekday, from: date)
+}
+
+//// Example usage
+//if let convertedTime = convertTimeToCurrentUserTimeZone(weekday: "tuesday", militaryTime: "13:30") {
+//    print(convertedTime.formatted(date: .abbreviated, time: .shortened))
+//} else {
+//    print("Unable to convert the time.")
+//}
+
+extension Date {
+    func convertToTimeZone(initTimeZone: TimeZone, timeZone: TimeZone) -> Date {
+        let delta = TimeInterval(timeZone.secondsFromGMT(for: self) - initTimeZone.secondsFromGMT(for: self))
+        return addingTimeInterval(delta)
+    }
 }

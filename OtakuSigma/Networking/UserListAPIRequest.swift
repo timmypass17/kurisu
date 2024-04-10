@@ -10,7 +10,7 @@ import Foundation
 
 struct UserListAPIRequest<T: Media>: APIRequest {
     // TODO: Move Status and Sort into Media (like fields ex. T.fields)
-    var status: any MediaStatus
+    var status: any MediaListStatus
     var sort: any MediaSort
     var fields: [String]
     var limit: Int = 100

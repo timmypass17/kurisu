@@ -142,7 +142,7 @@ class ProfileViewModel: ObservableObject {
                     }
                 }
                 
-                var mangaListStatusCount: [String: Int] = Dictionary(uniqueKeysWithValues: MangaStatus.allCases.map { ($0.rawValue, 0) })
+                var mangaListStatusCount: [String: Int] = Dictionary(uniqueKeysWithValues: MangaReadListStatus.allCases.map { ($0.rawValue, 0) })
                 
                 let listStatusData = additionalUserMangaListInfo.map { $0.myMangaListStatus }
                 for listStatus in listStatusData {
@@ -172,7 +172,7 @@ class ProfileViewModel: ObservableObject {
                         mangaDemographics.append(BarChartItem(value: Double(count), category: demographic.rawValue.capitalized))
                     }
                 }
-                MangaStatus.allCases.forEach { status in
+                MangaReadListStatus.allCases.forEach { status in
                     if let count = mangaListStatusCount[status.rawValue] {
                         mangaListStatusData.append(BarChartItem(value: Double(count), category: status.rawValue.capitalized.replacingOccurrences(of: "_", with: " ")))
                     }

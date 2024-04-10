@@ -34,6 +34,6 @@ struct AiringStatusView: View {
 
 struct AnimeStatus_Previews: PreviewProvider {
     static var previews: some View {
-        AiringStatusView(status: sampleAnimes[0].status)
+        AiringStatusView(status: sampleAnimes[0].status.description)
     }
 }

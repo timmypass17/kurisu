@@ -13,10 +13,10 @@ class HomeViewModel: ObservableObject {
     // TODO: Maybe move collection to tabview level (higher level) and inject array into viewmodel so that when user modifies array (like adding a new anime), the changes will be reflected in here aswell.
     @Published var userAnimeList: [Anime] = []
     @Published var userMangaList: [Manga] = []
-    @Published var selectedAnimeStatus: AnimeStatus = .watching {
+    @Published var selectedAnimeStatus: AnimeWatchListStatus = .watching {
         didSet { Task { await loadUserAnimeList() } }
     }
-    @Published var selectedMangaStatus: MangaStatus = .reading {
+    @Published var selectedMangaStatus: MangaReadListStatus = .reading {
         didSet { Task { await loadUserMangaList() } }
     }
     @Published var selectedMediaType: MediaType = .anime {
@@ -35,7 +35,7 @@ class HomeViewModel: ObservableObject {
     @Published var filteredUserMangaList: [Manga] = []
     @Published var appState: AppState = AppState.shared
     
-    var authService: OAuthService  // we guarntee that this will not be nil when used. initalized it later
+    var authService: OAuthService
     let mediaService: MediaService
     
     var mediaImage: String {

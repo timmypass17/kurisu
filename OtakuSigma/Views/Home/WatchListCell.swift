@@ -18,7 +18,7 @@ struct WatchListCell: View {
             
             VStack(alignment: .leading, spacing: 10) {
                 VStack(alignment: .leading, spacing: 0) {
-                    Text("\(item.startSeasonString)")
+                    Text(item.startSeasonString)
                         .foregroundColor(.secondary)
                         .font(.caption)
                     
@@ -29,29 +29,29 @@ struct WatchListCell: View {
                     .truncationMode(.tail)
                     .padding(.bottom, 5)
                     
-                    GenreRow(animeNode: item, maxTags: 2)
+                    GenreRow(genres: item.genres, tagCount: 2)
                         .font(.caption)
                         .scrollDisabled(true)
                 }
                 
                 ProgressView(
-                    value: Float(1),
-                    total: Float(10)
+                    value: Float(item.myListStatus?.progress ?? 0),
+                    total: Float(item.numEpisodesOrChapters)
                 ) {
                     HStack(spacing: 4) {
-                        AnimeStatusViewOld(item: item)
+                        MediaStatusView(status: item.status)
                             .font(.caption)
                         
                         Spacer()
-                        Text("Episodes")
+                        Text("\(item.episodeOrChapterString()): ")
                             .foregroundColor(.secondary)
                             .font(.caption)
                         
-                        Text("1 /")
+                        Text("\(Int(item.myListStatus?.progress ?? 0)) /")
                             .foregroundColor(.secondary)
                             .font(.caption)
                         
-                        Text("10")
+                        Text("\(item.numEpisodesOrChapters)")
                             .foregroundColor(.secondary)
                             .font(.caption)
                         
@@ -63,7 +63,13 @@ struct WatchListCell: View {
                 HStack {
                     Image(systemName: "clock")
                     
-                    Text("Next Episode: )")
+                    if let status = item.status as? AnimeStatus {
+                        if status == .currentlyAiring {
+                            Text("Next Episode: \(item.nextReleaseString)")
+                        } else if status == .notYetAired {
+                            Text("Airing Date: \(item.nextReleaseString)")
+                        }
+                    }
                 }
                 .foregroundColor(.secondary)
                 .font(.caption)
@@ -113,20 +119,20 @@ struct DetailPoster: View {
 
 
 struct GenreRow: View {
-    let animeNode: Media?
-    var maxTags = Int.max
+    let genres: [Genre]
+    var tagCount = Int.max
     
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 4) {
-                ForEach(animeNode?.genres.prefix(maxTags) ?? [], id: \.name) { tag in
+                ForEach(genres.prefix(tagCount), id: \.name) { tag in
                     TagView(text: tag.name)
                 }
                 
-                if animeNode?.genres.count ?? 0 > maxTags {
+                if genres.count > tagCount {
                     HStack(spacing: 0) {
                         Image(systemName: "plus")
-                        Text("\((animeNode?.genres.count ?? 0) - maxTags) more")
+                        Text("\((genres.count) - tagCount) more")
                     }
                     .foregroundColor(.secondary)
                     .padding(.leading, 2)
@@ -137,20 +143,19 @@ struct GenreRow: View {
     }
 }
 
-struct AnimeStatusViewOld: View {
-    let item: Media
+struct MediaStatusView: View {
+    let status: MediaStatus
     
     var body: some View {
         HStack(alignment: .center, spacing: 4) {
             Circle()
-                .fill(item.airingStatusColor)
+                .fill(status.color)
                 .frame(width: 5)
                 .padding(.top, 2)
             
-            Text(item.status)
+            Text(status.description)
                 .font(.system(size: 10))
                 .lineLimit(1)
-            //                    .foregroundColor(Color.ui.textColor)
         }
         .padding(.vertical, 2)
         .padding(.horizontal, 4)

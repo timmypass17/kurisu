@@ -20,7 +20,7 @@ struct DetailProgressView<T: Media>: View {
                 total: Float(media.numEpisodesOrChapters)
             ) {
                 HStack(spacing: 4) {
-                    StatusView(status: media.status, color: .green)
+                    StatusView(status: media.status.description, color: .green)
 
                     Spacer()
                     

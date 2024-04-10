@@ -6,38 +6,51 @@
 //
 
 import Foundation
+import SwiftUI
 
-protocol MediaStatus: CaseIterable, Identifiable, Hashable {
-    static var tabItems: [Self] { get }
-    var key: String { get }
-    var id: Self { get }
-    
-}
-
-extension MediaStatus {
-    var id: Self { self }   // default impl
+protocol MediaStatus: Codable {
+    var description: String { get }
+    var color: Color { get }
 }
 
 enum AnimeStatus: String, MediaStatus {
-    case all
-    case watching
-    case completed
-    case dropped
-    case onHold = "on_hold"
-    case planToWatch = "plan_to_watch"
+    case currentlyAiring = "currently_airing"
+    case notYetAired = "not_yet_aired"
+    case finishedAiring = "finished_airing"
     
-    static var tabItems: [AnimeStatus] = [.all, .watching, .completed, .planToWatch]
-    var key: String { self.rawValue }
+    var description: String {
+        return self.rawValue.capitalized.replacingOccurrences(of: "_", with: " ")
+    }
+    
+    var color: Color {
+        switch self {
+        case .currentlyAiring:
+            return .green
+        case .notYetAired:
+            return .yellow
+        case .finishedAiring:
+            return .blue
+        }
+    }
 }
 
 enum MangaStatus: String, MediaStatus {
-    case all
-    case reading
-    case completed
-    case dropped
-    case onHold = "on_hold"
-    case planToRead = "plan_to_read"
+    case currentlyPublishing = "currently_publishing"
+    case finished = "finished"
+    case onHiatus = "on_hiatus"
     
-    static var tabItems: [MangaStatus] = [.all, .reading, .completed, .planToRead]
-    var key: String { self.rawValue }
+    var description: String {
+        return self.rawValue.capitalized.replacingOccurrences(of: "_", with: " ")
+    }
+    
+    var color: Color {
+        switch self {
+        case .currentlyPublishing:
+            return .green
+        case .finished:
+            return .blue
+        case .onHiatus:
+            return .pink
+        }
+    }
 }

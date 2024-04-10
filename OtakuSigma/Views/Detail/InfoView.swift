@@ -17,7 +17,7 @@ struct InfoView<T: Media>: View {
                 StatsCell(title: "Alternate Title", image: "t.square", value: anime.alternativeTitles.en)
                 StatsCell(title: "Type", image: "magnifyingglass", value: anime.mediaType.uppercased())
                 StatsCell(title: T.episodesOrChaptersString, image: "tv", value: anime.numEpisodesOrChapters)
-                StatsCell(title: "Status", image: "leaf", value: media.status)
+                StatsCell(title: "Status", image: "leaf", value: media.status.description)
                 StatsCell(title: "Aired", image: "calendar", value: anime.airedString)
                 StatsCell(title: "Premiered", image: "calendar", value: media.startSeasonString)
                 StatsCell(title: "Broadcast", image: "calendar", value: anime.broadcastString)
@@ -32,7 +32,7 @@ struct InfoView<T: Media>: View {
                 StatsCell(title: "Type", image: "magnifyingglass", value: manga.mediaType.uppercased())
                 StatsCell(title: "Volumes", image: "magnifyingglass", value: manga.minutesOrVolumes)
                 StatsCell(title: "Chapters", image: "tv", value: manga.numEpisodesOrChapters)
-                StatsCell(title: "Status", image: "leaf", value: media.status)
+                StatsCell(title: "Status", image: "leaf", value: media.status.description)
                 StatsCell(title: "Published", image: "calendar", value: manga.airedString)
                 StatsCell(title: "Genres", image: "calendar", value: manga.genres.map { $0.name }.joined(separator: ", "))
                 // theme

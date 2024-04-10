@@ -32,7 +32,7 @@ struct DiscoverDetailCellView: View {
                 .foregroundColor(.secondary)
                 .font(.system(size: 10))
             
-            StatusView(status: item.status, color: .green)
+            StatusView(status: item.status.description, color: .green)
                 .padding(.top, 2)
                         
         }

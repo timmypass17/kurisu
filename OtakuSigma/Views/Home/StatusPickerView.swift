@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct StatusPickerView<T: MediaStatus>: View {
+struct StatusPickerView<T: MediaListStatus>: View {
     @Binding var selectedStatus: T
     
     var body: some View {
@@ -23,6 +23,6 @@ struct StatusPickerView<T: MediaStatus>: View {
 
 struct StatusPickerView_Previews: PreviewProvider {
     static var previews: some View {
-        StatusPickerView(selectedStatus: .constant(AnimeStatus.watching))
+        StatusPickerView(selectedStatus: .constant(AnimeWatchListStatus.watching))
     }
 }

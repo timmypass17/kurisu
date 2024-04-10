@@ -33,18 +33,18 @@ struct MediaDetailView<T: Media>: View {
                         SynopsisView(text: media.synopsis)
                             .padding(.top)
                         
-                        if let relatedAnimes = media.relatedAnime, !relatedAnimes.isEmpty {
-                            RelatedRowView<Anime>(relatedItems: relatedAnimes)
+                        if !media.relatedAnime.isEmpty {
+                            RelatedRowView<Anime>(relatedItems: media.relatedAnime)
                                 .padding(.top)
                         }
                         
-                        if let relatedManga = media.relatedManga, !relatedManga.isEmpty {
-                            RelatedRowView<Manga>(relatedItems: relatedManga)
+                        if !media.relatedManga.isEmpty {
+                            RelatedRowView<Manga>(relatedItems: media.relatedManga)
                                 .padding(.top)
                         }
                         
-                        if let recommendations = media.recommendations, !recommendations.isEmpty {
-                            RecommendedRowView<T>(recommendedItems: recommendations)
+                        if !media.recommendations.isEmpty {
+                            RecommendedRowView<T>(recommendedItems: media.recommendations)
                                 .padding(.top)
                         }
                     case .info:
@@ -56,9 +56,8 @@ struct MediaDetailView<T: Media>: View {
                         StatsView(media: media)
                             .padding(.top)
                         
-                        if let anime = media as? Anime,
-                           let statistics = anime.statistics {
-                            BarChartView(data: statistics.toChartData())
+                        if let anime = media as? Anime {
+                            BarChartView(data: anime.statistics.toChartData())
                                 .padding(.top)
 //                                .frame(width: .infinity)
                         }

@@ -15,7 +15,10 @@ struct Manga: Media {
     var numChapters: Int
     var mainPicture: MainPicture
     var genres: [Genre]
-    var status: String
+    var status: MediaStatus {
+        get { mangaStatus }
+    }
+    var mangaStatus: MangaStatus
     var startSeason: StartSeason?
     var startDate: String?
     var endDate: String?
@@ -31,14 +34,22 @@ struct Manga: Media {
     var rank: Int?
     var popularity: Int
     var numListUsers: Int
-    var relatedAnime: [RelatedItem]? = []
-    var relatedManga: [RelatedItem]? = []
+    var relatedAnime: [RelatedItem]
+    var relatedManga: [RelatedItem]
     var mediaType: String
-    var recommendations: [RecommendedItem]? = []
+    var recommendations: [RecommendedItem]
     var authors: [Author]
     
     mutating func updateListStatus(status: String, score: Int, progress: Int, comments: String?) {
         myListStatus = MangaListStatus(status: status, score: score, numChaptersRead: progress, comments: comments)
+    }
+    
+    func episodeOrChapterString() -> String {
+        return "Chapters"
+    }
+    
+    var nextReleaseString: String {
+        return "N/A"
     }
 }
 
@@ -76,7 +87,7 @@ extension Manga: Decodable {
         case numChapters = "num_chapters"
         case mainPicture = "main_picture"
         case genres
-        case status
+        case mangaStatus = "status"
         case startSeason = "start_season"
         case startDate = "start_date"
         case endDate = "end_date"
@@ -103,7 +114,7 @@ extension Manga: Decodable {
         numChapters = try values.decode(Int.self, forKey: .numChapters)
         mainPicture = try values.decode(MainPicture.self, forKey: .mainPicture)
         genres = try values.decode([Genre].self, forKey: .genres)
-        status = try values.decode(String.self, forKey: .status).snakeToRegularCase()
+        mangaStatus = try values.decode(MangaStatus.self, forKey: .mangaStatus)
         startDate = try values.decodeIfPresent(String.self, forKey: .startDate)
         endDate = try values.decodeIfPresent(String.self, forKey: .endDate)
         
@@ -124,7 +135,7 @@ extension Manga: Decodable {
         rank = try values.decodeIfPresent(Int.self, forKey: .rank) ?? -1
         popularity = try values.decode(Int.self, forKey: .popularity)
         numListUsers = try values.decode(Int.self, forKey: .numListUsers)
-        relatedAnime = try values.decodeIfPresent([RelatedItem].self, forKey: .relatedAnime) ?? []  // could be missing, add default value instead of nil
+        relatedAnime = try values.decodeIfPresent([RelatedItem].self, forKey: .relatedAnime) ?? []
         relatedManga = try values.decodeIfPresent([RelatedItem].self, forKey: .relatedManga) ?? []
         mediaType = try values.decode(String.self, forKey: .mediaType)
         recommendations = try values.decodeIfPresent([RecommendedItem].self, forKey: .recommendations) ?? []

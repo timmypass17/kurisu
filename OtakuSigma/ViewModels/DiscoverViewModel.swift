@@ -16,7 +16,7 @@ class DiscoverViewModel: ObservableObject {
     @Published var animeList: [MediaSection<Anime>] = []
     @Published var mangaList: [MediaSection<Manga>] = []
 
-    var searchResult: [Media] { selectedMediaType == .anime ? animeSearchResult : mangaSearchResult }
+    var searchResult: [any Media] { selectedMediaType == .anime ? animeSearchResult : mangaSearchResult }
     
     let mediaService: MediaService
     
