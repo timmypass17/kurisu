@@ -19,7 +19,7 @@ struct RelatedRowView<T: Media>: View {
                     HStack(alignment: .top) {
                         ForEach(relatedItems, id: \.node.id) { item in
                             NavigationLink {
-                                MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(id: item.node.id, mediaService: MALService()), didSaveMedia: {_ in})
+//                                MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(mediaSmall: item, id: item.node.id, mediaService: MALService()))
                             } label: {
                                 RelatedCellView(relatedItem: item)                                
                             }

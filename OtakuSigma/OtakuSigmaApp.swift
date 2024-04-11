@@ -7,17 +7,18 @@
 
 import SwiftUI
 
+// AppState: Dont add user's anime list here cause arrays/dictionaries are passed by value so 'injecting' the anime list into the other view model will only make a copy :(. Information like user's login state is fine cause we are just reading the value
 @main
 struct OtakuSigmaApp: App {
     @StateObject var homeViewModel: HomeViewModel
     @StateObject var discoverViewModel: DiscoverViewModel
-//    @StateObject var profileViewModel: ProfileViewModel
     let authService = MALAuthService()
     let mediaService = MALService()
+    let appState = AppState()
 
     init() {
-        let homeViewModel = HomeViewModel(mediaService: mediaService, authService: authService)
-        let discoverViewModel = DiscoverViewModel(mediaService: mediaService)
+        let homeViewModel = HomeViewModel(appState: appState, mediaService: mediaService, authService: authService)
+        let discoverViewModel = DiscoverViewModel(appState: appState, mediaService: mediaService)
         _homeViewModel = StateObject(wrappedValue: homeViewModel)
         _discoverViewModel = StateObject(wrappedValue: discoverViewModel)
     }
@@ -27,7 +28,6 @@ struct OtakuSigmaApp: App {
             TabView {
                 NavigationStack {
                     HomeView()
-                        .environmentObject(homeViewModel)
                 }
                 .tabItem { Label("List", systemImage: "list.bullet") }
                 
@@ -43,17 +43,12 @@ struct OtakuSigmaApp: App {
                 }
                 .tabItem { Label("Profile", systemImage: "person") }
             }
+            .environmentObject(homeViewModel)
             .onOpenURL { url in
                 Task {
                     await handleLogin(url)
                 }
             }
-//            .onAppear {
-//                Task {
-//                    // Refresh access token if needed
-//                    await authService.refreshAccessToken()
-//                }
-//            }
         }
     }
     
@@ -61,10 +56,10 @@ struct OtakuSigmaApp: App {
         guard let tokenResponse = await authService.handleLogin(url: url) else { return }
         do {
             let user = try await mediaService.getUser(accessToken: tokenResponse.accessToken)
-            AppState.shared.state = .loggedIn(user)
+            appState.state = .loggedIn(user)
             await homeViewModel.loadUserAnimeList()
         } catch {
-            AppState.shared.state = .unregistered
+            appState.state = .unregistered
         }
     }
 }

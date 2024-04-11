@@ -14,12 +14,12 @@ struct SearchListView<T: Media>: View {
     var body: some View {
         LazyVStack(spacing: 0) {
             ForEach(discoverViewModel.searchResult, id: \.id) { item in
-                NavigationLink {
-                    MediaDetailView(mediaDetailViewModel: MediaDetailViewModel<T>(id: item.id, mediaService: MALService()), didSaveMedia: { _ in })
-                } label: {
-                    SearchCellView(item: item)
-                }
-                .buttonStyle(.plain)
+//                NavigationLink {
+//                    MediaDetailView(mediaDetailViewModel: MediaDetailViewModel<T>(media: item as! T))
+//                } label: {
+//                    SearchCellView(item: item)
+//                }
+//                .buttonStyle(.plain)
                 
                 Divider()
             }
@@ -27,9 +27,9 @@ struct SearchListView<T: Media>: View {
     }
     
 }
-struct SearchListView_Previews: PreviewProvider {
-    static var previews: some View {
-        SearchListView<Anime>()
-            .environmentObject(DiscoverViewModel(mediaService: MALService()))
-    }
-}
+//struct SearchListView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SearchListView<Anime>()
+//            .environmentObject(DiscoverViewModel(mediaService: MALService()))
+//    }
+//}

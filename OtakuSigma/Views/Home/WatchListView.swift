@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-
 struct WatchListView<T: Media>: View {
 //    @EnvironmentObject var homeViewModel: HomeViewModel // causes 100% CPU, maybe because we have @Binding items already? Infinite loop
-    @Binding var items: [T] // causes 100% CPu
+    @EnvironmentObject var homeViewModel: HomeViewModel
+    var items: [T] // causes 100% CPu
     @State private var isShowingAddMediaView: [Int: Bool] = [:]
     @State private var isShowingDeleteAlert: Bool = false
 
@@ -22,9 +22,7 @@ struct WatchListView<T: Media>: View {
             
             ForEach(items, id: \.id) { item in
                 NavigationLink {
-                    MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(id: item.id, mediaService: MALService())) { updatedMedia in
-                        handleUpdatedMedia(media: item, updatedMedia: updatedMedia)
-                    }
+                    MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(media: item, userListStatus: homeViewModel.getListStatus(for: item.id)))
                 } label: {
                     WatchListCell(item: item)
                 }
@@ -35,27 +33,25 @@ struct WatchListView<T: Media>: View {
                     set: { isShowingAddMediaView[item.id] = $0 }
                 )) {
                     NavigationStack {
-                        AddMediaView(addMediaViewModel: AddMediaViewModel(media: item)) { updatedMedia in
-                            handleUpdatedMedia(media: item, updatedMedia: updatedMedia)
-                        }
+                        AddMediaView(addMediaViewModel: AddMediaViewModel(media: item))
                     }
                 }
-                .alert("Remove Anime?",
-                       isPresented: $isShowingDeleteAlert) {
-                    Button(role: .destructive) {
-                        // Handle the deletion.
-                        Task {
-                            let _ : T? = try await service.deleteMediaItem(id: item.id)
-                            if let index = items.firstIndex(where: { $0.id == item.id }) {
-                                items.remove(at: index)
-                            }
-                        }
-                    } label: {
-                        Text("Delete")
-                    }
-                } message: {
-                    Text("Are you sure you want to remove \"\(item.title)\" from your collection?")
-                }
+//                .alert("Remove Anime?",
+//                       isPresented: $isShowingDeleteAlert) {
+//                    Button(role: .destructive) {
+//                        // Handle the deletion.
+//                        Task {
+//                            let _ : T? = try await service.deleteMediaItem(id: item.id)
+//                            if let index = items.firstIndex(where: { $0.id == item.id }) {
+//                                items.remove(at: index)
+//                            }
+//                        }
+//                    } label: {
+//                        Text("Delete")
+//                    }
+//                } message: {
+//                    Text("Are you sure you want to remove \"\(item.title)\" from your collection?")
+//                }
 
 
                 Divider()
@@ -66,19 +62,19 @@ struct WatchListView<T: Media>: View {
 
     }
     
-    func handleUpdatedMedia(media: Media, updatedMedia: Media) {
-        if let index = items.firstIndex(where: { $0.id == updatedMedia.id }) {
-            // Item changed status
-            if media.myListStatus!.status != updatedMedia.myListStatus!.status {
-                // Remove item
-                items.remove(at: index)
-                isShowingAddMediaView[media.id] = nil
-            } else {
-                // Update item
-                items[index] = updatedMedia as! T
-            }
-        }
-    }
+//    func handleUpdatedMedia(media: Media, updatedMedia: Media) {
+//        if let index = items.firstIndex(where: { $0.id == updatedMedia.id }) {
+//            // Item changed status
+//            if media.myListStatus!.status != updatedMedia.myListStatus!.status {
+//                // Remove item
+//                items.remove(at: index)
+//                isShowingAddMediaView[media.id] = nil
+//            } else {
+//                // Update item
+//                items[index] = updatedMedia as! T
+//            }
+//        }
+//    }
 }
 
 //struct WatchListView_Previews: PreviewProvider {

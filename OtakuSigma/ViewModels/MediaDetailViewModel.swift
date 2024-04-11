@@ -9,38 +9,22 @@ import Foundation
 
 @MainActor
 class MediaDetailViewModel<T: Media>: ObservableObject {
-    @Published var state: MediaDetailState = .loading
     @Published var selectedTab: DetailTab = .background
     @Published var isShowingAddMediaView = false
     
-    var id: Int
-    
-    let mediaService: MediaService
-    
-    enum MediaDetailState {
-        case loading
-        case success(media: T)
-        case failure(error: Error)
-    }
+    var media: T
+    var userListStatus: ListStatus?
 
-    init(id: Int, mediaService: MediaService) {
-        self.id = id
-        self.mediaService = mediaService
-        Task {
-            await getMedia()
+    init(media: T, userListStatus: ListStatus?) {
+        self.media = media
+        self.userListStatus = userListStatus
+        if userListStatus != nil {
+            print("Has list status")
+            self.media.myListStatus = userListStatus
+        } else {
+            print("No list status")
+            // TODO: Fetch user's list status
         }
     }
-    
-    func getMedia() async {
-        // Fetch anime
-        do {
-            let media: T =  try await mediaService.getMediaDetail(id: id, fields: T.fields)
-            state = .success(media: media)
-        } catch {
-            state = .failure(error: error)
-        }
-    }
-    
-
 }
 

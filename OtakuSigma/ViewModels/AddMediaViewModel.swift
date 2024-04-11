@@ -35,6 +35,7 @@ class AddMediaViewModel<T: Media>: ObservableObject {
     }
     
     func saveButtonTapped() async -> T? {
+        print(#function)
         do {
             // Type checking to check wheter an instance is of a certain subclass
             if media is Anime {

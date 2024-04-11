@@ -8,17 +8,19 @@
 import Foundation
 import UIKit
 
+// @Published only works with structs (arrays/dicts are structs in swift)
 @MainActor
 class HomeViewModel: ObservableObject {
-    // TODO: Maybe move collection to tabview level (higher level) and inject array into viewmodel so that when user modifies array (like adding a new anime), the changes will be reflected in here aswell.
-    @Published var userAnimeList: [Anime] = []
-    @Published var userMangaList: [Manga] = []
+    @Published var userAnimeList: [AnimeWatchListStatus : [Anime]] = [:]
+    @Published var userMangaList: [MangaReadListStatus : [Manga]] = [:]
+    
     @Published var selectedAnimeStatus: AnimeWatchListStatus = .watching {
         didSet { Task { await loadUserAnimeList() } }
     }
     @Published var selectedMangaStatus: MangaReadListStatus = .reading {
         didSet { Task { await loadUserMangaList() } }
     }
+    
     @Published var selectedMediaType: MediaType = .anime {
         didSet {
             if selectedMediaType == .anime {
@@ -33,7 +35,7 @@ class HomeViewModel: ObservableObject {
     }
     @Published var filteredUserAnimeList: [Anime] = []
     @Published var filteredUserMangaList: [Manga] = []
-    @Published var appState: AppState = AppState.shared
+    var appState: AppState
     
     var authService: OAuthService
     let mediaService: MediaService
@@ -42,7 +44,8 @@ class HomeViewModel: ObservableObject {
         selectedMediaType == .anime ? "book" : "tv"
     }
     
-    init(mediaService: MediaService, authService: OAuthService) {
+    init(appState: AppState, mediaService: MediaService, authService: OAuthService) {
+        self.appState = appState
         self.mediaService = mediaService
         self.authService = authService
         
@@ -52,25 +55,31 @@ class HomeViewModel: ObservableObject {
     }
     
     private func filterTextValueChanged() {
-        if selectedMediaType == .anime {
-            filteredUserAnimeList = userAnimeList.filter { $0.title.lowercased().contains(filteredText.lowercased()) }
-        } else {
-            filteredUserMangaList = userMangaList.filter { $0.title.lowercased().contains(filteredText.lowercased()) }
-        }
+//        if selectedMediaType == .anime {
+//            filteredUserAnimeList = userAnimeList.filter { $0.title.lowercased().contains(filteredText.lowercased()) }
+//        } else {
+//            filteredUserMangaList = userMangaList.filter { $0.title.lowercased().contains(filteredText.lowercased()) }
+//        }
     }
     
     func loadUserAnimeList() async {
+        guard userAnimeList[selectedAnimeStatus, default: []].isEmpty else { return }
+        print(#function)
         do {
-            userAnimeList = try await mediaService.getUserList(status: selectedAnimeStatus, sort: AnimeSort.listUpdatedAt, fields: Anime.fields)
+            userAnimeList[selectedAnimeStatus] = try await mediaService.getUserList(status: selectedAnimeStatus, sort: AnimeSort.listUpdatedAt, fields: Anime.fields)
         } catch {
+            userAnimeList[selectedAnimeStatus] = []
             print("Error getting user anime list. Check if access token is valid: \(error)")
         }
     }
     
     func loadUserMangaList() async {
+        guard userMangaList[selectedMangaStatus, default: []].isEmpty else { return }
+        print(#function)
         do {
-            userMangaList = try await mediaService.getUserList(status: selectedMangaStatus, sort: MangaSort.listUpdatedAt, fields: Manga.fields)
+            userMangaList[selectedMangaStatus] = try await mediaService.getUserList(status: selectedMangaStatus, sort: MangaSort.listUpdatedAt, fields: Manga.fields)
         } catch {
+            userMangaList[selectedMangaStatus] = []
             print("Error getting user manga list. Check if access token is valid: \(error)")
         }
     }
@@ -83,4 +92,19 @@ class HomeViewModel: ObservableObject {
         authService.showLogin()
     }
     
+    func getListStatus(for id: Int) -> ListStatus? {
+        for (_, animes) in userAnimeList {
+            if let anime = animes.first(where: { $0.id == id }) {
+                return anime.myListStatus
+            }
+        }
+        
+        for (_, mangas) in userMangaList {
+            if let manga = mangas.first(where: { $0.id == id }) {
+                return manga.myListStatus
+            }
+        }
+        
+        return nil
+    }
 }

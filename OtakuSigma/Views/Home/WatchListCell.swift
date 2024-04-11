@@ -68,6 +68,8 @@ struct WatchListCell: View {
                             Text("Next Episode: \(item.nextReleaseString)")
                         } else if status == .notYetAired {
                             Text("Airing Date: \(item.nextReleaseString)")
+                        } else if status == .finishedAiring {
+                            Text("Finished Airing")
                         }
                     }
                 }

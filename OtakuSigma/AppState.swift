@@ -7,11 +7,15 @@
 
 import Foundation
 
+// Contains app-level information (i.e. user info)
 class AppState {
     var state: State = .unregistered
     
-    static let shared = AppState()
-
+    var isLoggedIn: Bool {
+        if case .loggedIn(_) = state { return true }
+        return false
+    }
+    
     enum State {
         case unregistered
         case loggedIn(User)
@@ -34,4 +38,5 @@ class AppState {
             print("[ProfileViewModel] Error fetching user: \(error)")
         }
     }
+
 }

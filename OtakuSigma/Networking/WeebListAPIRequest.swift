@@ -7,6 +7,7 @@
 
 import Foundation
 
+// note: can't get user's list status
 struct WeebListAPIRequest<T: Media>: APIRequest {
     var title: String
     var fields: [String]

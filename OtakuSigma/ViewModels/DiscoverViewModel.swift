@@ -18,10 +18,12 @@ class DiscoverViewModel: ObservableObject {
 
     var searchResult: [any Media] { selectedMediaType == .anime ? animeSearchResult : mangaSearchResult }
     
+    let appState: AppState
     let mediaService: MediaService
     
     // Dependency Injection (allows different implementations, modular)
-    init(mediaService: MediaService) {
+    init(appState: AppState, mediaService: MediaService) {
+        self.appState = appState
         self.mediaService = mediaService
         
         Task {

@@ -78,14 +78,14 @@ struct ProfileView: View {
     }
 }
 
-#Preview("ProfileView") {
-    let appState = AppState()
-    appState.state = .loggedIn(User.sampleUser)
-    return NavigationStack {
-        ProfileView()
-            .environmentObject(ProfileViewModel(appState: appState, mediaService: MALService()))
-    }
-}
+//#Preview("ProfileView") {
+////    let appState = AppState()
+//    appState.state = .loggedIn(User.sampleUser)
+//    return NavigationStack {
+//        ProfileView()
+//            .environmentObject(ProfileViewModel(appState: appState, mediaService: MALService()))
+//    }
+//}
 
 enum StatPicker: String, CaseIterable, Identifiable {
     case all, anime, manga

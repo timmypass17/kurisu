@@ -59,12 +59,12 @@ struct DiscoverView: View {
     }
 }
 
-struct DiscoverView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            DiscoverView()
-                .environmentObject(DiscoverViewModel(mediaService: MALService()))
-        }
-    }
-}
+//struct DiscoverView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        NavigationStack {
+//            DiscoverView()
+//                .environmentObject(DiscoverViewModel(mediaService: MALService()))
+//        }
+//    }
+//}
 

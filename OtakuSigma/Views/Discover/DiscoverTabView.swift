@@ -20,10 +20,10 @@ struct DiscoverTabView: View {
     }
 }
 
-struct DiscoverTabView_Previews: PreviewProvider {
-    static var previews: some View {
-        DiscoverTabView()
-            .environmentObject(DiscoverViewModel(mediaService: MALService()))
-    }
-}
-
+//struct DiscoverTabView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        DiscoverTabView()
+//            .environmentObject(DiscoverViewModel(mediaService: MALService()))
+//    }
+//}
+//

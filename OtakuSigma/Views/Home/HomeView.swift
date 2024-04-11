@@ -17,19 +17,19 @@ struct HomeView: View {
                 if homeViewModel.selectedMediaType == .anime {
                     StatusPickerView(selectedStatus: $homeViewModel.selectedAnimeStatus)
                         .padding(.horizontal)
-                    WatchListView(items: $homeViewModel.userAnimeList)
+                    WatchListView(items: homeViewModel.userAnimeList[homeViewModel.selectedAnimeStatus, default: []])
                 } else {
                     StatusPickerView(selectedStatus: $homeViewModel.selectedMangaStatus)
                         .padding(.horizontal)
                     
-                    WatchListView(items: $homeViewModel.userMangaList)
+                    WatchListView(items: homeViewModel.userMangaList[homeViewModel.selectedMangaStatus, default: []])
                 }
             }
             .searchable(text: $homeViewModel.filteredText, prompt: "Filter by title") {
                 if homeViewModel.selectedMediaType == .anime {
-                    WatchListView(items: $homeViewModel.filteredUserAnimeList)
+                    WatchListView(items: homeViewModel.userAnimeList[homeViewModel.selectedAnimeStatus, default: []])
                 } else {
-                    WatchListView(items: $homeViewModel.filteredUserMangaList)
+                    WatchListView(items: homeViewModel.userMangaList[homeViewModel.selectedMangaStatus, default: []])
                 }
             }
             .toolbar {
@@ -42,7 +42,7 @@ struct HomeView: View {
         }
         .navigationTitle("Anime Tracker")
         .overlay {
-            if case .unregistered = homeViewModel.appState.state {
+            if !homeViewModel.appState.isLoggedIn {
                 LoginOverlayView()
             }
         }

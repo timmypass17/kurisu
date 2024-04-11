@@ -11,9 +11,7 @@ struct AddMediaView<T: Media>: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject var addMediaViewModel: AddMediaViewModel<T>
     let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
-    
-    var didSaveMedia: (T) -> () // delegate func to DetailView
-    
+        
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
@@ -141,9 +139,7 @@ struct AddMediaView<T: Media>: View {
                 ToolbarItem(placement: .primaryAction) {
                     Button {
                         Task {
-                            if let updatedMedia = await addMediaViewModel.saveButtonTapped() {
-                                didSaveMedia(updatedMedia)
-                            }
+                            let updatedMedia = await addMediaViewModel.saveButtonTapped()
                             dismiss()
                         }
                     } label: {
@@ -166,11 +162,11 @@ struct AddMediaView<T: Media>: View {
     }
 }
 
-#Preview("AddMediaView") {
-    NavigationStack {
-        AddMediaView(addMediaViewModel: AddMediaViewModel(media: sampleAnimes[0]), didSaveMedia: {_ in })
-    }
-}
+//#Preview("AddMediaView") {
+//    NavigationStack {
+//        AddMediaView(addMediaViewModel: AddMediaViewModel(media: sampleAnimes[0]), didSaveMedia: {_ in })
+//    }
+//}
 
 struct StatusButton: ButtonStyle {
     var isSelected: Bool

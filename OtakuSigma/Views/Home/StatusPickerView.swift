@@ -10,14 +10,25 @@ import SwiftUI
 
 struct StatusPickerView<T: MediaListStatus>: View {
     @Binding var selectedStatus: T
-    
+
     var body: some View {
-        Picker("View Status", selection: $selectedStatus) {
-            ForEach(Array(T.tabItems)) { status in
-                Text(status.key.capitalized.replacingOccurrences(of: "_", with: " "))
+        
+//        if selectedStatus is AnimeWatchListStatus {
+            Picker("View Status", selection: $selectedStatus) {
+                ForEach(Array(T.tabItems)) { status in
+                    Text(status.key.capitalized.replacingOccurrences(of: "_", with: " "))
+                }
             }
-        }
-        .pickerStyle(.segmented)
+            .pickerStyle(.segmented)
+//        } 
+//        else {
+//            Picker("View Status", selection: $selectedStatus) {
+//                ForEach(MangaReadListStatus.allCases) { status in
+//                    Text(status.key.capitalized.replacingOccurrences(of: "_", with: " "))
+//                }
+//            }
+//            .pickerStyle(.segmented)
+//        }
     }
 }
 
