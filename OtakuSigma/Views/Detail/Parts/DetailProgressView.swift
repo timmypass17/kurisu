@@ -9,9 +9,7 @@ import SwiftUI
 
 struct DetailProgressView<T: Media>: View {
     var media: T
-    var progress: Int {
-        return media.myListStatus?.progress ?? 0
-    }
+    var progress: Double
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -27,7 +25,7 @@ struct DetailProgressView<T: Media>: View {
                     Text("\(T.episodesOrChaptersString):")
                         .font(.caption)
                     
-                    Text("\(progress) /")
+                    Text("\(Int(progress)) /")
                         .font(.caption)
                     
                     Text("\(media.numEpisodesOrChapters)")
@@ -43,8 +41,8 @@ struct DetailProgressView<T: Media>: View {
     }
 }
 
-struct DetailProgressView_Previews: PreviewProvider {
-    static var previews: some View {
-        DetailProgressView(media: sampleAnimes[0])
-    }
-}
+//struct DetailProgressView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        DetailProgressView(media: sampleAnimes[0])
+//    }
+//}

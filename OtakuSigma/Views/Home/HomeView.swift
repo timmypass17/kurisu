@@ -18,7 +18,8 @@ struct HomeView: View {
                 if homeViewModel.selectedMediaType == .anime {
                     StatusPickerView(selectedStatus: $homeViewModel.selectedAnimeStatus)
                         .padding(.horizontal)
-                    WatchListView(items: homeViewModel.appState.userAnimeList[homeViewModel.selectedAnimeStatus, default: []])
+                    WatchListView<Anime>()
+//                    WatchListView(items: homeViewModel.appState.userAnimeList[homeViewModel.selectedAnimeStatus, default: []])
                 }
 //                else {
 //                    StatusPickerView(selectedStatus: $homeViewModel.selectedMangaStatus)
@@ -29,7 +30,7 @@ struct HomeView: View {
             }
             .searchable(text: $homeViewModel.filteredText, prompt: "Filter by title") {
                 if homeViewModel.selectedMediaType == .anime {
-                    WatchListView(items: homeViewModel.appState.userAnimeList[homeViewModel.selectedAnimeStatus, default: []])
+//                    WatchListView()
                 }
 //                else {
 //                    WatchListView(items: homeViewModel.userMangaList[homeViewModel.selectedMangaStatus, default: []])

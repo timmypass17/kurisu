@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct ProgressSliderView<T: Media>: View {
-    @State var media: T
     @Binding var progress: Double
+    @EnvironmentObject var mediaDetailViewModel: MediaDetailViewModel<T>
     
     var body: some View {
         VStack {
@@ -21,10 +21,10 @@ struct ProgressSliderView<T: Media>: View {
                 // TODO: Some animes don't have num count (ex. One Piece)
                 Slider(
                     value: $progress,
-                    in: 0.0...Double(media.numEpisodesOrChapters),
+                    in: 0.0...Double(mediaDetailViewModel.media.numEpisodesOrChapters),
                     step: 1.0
                 ) {
-                    Text(T.episodeOrChapterString)
+                    Text(mediaDetailViewModel.media.episodeOrChapterString())
                 } minimumValueLabel: {
                     Text("")
                 } maximumValueLabel: {
@@ -35,7 +35,7 @@ struct ProgressSliderView<T: Media>: View {
                 }
             }
             
-            Text("Currently on \(T.episodeOrChapterString.lowercased()): \(Int(progress)) / \(media.numEpisodesOrChapters)")
+            Text("Currently on \(mediaDetailViewModel.media.episodeOrChapterString().lowercased()): \(Int(progress)) / \(mediaDetailViewModel.media.numEpisodesOrChapters)")
                 .foregroundColor(.secondary)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .font(.caption)
@@ -43,7 +43,7 @@ struct ProgressSliderView<T: Media>: View {
     }
     
     func handlePlus() {
-        let totalEpi = media.numEpisodesOrChapters > 0 ? media.numEpisodesOrChapters : .max
+        let totalEpi = mediaDetailViewModel.media.numEpisodesOrChapters > 0 ? mediaDetailViewModel.media.numEpisodesOrChapters : .max
         progress = min(progress + 1, Double(totalEpi))
     }
     
@@ -52,6 +52,6 @@ struct ProgressSliderView<T: Media>: View {
     }
 }
 
-#Preview {
-    ProgressSliderView(media: sampleAnimes[0], progress: .constant(5))
-}
+//#Preview {
+//    ProgressSliderView(progress: .constant(5), media: sampleAnimes[0])
+//}

@@ -10,9 +10,9 @@ import SwiftUI
 struct WatchListView<T: Media>: View {
 //    @EnvironmentObject var homeViewModel: HomeViewModel // causes 100% CPU, maybe because we have @Binding items already? Infinite loop
     @EnvironmentObject var homeViewModel: HomeViewModel
-    var items: [T] // causes 100% CPu
-    @State private var isShowingAddMediaView: [Int: Bool] = [:]
-    @State private var isShowingDeleteAlert: Bool = false
+//    var items: [T] // causes 100% CPu
+//    @State private var isShowingAddMediaView: [Int: Bool] = [:]
+//    @State private var isShowingDeleteAlert: Bool = false
 
     let service = MALService()
     
@@ -20,45 +20,31 @@ struct WatchListView<T: Media>: View {
         LazyVStack(spacing: 16) {
             Divider()
             
-            ForEach(items, id: \.id) { item in
+            ForEach(homeViewModel.appState.userAnimeList[homeViewModel.selectedAnimeStatus, default: []], id: \.id) { item in
                 NavigationLink {
-                    MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(media: item, userListStatus: homeViewModel.appState.getListStatus(for: item.id)))
+                    MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(media: item as! T, userListStatus: homeViewModel.appState.getListStatus(for: item.id), appState: homeViewModel.appState))
                 } label: {
                     WatchListCell(item: item)
                 }
                 .padding(.horizontal, 16)
                 .buttonStyle(.plain)
-                .sheet(isPresented: Binding(
-                    get: { isShowingAddMediaView[item.id] ?? false },
-                    set: { isShowingAddMediaView[item.id] = $0 }
-                )) {
-                    NavigationStack {
-                        AddMediaView(addMediaViewModel: AddMediaViewModel(media: item))
-                    }
-                }
-//                .alert("Remove Anime?",
-//                       isPresented: $isShowingDeleteAlert) {
-//                    Button(role: .destructive) {
-//                        // Handle the deletion.
-//                        Task {
-//                            let _ : T? = try await service.deleteMediaItem(id: item.id)
-//                            if let index = items.firstIndex(where: { $0.id == item.id }) {
-//                                items.remove(at: index)
-//                            }
-//                        }
-//                    } label: {
-//                        Text("Delete")
-//                    }
-//                } message: {
-//                    Text("Are you sure you want to remove \"\(item.title)\" from your collection?")
+//                .onAppear {
+//                    print("objectWillChange")
+//                    // Manual refresh ui, for some reason when updating progress from discover, ui does not change.
+//                    homeViewModel.objectWillChange.send()
 //                }
-
 
                 Divider()
                     .padding(.horizontal, 16)
             }
         }
         .padding(.top, 8)
+        .onAppear {
+            print("objectWillChange")
+            // Manual refresh ui, for some reason when updating progress from discover, ui does not change.
+            homeViewModel.objectWillChange.send() // this is was @Published does under the hood
+            // https://www.hackingwithswift.com/quick-start/swiftui/how-to-send-state-updates-manually-using-objectwillchange
+        }
 
     }
     

@@ -12,9 +12,6 @@ import Combine
 // @Published only works with structs (arrays/dicts are structs in swift)
 @MainActor
 class HomeViewModel: ObservableObject {
-//    @Published var userAnimeList: [AnimeWatchListStatus : [Anime]] = [:]
-//    @Published var userMangaList: [MangaReadListStatus : [Manga]] = [:]
-    
     @Published var selectedAnimeStatus: AnimeWatchListStatus = .watching
 //    {
 //        didSet { Task { await loadUserAnimeList() } }

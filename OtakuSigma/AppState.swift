@@ -11,6 +11,7 @@ import SwiftUI
 // Contains app-level information (i.e. user info)
 class AppState: ObservableObject {
     var state: State = .unregistered
+    
     @Published var userAnimeList: [AnimeWatchListStatus : [Anime]] = [:]
 
     var isLoggedIn: Bool {
@@ -27,8 +28,11 @@ class AppState: ObservableObject {
     init() {
         Task {
             await loadUser()
-            
         }
+        
+//        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [self] _ in
+//            print("App State Progress: \(userAnimeList[.watching]?[0].myListStatus?.progress)")
+//        }
     }
     
     func loadUser() async {

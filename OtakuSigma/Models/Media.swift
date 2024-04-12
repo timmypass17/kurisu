@@ -45,7 +45,7 @@ protocol Media: Codable, WeebItemConfiguration {
     
     func episodeOrChapterString() -> String
     
-    mutating func updateListStatus(status: String, score: Int, progress: Int, comments: String?)
+//    mutating func updateListStatus(status: String, score: Int, progress: Int, comments: String?)
     
     var nextReleaseString: String { get }
 }

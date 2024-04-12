@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct DiscoverRowView<T: Media>: View {
-    @EnvironmentObject var discoverViewModel: DiscoverViewModel
-//    @EnvironmentObject var homeViewModel: HomeViewModel
+//    @EnvironmentObject var discoverViewModel: DiscoverViewModel
+    @EnvironmentObject var homeViewModel: HomeViewModel
     var ranking: Ranking
     var items: [T]
     
@@ -36,7 +36,7 @@ struct DiscoverRowView<T: Media>: View {
                 LazyHStack {
                     ForEach(items, id: \.id) { item in
                         NavigationLink {
-                            MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(media: item, userListStatus: discoverViewModel.appState.getListStatus(for: item.id)))
+                            MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(media: item, userListStatus: homeViewModel.appState.getListStatus(for: item.id), appState: homeViewModel.appState))
                         } label: {
                             DiscoverCellView(media: item)
                         }

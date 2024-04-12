@@ -19,7 +19,7 @@ struct MediaDetailView<T: Media>: View {
                     .font(.caption)
                     .padding(.top)
 
-                DetailProgressView(media: mediaDetailViewModel.media)
+                DetailProgressView(media: mediaDetailViewModel.media, progress: Double(mediaDetailViewModel.media.myListStatus?.progress ?? 0))
                     .padding(.top)
 
                 DetailTabView(selectedTab: $mediaDetailViewModel.selectedTab)
@@ -70,7 +70,7 @@ struct MediaDetailView<T: Media>: View {
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $mediaDetailViewModel.isShowingAddMediaView, content: {
             NavigationStack {
-                AddMediaView(addMediaViewModel: AddMediaViewModel(media: mediaDetailViewModel.media))
+                AddMediaView<T>()
             }
         })
         .toolbar {
@@ -84,6 +84,10 @@ struct MediaDetailView<T: Media>: View {
             }
         }
         .background(Color.ui.background)
+        .environmentObject(mediaDetailViewModel)
+        .onAppear {
+            print("Episode: \(mediaDetailViewModel.media.myListStatus?.progress)")            
+        }
 
     }
 }

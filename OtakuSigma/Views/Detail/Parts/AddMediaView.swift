@@ -8,15 +8,16 @@
 import SwiftUI
 
 struct AddMediaView<T: Media>: View {
+    @EnvironmentObject var mediaDetailViewModel: MediaDetailViewModel<T>
     @Environment(\.dismiss) private var dismiss
-    @StateObject var addMediaViewModel: AddMediaViewModel<T>
+//    @StateObject var  mediaDetailViewModel: AddMediaViewModel
     let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
-        
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
                 
-                WatchListCell(item: addMediaViewModel.media)
+                WatchListCell(item: mediaDetailViewModel.media)
                 
                 Divider()
                     .padding(.bottom, 8)
@@ -29,39 +30,39 @@ struct AddMediaView<T: Media>: View {
                     HStack {
                         Spacer()
                         
-                        if addMediaViewModel.media is Anime {
+                        if mediaDetailViewModel.media is Anime {
                             Button {
-                                addMediaViewModel.selectedStatus = .watching
+                                mediaDetailViewModel.selectedStatus = .watching
                             } label: {
                                 Text("\(SelectedStatus.watching.rawValue.capitalized.replacingOccurrences(of: "_", with: " "))")
                             }
-                            .buttonStyle(StatusButton(isSelected: addMediaViewModel.selectedStatus == .watching))
+                            .buttonStyle(StatusButton(isSelected: mediaDetailViewModel.selectedStatus == .watching))
                         } else {
                             Button {
-                                addMediaViewModel.selectedStatus = .reading
+                                mediaDetailViewModel.selectedStatus = .reading
                             } label: {
                                 Text("\(SelectedStatus.reading.rawValue.capitalized.replacingOccurrences(of: "_", with: " "))")
                             }
-                            .buttonStyle(StatusButton(isSelected: addMediaViewModel.selectedStatus == .reading))
+                            .buttonStyle(StatusButton(isSelected: mediaDetailViewModel.selectedStatus == .reading))
                         }
                         
                         
                         Button {
-                            addMediaViewModel.selectedStatus = .completed
+                            mediaDetailViewModel.selectedStatus = .completed
                             
                         } label: {
                             Text("\(SelectedStatus.completed.rawValue.capitalized.replacingOccurrences(of: "_", with: " "))")
                         }
-                        .buttonStyle(StatusButton(isSelected: addMediaViewModel.selectedStatus == .completed))
+                        .buttonStyle(StatusButton(isSelected: mediaDetailViewModel.selectedStatus == .completed))
                         
                         
                         Button {
-                            addMediaViewModel.selectedStatus = .on_hold
+                            mediaDetailViewModel.selectedStatus = .on_hold
                             
                         } label: {
                             Text("\(SelectedStatus.on_hold.rawValue.capitalized.replacingOccurrences(of: "_", with: " "))")
                         }
-                        .buttonStyle(StatusButton(isSelected: addMediaViewModel.selectedStatus == .on_hold))
+                        .buttonStyle(StatusButton(isSelected:  mediaDetailViewModel.selectedStatus == .on_hold))
                         
                         
                         Spacer()
@@ -71,29 +72,29 @@ struct AddMediaView<T: Media>: View {
                         Spacer()
                         
                         Button {
-                            addMediaViewModel.selectedStatus = .dropped
+                            mediaDetailViewModel.selectedStatus = .dropped
                             
                         } label: {
                             Text("\(SelectedStatus.dropped.rawValue.capitalized.replacingOccurrences(of: "_", with: " "))")
                         }
-                        .buttonStyle(StatusButton(isSelected: addMediaViewModel.selectedStatus == .dropped))
+                        .buttonStyle(StatusButton(isSelected:  mediaDetailViewModel.selectedStatus == .dropped))
                         
-                        if addMediaViewModel.media is Anime {
+                        if  mediaDetailViewModel.media is Anime {
                             Button {
-                                addMediaViewModel.selectedStatus = .plan_to_watch
+                                mediaDetailViewModel.selectedStatus = .plan_to_watch
                                 
                             } label: {
                                 Text("\(SelectedStatus.plan_to_watch.rawValue.capitalized.replacingOccurrences(of: "_", with: " "))")
                             }
-                            .buttonStyle(StatusButton(isSelected: addMediaViewModel.selectedStatus == .plan_to_watch))
+                            .buttonStyle(StatusButton(isSelected:  mediaDetailViewModel.selectedStatus == .plan_to_watch))
                         } else {
                             Button {
-                                addMediaViewModel.selectedStatus = .plan_to_read
+                                mediaDetailViewModel.selectedStatus = .plan_to_read
                                 
                             } label: {
                                 Text("\(SelectedStatus.plan_to_read.rawValue.capitalized.replacingOccurrences(of: "_", with: " "))")
                             }
-                            .buttonStyle(StatusButton(isSelected: addMediaViewModel.selectedStatus == .plan_to_read))
+                            .buttonStyle(StatusButton(isSelected:  mediaDetailViewModel.selectedStatus == .plan_to_read))
                         }
                         
                         
@@ -107,11 +108,11 @@ struct AddMediaView<T: Media>: View {
                     .padding(.vertical, 8)
                 
                 
-                Text(T.episodesOrChaptersString)
+                Text( mediaDetailViewModel.media.episodeOrChapterString())
                     .font(.system(size: 18))
                     .bold()
                 
-                ProgressSliderView(media: addMediaViewModel.media, progress: $addMediaViewModel.progress)
+                ProgressSliderView<T>(progress: $mediaDetailViewModel.progress)
                 
                 Divider()
                     .padding(.vertical, 8)
@@ -120,7 +121,7 @@ struct AddMediaView<T: Media>: View {
                     .font(.system(size: 18))
                     .bold()
                 
-                ScoreSliderView(progress: $addMediaViewModel.score)
+                ScoreSliderView(progress: $mediaDetailViewModel.score)
                 
                 Divider()
                     .padding(.vertical, 8)
@@ -129,17 +130,20 @@ struct AddMediaView<T: Media>: View {
                     .font(.system(size: 18))
                     .bold()
                 
-                TextField("Write your thoughts here...", text: $addMediaViewModel.comments, axis: .vertical)
+                
+                TextField("Write your thoughts here...",
+                          text: $mediaDetailViewModel.comments,
+                          axis: .vertical)
                 
             }
             .padding()
-            .navigationTitle(addMediaViewModel.media.title)
+            .navigationTitle( mediaDetailViewModel.media.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button {
                         Task {
-                            let updatedMedia = await addMediaViewModel.saveButtonTapped()
+                            let updatedMedia = await mediaDetailViewModel.didTapSaveButton()
                             dismiss()
                         }
                     } label: {
@@ -158,6 +162,7 @@ struct AddMediaView<T: Media>: View {
                 }
             }
         }
+        .environmentObject( mediaDetailViewModel)
         .background(Color.ui.background)
     }
 }
@@ -196,3 +201,10 @@ struct StatusButton: ButtonStyle {
     }
 }
 struct NoShape: Shape { func path(in rect: CGRect) -> Path { return Path() } }
+
+func ??<T>(lhs: Binding<Optional<T>>, rhs: T) -> Binding<T> {
+    Binding(
+        get: { lhs.wrappedValue ?? rhs },
+        set: { lhs.wrappedValue = $0 }
+    )
+}
