@@ -219,25 +219,8 @@
 		320EE2022B056F3100041382 /* Detail */ = {
 			isa = PBXGroup;
 			children = (
-				322BBF8E2AE866AB00DB9ACD /* AiringStatusView.swift */,
-				326CC9652AFD9C2700EAEFDC /* DetailProgressView.swift */,
-				326CC95F2AFD897200EAEFDC /* DetailTopSection.swift */,
-				326CC9632AFD9A2700EAEFDC /* GenreRowView.swift */,
-				322BBF8C2AE8647F00DB9ACD /* GenreView.swift */,
 				326CC95B2AFD6EA900EAEFDC /* MediaDetailView.swift */,
-				322BBF8A2AE8616F00DB9ACD /* PosterView.swift */,
-				320EE2062B05BECD00041382 /* DetailTabView.swift */,
-				320EE2082B05BF8E00041382 /* SynopsisView.swift */,
-				320EE20A2B06ADF200041382 /* RelatedRowView.swift */,
-				320EE20C2B06BB5100041382 /* RelatedCellView.swift */,
-				32B002122B06BD6300D9C5D6 /* InfoView.swift */,
-				32B002142B08185000D9C5D6 /* RecommendedRowView.swift */,
-				32B002162B08188D00D9C5D6 /* RecommendedCellView.swift */,
-				32F37ECD2B0969470015F225 /* StatsView.swift */,
-				32F37ECF2B0972E40015F225 /* BarChartView.swift */,
-				32F37ED12B0C24830015F225 /* AddMediaView.swift */,
-				32F37ED32B0C2E940015F225 /* ProgressSliderView.swift */,
-				32F37ED72B0D74C20015F225 /* ScoreSliderView.swift */,
+				326EC1132BC8B57800021B66 /* Parts */,
 			);
 			path = Detail;
 			sourceTree = "<group>";
@@ -367,6 +350,31 @@
 				320EE2022B056F3100041382 /* Detail */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		326EC1132BC8B57800021B66 /* Parts */ = {
+			isa = PBXGroup;
+			children = (
+				32F37ED12B0C24830015F225 /* AddMediaView.swift */,
+				322BBF8E2AE866AB00DB9ACD /* AiringStatusView.swift */,
+				32F37ECF2B0972E40015F225 /* BarChartView.swift */,
+				326CC9652AFD9C2700EAEFDC /* DetailProgressView.swift */,
+				320EE2062B05BECD00041382 /* DetailTabView.swift */,
+				326CC95F2AFD897200EAEFDC /* DetailTopSection.swift */,
+				326CC9632AFD9A2700EAEFDC /* GenreRowView.swift */,
+				322BBF8C2AE8647F00DB9ACD /* GenreView.swift */,
+				32B002122B06BD6300D9C5D6 /* InfoView.swift */,
+				322BBF8A2AE8616F00DB9ACD /* PosterView.swift */,
+				32F37ED32B0C2E940015F225 /* ProgressSliderView.swift */,
+				32B002162B08188D00D9C5D6 /* RecommendedCellView.swift */,
+				32B002142B08185000D9C5D6 /* RecommendedRowView.swift */,
+				320EE20C2B06BB5100041382 /* RelatedCellView.swift */,
+				320EE20A2B06ADF200041382 /* RelatedRowView.swift */,
+				32F37ED72B0D74C20015F225 /* ScoreSliderView.swift */,
+				32F37ECD2B0969470015F225 /* StatsView.swift */,
+				320EE2082B05BF8E00041382 /* SynopsisView.swift */,
+			);
+			path = Parts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

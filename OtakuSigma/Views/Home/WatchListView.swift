@@ -22,7 +22,7 @@ struct WatchListView<T: Media>: View {
             
             ForEach(items, id: \.id) { item in
                 NavigationLink {
-                    MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(media: item, userListStatus: homeViewModel.getListStatus(for: item.id)))
+                    MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(media: item, userListStatus: homeViewModel.appState.getListStatus(for: item.id)))
                 } label: {
                     WatchListCell(item: item)
                 }

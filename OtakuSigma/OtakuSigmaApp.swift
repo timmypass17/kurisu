@@ -57,7 +57,7 @@ struct OtakuSigmaApp: App {
         do {
             let user = try await mediaService.getUser(accessToken: tokenResponse.accessToken)
             appState.state = .loggedIn(user)
-            await homeViewModel.loadUserAnimeList()
+            await appState.loadUserAnimeList()
         } catch {
             appState.state = .unregistered
         }

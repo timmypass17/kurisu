@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DiscoverDetailView<T: Media>: View {
-    @EnvironmentObject var homeViewModel: HomeViewModel
+    @EnvironmentObject var discoverViewModel: DiscoverViewModel
     @StateObject var discoverDetailViewModel: DiscoverDetailViewModel<T>
     let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
     
@@ -17,7 +17,7 @@ struct DiscoverDetailView<T: Media>: View {
             LazyVGrid(columns: columns) {
                 ForEach(discoverDetailViewModel.items, id: \.id) { item in
                     NavigationLink {
-                        MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(media: item, userListStatus: homeViewModel.getListStatus(for: item.id)))
+                        MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(media: item, userListStatus: discoverViewModel.appState.getListStatus(for: item.id)))
                     } label: {
                         DiscoverDetailCellView(item: item)
                     }

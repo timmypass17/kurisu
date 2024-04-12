@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 @MainActor
 class DiscoverViewModel: ObservableObject {
@@ -18,13 +19,18 @@ class DiscoverViewModel: ObservableObject {
 
     var searchResult: [any Media] { selectedMediaType == .anime ? animeSearchResult : mangaSearchResult }
     
-    let appState: AppState
+    @Published var appState: AppState
     let mediaService: MediaService
+    var anyCancellable: AnyCancellable? = nil
     
     // Dependency Injection (allows different implementations, modular)
     init(appState: AppState, mediaService: MediaService) {
         self.appState = appState
         self.mediaService = mediaService
+        
+        anyCancellable = appState.objectWillChange.sink { [weak self] (_) in
+            self?.objectWillChange.send()
+        }
         
         Task {
             do {

@@ -14,8 +14,9 @@ struct SearchListView<T: Media>: View {
     var body: some View {
         LazyVStack(spacing: 0) {
             ForEach(discoverViewModel.searchResult, id: \.id) { item in
+                Text("Test")
 //                NavigationLink {
-//                    MediaDetailView(mediaDetailViewModel: MediaDetailViewModel<T>(media: item as! T))
+//                    MediaDetailView(mediaDetailViewModel: MediaDetailViewModel<T>(media: item as! T, userListStatus: <#ListStatus?#>))
 //                } label: {
 //                    SearchCellView(item: item)
 //                }

@@ -14,23 +14,26 @@ struct HomeView: View {
     var body: some View {
         ScrollView(.vertical) {
             Group {
+                
                 if homeViewModel.selectedMediaType == .anime {
                     StatusPickerView(selectedStatus: $homeViewModel.selectedAnimeStatus)
                         .padding(.horizontal)
-                    WatchListView(items: homeViewModel.userAnimeList[homeViewModel.selectedAnimeStatus, default: []])
-                } else {
-                    StatusPickerView(selectedStatus: $homeViewModel.selectedMangaStatus)
-                        .padding(.horizontal)
-                    
-                    WatchListView(items: homeViewModel.userMangaList[homeViewModel.selectedMangaStatus, default: []])
+                    WatchListView(items: homeViewModel.appState.userAnimeList[homeViewModel.selectedAnimeStatus, default: []])
                 }
+//                else {
+//                    StatusPickerView(selectedStatus: $homeViewModel.selectedMangaStatus)
+//                        .padding(.horizontal)
+//                    
+//                    WatchListView(items: homeViewModel.userMangaList[homeViewModel.selectedMangaStatus, default: []])
+//                }
             }
             .searchable(text: $homeViewModel.filteredText, prompt: "Filter by title") {
                 if homeViewModel.selectedMediaType == .anime {
-                    WatchListView(items: homeViewModel.userAnimeList[homeViewModel.selectedAnimeStatus, default: []])
-                } else {
-                    WatchListView(items: homeViewModel.userMangaList[homeViewModel.selectedMangaStatus, default: []])
+                    WatchListView(items: homeViewModel.appState.userAnimeList[homeViewModel.selectedAnimeStatus, default: []])
                 }
+//                else {
+//                    WatchListView(items: homeViewModel.userMangaList[homeViewModel.selectedMangaStatus, default: []])
+//                }
             }
             .toolbar {
                 Button {
