@@ -59,9 +59,7 @@ class MediaDetailViewModel<T: Media>: ObservableObject {
                 media.myListStatus?.score = Int(score)
                 media.myListStatus?.comments = comments
                 
-
-
-//                media.updateListStatus(status: response.status, score: response.score, progress: response.progress, comments: response.comments)
+                // TODO: Move updated anime position to the top. (sorted by recently updated)
             }
 //            else {
 //                let response: MangaUpdateResponse = try await mediaService.updateMediaListStatus(id: media.id, status: selectedStatus.rawValue, score: Int(score), progress: Int(progress), comments: comments)

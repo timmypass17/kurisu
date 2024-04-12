@@ -37,9 +37,14 @@ class AppState: ObservableObject {
     
     func loadUser() async {
         do {
-            guard let accessToken = Settings.shared.accessToken else { return }
+            guard let accessToken = Settings.shared.accessToken else { 
+                print("No access token found")
+                return
+            }
             let mediaService = MALService()
+            print("Fetching user.. Access Token: \(accessToken)")
             let user = try await mediaService.getUser(accessToken: accessToken)
+            print("Got User!")
             state = .loggedIn(user)
         } catch {
             print("[ProfileViewModel] Error fetching user: \(error)")

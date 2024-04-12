@@ -8,12 +8,7 @@
 import SwiftUI
 
 struct WatchListView<T: Media>: View {
-//    @EnvironmentObject var homeViewModel: HomeViewModel // causes 100% CPU, maybe because we have @Binding items already? Infinite loop
     @EnvironmentObject var homeViewModel: HomeViewModel
-//    var items: [T] // causes 100% CPu
-//    @State private var isShowingAddMediaView: [Int: Bool] = [:]
-//    @State private var isShowingDeleteAlert: Bool = false
-
     let service = MALService()
     
     var body: some View {

@@ -38,6 +38,7 @@ class MALAuthService: OAuthService {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
               let authorizationCode = components.queryItems?.first(where: { $0.name == "code" })?.value
         else {
+            print("Fail to capture authorization code")
             return nil
         }
 

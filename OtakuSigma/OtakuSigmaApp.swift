@@ -18,7 +18,7 @@ struct OtakuSigmaApp: App {
 
     init() {
         let homeViewModel = HomeViewModel(appState: appState, mediaService: mediaService, authService: authService)
-        let discoverViewModel = DiscoverViewModel(/*appState: appState, */mediaService: mediaService)
+        let discoverViewModel = DiscoverViewModel(appState: appState, mediaService: mediaService)
         _homeViewModel = StateObject(wrappedValue: homeViewModel)
         _discoverViewModel = StateObject(wrappedValue: discoverViewModel)
     }
