@@ -7,59 +7,44 @@
 
 import SwiftUI
 
-struct WatchListView<T: Media>: View {
+struct WatchListView<T: Media/*, U: MediaListStatus*/>: View {
+    @EnvironmentObject var appState: AppState
     @EnvironmentObject var homeViewModel: HomeViewModel
+    //    /*@Binding */var userAnimeList: [U : [T]]
+    /*@Binding*/ var data: [T]
+    
+    
     let service = MALService()
     
     var body: some View {
         LazyVStack(spacing: 16) {
             Divider()
+            Button("Change Progress") {
+                // TODO: We can modify appState's anime list and UI updates
+                // Modifing appState's animeList actually updates UI for userAnimeList that was injected!
+                appState.userAnimeList[homeViewModel.selectedAnimeStatus]?[0].myListStatus?.progress = 11
+            }
             
-            ForEach(homeViewModel.appState.userAnimeList[homeViewModel.selectedAnimeStatus, default: []], id: \.id) { item in
+            ForEach(data, id: \.id) { item in
                 NavigationLink {
-                    MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(media: item as! T, userListStatus: homeViewModel.appState.getListStatus(for: item.id), appState: homeViewModel.appState))
+                    MediaDetailView<T>(
+                        mediaDetailViewModel: MediaDetailViewModel(
+                            media: item,
+                            userListStatus: appState.getListStatus(for: item.id),
+                            appState: appState)
+                        // TODO: Maybe inject anime as a binding
+                    )
                 } label: {
                     WatchListCell(item: item)
                 }
                 .padding(.horizontal, 16)
                 .buttonStyle(.plain)
-//                .onAppear {
-//                    print("objectWillChange")
-//                    // Manual refresh ui, for some reason when updating progress from discover, ui does not change.
-//                    homeViewModel.objectWillChange.send()
-//                }
-
+                
                 Divider()
                     .padding(.horizontal, 16)
             }
         }
         .padding(.top, 8)
-        .onAppear {
-            print("objectWillChange")
-            // Manual refresh ui, for some reason when updating progress from discover, ui does not change.
-            homeViewModel.objectWillChange.send() // this is was @Published does under the hood
-            // https://www.hackingwithswift.com/quick-start/swiftui/how-to-send-state-updates-manually-using-objectwillchange
-        }
-
     }
     
-//    func handleUpdatedMedia(media: Media, updatedMedia: Media) {
-//        if let index = items.firstIndex(where: { $0.id == updatedMedia.id }) {
-//            // Item changed status
-//            if media.myListStatus!.status != updatedMedia.myListStatus!.status {
-//                // Remove item
-//                items.remove(at: index)
-//                isShowingAddMediaView[media.id] = nil
-//            } else {
-//                // Update item
-//                items[index] = updatedMedia as! T
-//            }
-//        }
-//    }
 }
-
-//struct WatchListView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        WatchListView(items: [])
-//    }
-//}

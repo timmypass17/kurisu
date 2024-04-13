@@ -14,11 +14,11 @@ struct OtakuSigmaApp: App {
     @StateObject var discoverViewModel: DiscoverViewModel
     let authService = MALAuthService()
     let mediaService = MALService()
-    let appState = AppState()   // inject into viewmodels (contains user data)
+    @StateObject var appState = AppState()   // inject into viewmodels (contains user data)
 
     init() {
-        let homeViewModel = HomeViewModel(appState: appState, mediaService: mediaService, authService: authService)
-        let discoverViewModel = DiscoverViewModel(appState: appState, mediaService: mediaService)
+        let homeViewModel = HomeViewModel(mediaService: mediaService, authService: authService)
+        let discoverViewModel = DiscoverViewModel(mediaService: mediaService)
         _homeViewModel = StateObject(wrappedValue: homeViewModel)
         _discoverViewModel = StateObject(wrappedValue: discoverViewModel)
     }
@@ -28,6 +28,7 @@ struct OtakuSigmaApp: App {
             TabView {
                 NavigationStack {
                     HomeView()
+                        .environmentObject(homeViewModel)
                 }
                 .tabItem { Label("List", systemImage: "list.bullet") }
                 
@@ -43,7 +44,7 @@ struct OtakuSigmaApp: App {
                 }
                 .tabItem { Label("Profile", systemImage: "person") }
             }
-            .environmentObject(homeViewModel)
+            .environmentObject(appState)
             .onOpenURL { url in
                 Task {
                     await handleLogin(url)

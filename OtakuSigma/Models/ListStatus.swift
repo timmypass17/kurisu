@@ -17,10 +17,11 @@ protocol ListStatus: Codable, ListStatusConfiguration {
     var comments: String? { get set }
 }
 
-class AnimeListStatus: ListStatus, ObservableObject {
+struct AnimeListStatus: ListStatus {
     var status: String
     var score: Int
-    @Published var numEpisodesWatched: Int
+    var numEpisodesWatched: Int
+    
     var progress: Int {
         get { return numEpisodesWatched }
         set { numEpisodesWatched = newValue }
@@ -34,22 +35,6 @@ class AnimeListStatus: ListStatus, ObservableObject {
         self.comments = comments
     }
     
-    required init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
-        status = try values.decode(String.self, forKey: .status)
-        score = try values.decode(Int.self, forKey: .score)
-        numEpisodesWatched = try values.decode(Int.self, forKey: .numEpisodesWatched)
-        comments = try values.decodeIfPresent(String.self, forKey: .comments)
-    }
-    
-    public func encode(to encoder: Encoder) throws {
-        var values = encoder.container(keyedBy: CodingKeys.self)
-        try values.encode(status, forKey: .status)
-        try values.encode(score, forKey: .score)
-        try values.encode(numEpisodesWatched, forKey: .numEpisodesWatched)
-        try values.encode(comments, forKey: .comments)
-    }
-    
     enum CodingKeys: String, CodingKey {
         case status
         case score
@@ -60,7 +45,7 @@ class AnimeListStatus: ListStatus, ObservableObject {
     static var baseURL = "https://api.myanimelist.net/v2/users/@me/animelist"
 }
 
-class MangaListStatus: ListStatus {
+struct MangaListStatus: ListStatus {
     var status: String
     var score: Int
     var numChaptersRead: Int

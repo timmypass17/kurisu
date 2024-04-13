@@ -17,7 +17,7 @@ struct DiscoverDetailView<T: Media>: View {
             LazyVGrid(columns: columns) {
                 ForEach(discoverDetailViewModel.items, id: \.id) { item in
                     NavigationLink {
-                        MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(media: item, userListStatus: discoverViewModel.appState.getListStatus(for: item.id), appState: discoverViewModel.appState))
+//                        MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(media: item, userListStatus: discoverViewModel.appState.getListStatus(for: item.id), appState: discoverViewModel.appState))
                     } label: {
                         DiscoverDetailCellView(item: item)
                     }

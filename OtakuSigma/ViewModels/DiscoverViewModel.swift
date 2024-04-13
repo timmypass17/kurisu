@@ -19,20 +19,12 @@ class DiscoverViewModel: ObservableObject {
 
     var searchResult: [any Media] { selectedMediaType == .anime ? animeSearchResult : mangaSearchResult }
     
-    @Published var appState: AppState
     let mediaService: MediaService
-    
-    var anyCancellable: AnyCancellable? = nil
-    
+        
     // Dependency Injection (allows different implementations, modular)
-    init(appState: AppState, mediaService: MediaService) {
-        self.appState = appState
+    init(mediaService: MediaService) {
         self.mediaService = mediaService
-        
-        anyCancellable = appState.objectWillChange.sink { [weak self] (_) in
-            self?.objectWillChange.send()
-        }
-        
+
         Task {
             do {
                 for ranking in AnimeRanking.allCases {

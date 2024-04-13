@@ -29,7 +29,9 @@ struct Anime: Media {
     
     var myListStatus: ListStatus? {
         get { return myAnimeListStatus }
-        set {  myAnimeListStatus = newValue as? AnimeListStatus }
+        set {
+            myAnimeListStatus = newValue as? AnimeListStatus
+        }
     }
     var averageEpisodeDuration: Int
     var minutesOrVolumes: Int { averageEpisodeDuration / 60 }
@@ -110,6 +112,7 @@ struct Anime: Media {
             return "Finished Airing"
         }
     }
+    
 }
 
 struct Statistics: Codable {

@@ -28,6 +28,7 @@ class AppState: ObservableObject {
     init() {
         Task {
             await loadUser()
+            await loadUserAnimeList()
         }
         
 //        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [self] _ in
@@ -87,6 +88,16 @@ class AppState: ObservableObject {
 //            }
 //        }
 //
+        return nil
+    }
+    
+    func getMediaItem(id: Int) -> (Media, any MediaListStatus, Int)? {
+        for (animeStatus, animes) in userAnimeList {
+            if let index = animes.firstIndex(where: { $0.id == id }) {
+                return (animes[index], animeStatus, index)
+            }
+        }
+        
         return nil
     }
 }

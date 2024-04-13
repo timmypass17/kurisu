@@ -36,7 +36,8 @@ class HomeViewModel: ObservableObject {
     }
     @Published var filteredUserAnimeList: [Anime] = []
     @Published var filteredUserMangaList: [Manga] = []
-    @Published var appState: AppState
+    
+//    var appState: AppState
     // @Published is a property wrapper that publishes change message only when the wrapped value has been set.
     // @Publish doesnt work with reference types (i.e. classes) because reference 'value' doesn't change, variable still points to the same reference while structs values do actually change.
     // Nested ObservableObjects are supported yet but u can do this https://stackoverflow.com/questions/58406287/how-to-tell-swiftui-views-to-bind-to-nested-observableobjects
@@ -47,21 +48,14 @@ class HomeViewModel: ObservableObject {
     var mediaImage: String {
         selectedMediaType == .anime ? "book" : "tv"
     }
-    
-    var anyCancellable: AnyCancellable? = nil
-    
-    init(appState: AppState, mediaService: MediaService, authService: OAuthService) {
-        self.appState = appState
+        
+    init(mediaService: MediaService, authService: OAuthService) {
         self.mediaService = mediaService
         self.authService = authService
-        
-        anyCancellable = appState.objectWillChange.sink { [weak self] (_) in
-            self?.objectWillChange.send()
-        }
-        
-        Task {
-            await appState.loadUserAnimeList()
-        }
+//        
+//        Task {
+//            await appState.loadUserAnimeList()
+//        }
         
 //        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
 //            print("Anime list: \(appState.userAnimeList[.watching]?.count)")

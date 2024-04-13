@@ -22,7 +22,7 @@ protocol WeebItemConfiguration {
 // Common attributes between Anime and Mangga
 protocol Media: Codable, WeebItemConfiguration {
     var id: Int { get }
-    var title: String { get }
+    var title: String { get set }
     var alternativeTitles: AlternativeTitles { get }
     var numEpisodesOrChapters: Int { get }
     var mainPicture: MainPicture { get }
@@ -48,10 +48,15 @@ protocol Media: Codable, WeebItemConfiguration {
 //    mutating func updateListStatus(status: String, score: Int, progress: Int, comments: String?)
     
     var nextReleaseString: String { get }
+    
+    func changeTitle() 
 }
 
 extension Media {
     // Default implementations
+    func changeTitle() {
+//        title = "New Title"
+    }
     
     var startSeasonString: String {
         if let startSeason {

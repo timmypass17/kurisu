@@ -25,7 +25,7 @@ class MediaDetailViewModel<T: Media>: ObservableObject {
         }
     }
     
-    var media: T
+    @Published var media: T // this is a copy. Has no reference to appState's animeListData
     let appState: AppState
     
     init(media: T, userListStatus: ListStatus?, appState: AppState) {
@@ -53,19 +53,13 @@ class MediaDetailViewModel<T: Media>: ObservableObject {
                 let mediaService = MALService()
                 let _: AnimeUpdateResponse = try await mediaService.updateMediaListStatus(id: media.id, status: selectedStatus.rawValue, score: Int(score), progress: Int(progress), comments: comments)
 
-                // Does affect app state's anime list and update home ui (myListStatus is a class)
                 media.myListStatus?.status = selectedStatus.rawValue
                 media.myListStatus?.progress = Int(progress)
                 media.myListStatus?.score = Int(score)
                 media.myListStatus?.comments = comments
                 
-                // TODO: Move updated anime position to the top. (sorted by recently updated)
             }
-//            else {
-//                let response: MangaUpdateResponse = try await mediaService.updateMediaListStatus(id: media.id, status: selectedStatus.rawValue, score: Int(score), progress: Int(progress), comments: comments)
-////                media.updateListStatus(status: response.status, score: response.score, progress: response.progress, comments: response.comments)
-//            }
-//
+            print(media.myListStatus)
             // Return new media with updated list status
             return media
         } catch {

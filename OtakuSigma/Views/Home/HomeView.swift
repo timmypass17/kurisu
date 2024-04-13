@@ -8,25 +8,20 @@
 import SwiftUI
 
 struct HomeView: View {
+    @EnvironmentObject var appState: AppState
     @EnvironmentObject var homeViewModel: HomeViewModel
     @Environment(\.openURL) private var openURL
-    
+
     var body: some View {
         ScrollView(.vertical) {
             Group {
-                
                 if homeViewModel.selectedMediaType == .anime {
                     StatusPickerView(selectedStatus: $homeViewModel.selectedAnimeStatus)
                         .padding(.horizontal)
-                    WatchListView<Anime>()
-//                    WatchListView(items: homeViewModel.appState.userAnimeList[homeViewModel.selectedAnimeStatus, default: []])
+                    
+                    // $userAnimeList[homeViewModel.selectedAnimeStatus, default: []] doesn't compile
+                    WatchListView<Anime>(data: appState.userAnimeList[homeViewModel.selectedAnimeStatus, default: []])
                 }
-//                else {
-//                    StatusPickerView(selectedStatus: $homeViewModel.selectedMangaStatus)
-//                        .padding(.horizontal)
-//                    
-//                    WatchListView(items: homeViewModel.userMangaList[homeViewModel.selectedMangaStatus, default: []])
-//                }
             }
             .searchable(text: $homeViewModel.filteredText, prompt: "Filter by title") {
                 if homeViewModel.selectedMediaType == .anime {
@@ -46,9 +41,9 @@ struct HomeView: View {
         }
         .navigationTitle("Anime Tracker")
         .overlay {
-            if !homeViewModel.appState.isLoggedIn {
-                LoginOverlayView()
-            }
+//            if !homeViewModel.isLoggedIn {
+//                LoginOverlayView()
+//            }
         }
         .background(Color.ui.background)
     }
