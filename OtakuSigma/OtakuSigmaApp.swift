@@ -14,7 +14,7 @@ struct OtakuSigmaApp: App {
     @StateObject var discoverViewModel: DiscoverViewModel
     let authService = MALAuthService()
     let mediaService = MALService()
-    let appState = AppState()
+    let appState = AppState()   // inject into viewmodels (contains user data)
 
     init() {
         let homeViewModel = HomeViewModel(appState: appState, mediaService: mediaService, authService: authService)
