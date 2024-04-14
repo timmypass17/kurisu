@@ -18,11 +18,14 @@ protocol MediaService {
     func deleteMediaItem<T: Media>(id: Int) async throws -> T?  // return not used
     func getUser(accessToken: String) async throws -> User
     func getAdditionalUserListInfo<T: GenreItemProtocol>() async throws -> [T]
+    func getRelatedAnimes<T: Media>(id: Int, mediaType: T.Type) async throws -> [RelatedItem]
+    func getRelatedMangas<T: Media>(id: Int, mediaType: T.Type) async throws -> [RelatedItem]
 }
 
 struct MALService: MediaService {
     
-    func getUserList<T: Media>(status: any MediaListStatus, sort: any MediaSort, fields: [String]) async throws -> [T] {
+    func getUserList<T: Media>(status: any MediaListStatus, sort: any MediaSort, fields: [String] = T.fields) async throws -> [T] {
+        print(T.fields)
         let request = UserListAPIRequest<T>(status: status, sort: sort, fields: fields)
         let animeListResponse = try await sendRequest(request)
         return animeListResponse
@@ -46,7 +49,7 @@ struct MALService: MediaService {
         return data
     }
     
-    func getMediaDetail<T: Media>(id: Int, fields: [String]) async throws -> T {
+    func getMediaDetail<T: Media>(id: Int, fields: [String] = T.fields) async throws -> T {
         let request = MediaDetailAPIRequest<T>(id: id, fields: fields)
         let data = try await sendRequest(request)
         return data
@@ -76,6 +79,17 @@ struct MALService: MediaService {
         return data
     }
 
+    func getRelatedAnimes<T: Media>(id: Int, mediaType: T.Type) async throws -> [RelatedItem] {
+        let request = MediaDetailAPIRequest<T>(id: id,  fields: Anime.fields)
+        let media = try await sendRequest(request)
+        return media.relatedAnime
+    }
+    
+    func getRelatedMangas<T>(id: Int, mediaType: T.Type) async throws -> [RelatedItem] where T : Media {
+        let request = MediaDetailAPIRequest<T>(id: id,  fields: Anime.fields)
+        let media = try await sendRequest(request)
+        return media.relatedAnime
+    }
 }
 
 enum TokenError: Error {

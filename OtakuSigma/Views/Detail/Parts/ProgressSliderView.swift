@@ -10,6 +10,7 @@ import SwiftUI
 struct ProgressSliderView<T: Media>: View {
     @Binding var progress: Double
     @EnvironmentObject var mediaDetailViewModel: MediaDetailViewModel<T>
+    var media: T // TODO: Binding?
     
     var body: some View {
         VStack {
@@ -21,10 +22,10 @@ struct ProgressSliderView<T: Media>: View {
                 // TODO: Some animes don't have num count (ex. One Piece)
                 Slider(
                     value: $progress,
-                    in: 0.0...Double(mediaDetailViewModel.media.numEpisodesOrChapters),
+                    in: 0.0...Double(media.numEpisodesOrChapters),
                     step: 1.0
                 ) {
-                    Text(mediaDetailViewModel.media.episodeOrChapterString())
+                    Text(media.episodeOrChapterString())
                 } minimumValueLabel: {
                     Text("")
                 } maximumValueLabel: {
@@ -35,7 +36,7 @@ struct ProgressSliderView<T: Media>: View {
                 }
             }
             
-            Text("Currently on \(mediaDetailViewModel.media.episodeOrChapterString().lowercased()): \(Int(progress)) / \(mediaDetailViewModel.media.numEpisodesOrChapters)")
+            Text("Currently on \(media.episodeOrChapterString().lowercased()): \(Int(progress)) / \(media.numEpisodesOrChapters)")
                 .foregroundColor(.secondary)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .font(.caption)
@@ -43,7 +44,7 @@ struct ProgressSliderView<T: Media>: View {
     }
     
     func handlePlus() {
-        let totalEpi = mediaDetailViewModel.media.numEpisodesOrChapters > 0 ? mediaDetailViewModel.media.numEpisodesOrChapters : .max
+        let totalEpi = media.numEpisodesOrChapters > 0 ? media.numEpisodesOrChapters : .max
         progress = min(progress + 1, Double(totalEpi))
     }
     

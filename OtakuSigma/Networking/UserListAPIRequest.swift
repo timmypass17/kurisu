@@ -7,7 +7,7 @@
 
 import Foundation
 
-
+// note: related animes/mangas are not available with this request (requires detail request)
 struct UserListAPIRequest<T: Media>: APIRequest {
     // TODO: Move Status and Sort into Media (like fields ex. T.fields)
     var status: any MediaListStatus

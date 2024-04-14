@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct RelatedRowView<T: Media>: View {
+    @EnvironmentObject var appState: AppState
     let relatedItems: [RelatedItem]
     
     var body: some View {
@@ -19,7 +20,7 @@ struct RelatedRowView<T: Media>: View {
                     HStack(alignment: .top) {
                         ForEach(relatedItems, id: \.node.id) { item in
                             NavigationLink {
-//                                MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(mediaSmall: item, id: item.node.id, mediaService: MALService()))
+                                MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(id: item.node.id, appState: appState))
                             } label: {
                                 RelatedCellView(relatedItem: item)                                
                             }

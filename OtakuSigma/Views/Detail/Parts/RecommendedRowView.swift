@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct RecommendedRowView<T: Media>: View {
+    @EnvironmentObject var appState: AppState
     let recommendedItems: [RecommendedItem]
     
     var body: some View {
@@ -18,7 +19,7 @@ struct RecommendedRowView<T: Media>: View {
                 HStack(alignment: .top) {
                     ForEach(recommendedItems, id: \.node.id) { item in
                         NavigationLink {
-//                            MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(id: item.node.id, mediaService: MALService()))
+                            MediaDetailView<T>(mediaDetailViewModel: MediaDetailViewModel(id: item.node.id, appState: appState))
                         } label: {
                             RecommendedCellView(recommendedItem: item)
                         }

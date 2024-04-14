@@ -68,6 +68,10 @@ struct AnimeUpdateResponse: UpdateResponse {
     var updatedAt: String
     var comments: String
     
+    var listStatus: AnimeListStatus {
+        return AnimeListStatus(status: status, score: Int(score), numEpisodesWatched: Int(progress), comments: comments)
+    }
+    
     enum CodingKeys: String, CodingKey {
         case status
         case score

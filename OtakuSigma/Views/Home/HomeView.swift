@@ -19,7 +19,6 @@ struct HomeView: View {
                     StatusPickerView(selectedStatus: $homeViewModel.selectedAnimeStatus)
                         .padding(.horizontal)
                     
-                    // $userAnimeList[homeViewModel.selectedAnimeStatus, default: []] doesn't compile
                     WatchListView<Anime>(data: appState.userAnimeList[homeViewModel.selectedAnimeStatus, default: []])
                 }
             }

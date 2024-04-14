@@ -12,93 +12,105 @@ struct MediaDetailView<T: Media>: View {
     @StateObject var mediaDetailViewModel: MediaDetailViewModel<T>
     
     var body: some View {
-        ScrollView(.vertical) {
-            VStack(alignment: .leading, spacing: 0) {
-                DetailTopSection(media: mediaDetailViewModel.media)
+        switch mediaDetailViewModel.mediaState {
+        case .success(let media):
+            ScrollView(.vertical) {
+                VStack(alignment: .leading, spacing: 0) {
+                    DetailTopSection(media: media)
 
-                GenreRowView(genres: mediaDetailViewModel.media.genres.map { $0.name })
-                    .font(.caption)
-                    .padding(.top)
+                    GenreRowView(genres: media.genres.map { $0.name })
+                        .font(.caption)
+                        .padding(.top)
 
-                DetailProgressView(media: mediaDetailViewModel.media, progress: Double(mediaDetailViewModel.media.myListStatus?.progress ?? 0))
-                    .padding(.top)
+                    DetailProgressView(media: media, progress: Double(media.myListStatus?.progress ?? 0))
+                        .padding(.top)
 
-                DetailTabView(selectedTab: $mediaDetailViewModel.selectedTab)
-                    .padding(.top)
-                
-                switch mediaDetailViewModel.selectedTab {
-                case .background:
-                    SynopsisView(text: mediaDetailViewModel.media.synopsis)
+                    DetailTabView(selectedTab: $mediaDetailViewModel.selectedTab)
                         .padding(.top)
                     
-                    if !mediaDetailViewModel.media.relatedAnime.isEmpty {
-                        RelatedRowView<Anime>(relatedItems: mediaDetailViewModel.media.relatedAnime)
+                    switch mediaDetailViewModel.selectedTab {
+                    case .background:
+                        SynopsisView(text: media.synopsis)
                             .padding(.top)
+                        
+                        if !media.relatedAnime.isEmpty {
+                            RelatedRowView<Anime>(relatedItems: media.relatedAnime)
+                                .padding(.top)
+                        }
+                        
+                        if !media.relatedManga.isEmpty {
+                            RelatedRowView<Manga>(relatedItems: media.relatedManga)
+                                .padding(.top)
+                        }
+                        
+                        if !media.recommendations.isEmpty {
+                            RecommendedRowView<T>(recommendedItems: media.recommendations)
+                                .padding(.top)
+                        }
+                    case .info:
+                        InfoView(media: media)
+                            .padding(.top)
+                        
+                        
+                    case .statistic:
+                        StatsView(media: media)
+                            .padding(.top)
+                        
+                        if let anime = media as? Anime {
+                            BarChartView(data: anime.statistics.toChartData())
+                                .padding(.top)
+    //                                .frame(width: .infinity)
+                        }
                     }
                     
-                    if !mediaDetailViewModel.media.relatedManga.isEmpty {
-                        RelatedRowView<Manga>(relatedItems: mediaDetailViewModel.media.relatedManga)
-                            .padding(.top)
-                    }
-                    
-                    if !mediaDetailViewModel.media.recommendations.isEmpty {
-                        RecommendedRowView<T>(recommendedItems: mediaDetailViewModel.media.recommendations)
-                            .padding(.top)
-                    }
-                case .info:
-                    InfoView(media: mediaDetailViewModel.media)
-                        .padding(.top)
-                    
-                    
-                case .statistic:
-                    StatsView(media: mediaDetailViewModel.media)
-                        .padding(.top)
-                    
-                    if let anime = mediaDetailViewModel.media as? Anime {
-                        BarChartView(data: anime.statistics.toChartData())
-                            .padding(.top)
-//                                .frame(width: .infinity)
-                    }
                 }
-                
-                
+                .padding()
+                .padding(.top)
+                Spacer()
             }
-            .padding()
-            .padding(.top)
-            Spacer()
-        }
-        .onAppear {
-            if let (media, status, index) = appState.getMediaItem(id: mediaDetailViewModel.media.id) {
-                print("Updating progress")
-                // TODO: Key is to update progress BOTH locally (mediaDetailViewModel) and globally (appState)
-                // Why do I have to update in 2 different places?
-                // - We inject a media into the detail viewmodel so the viewmodel has it's own anime instance, separate from appState
-                //     - So changes in viewmodel's anime instance are not updating underlying appState's anime list
-                //     - TODO: Possible solution is to pass a binding of the anime object to the detailView instead of injecting a separate copy into the viewmodel.
-                mediaDetailViewModel.media.myListStatus?.progress = 11
-                appState.userAnimeList[status as! AnimeWatchListStatus]?[index].myListStatus?.progress = 11
-            }
+            .onAppear {
+    //            if let (media, status, index) = appState.getMediaItem(id: mediaDetailViewModel.media.id) {
+    //                print("Updating progress")
+                    // TODO: Key is to update progress BOTH locally (mediaDetailViewModel) and globally (appState)
+                    // Why do I have to update in 2 different places?
+                    // - We inject a media into the detail viewmodel so the viewmodel has it's own anime instance, separate from appState
+                    //     - So changes in viewmodel's anime instance are not updating underlying appState's anime list
+                    //     - TODO: Possible solution is to pass a binding of the anime object to the detailView instead of injecting a separate copy into the viewmodel.
+    //                mediaDetailViewModel.media.myListStatus?.progress = 11
+    //                mediaDetailViewModel.progress = 11  // note: Make sure to update progress field aswell
+    //                appState.userAnimeList[status as! AnimeWatchListStatus]?[index].myListStatus?.progress = 11
 
-        }
-        .navigationTitle(mediaDetailViewModel.media.title)
-        .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $mediaDetailViewModel.isShowingAddMediaView, content: {
-            NavigationStack {
-                AddMediaView<T>()
+    //            }
+
             }
-        })
-        .toolbar {
-            ToolbarItemGroup {
-                Button {
-                    mediaDetailViewModel.isShowingAddMediaView = true
-                } label: {
-                    Image(systemName: "plus")
+            .navigationTitle(media.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .sheet(isPresented: $mediaDetailViewModel.isShowingAddMediaView, content: {
+                NavigationStack {
+                    AddMediaView<T>(media: media)
+                        .onAppear {
+                            mediaDetailViewModel.progress = Double(media.myListStatus?.progress ?? 0)
+                        }
                 }
+            })
+            .toolbar {
+                ToolbarItemGroup {
+                    Button {
+                        mediaDetailViewModel.isShowingAddMediaView = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
 
+                }
             }
+            .background(Color.ui.background)
+            .environmentObject(mediaDetailViewModel)
+        case .loading:
+            ProgressView()
+        case .failure(let error):
+            Text("Error loading media")
         }
-        .background(Color.ui.background)
-        .environmentObject(mediaDetailViewModel)
+
     }
 }
 

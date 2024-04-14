@@ -10,14 +10,14 @@ import SwiftUI
 struct AddMediaView<T: Media>: View {
     @EnvironmentObject var mediaDetailViewModel: MediaDetailViewModel<T>
     @Environment(\.dismiss) private var dismiss
-//    @StateObject var  mediaDetailViewModel: AddMediaViewModel
     let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+    let media: T
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
                 
-                WatchListCell(item: mediaDetailViewModel.media)
+                WatchListCell(item: media)
                 
                 Divider()
                     .padding(.bottom, 8)
@@ -30,7 +30,7 @@ struct AddMediaView<T: Media>: View {
                     HStack {
                         Spacer()
                         
-                        if mediaDetailViewModel.media is Anime {
+                        if media is Anime {
                             Button {
                                 mediaDetailViewModel.selectedStatus = .watching
                             } label: {
@@ -79,7 +79,7 @@ struct AddMediaView<T: Media>: View {
                         }
                         .buttonStyle(StatusButton(isSelected:  mediaDetailViewModel.selectedStatus == .dropped))
                         
-                        if  mediaDetailViewModel.media is Anime {
+                        if  media is Anime {
                             Button {
                                 mediaDetailViewModel.selectedStatus = .plan_to_watch
                                 
@@ -108,11 +108,11 @@ struct AddMediaView<T: Media>: View {
                     .padding(.vertical, 8)
                 
                 
-                Text( mediaDetailViewModel.media.episodeOrChapterString())
+                Text(media.episodeOrChapterString())
                     .font(.system(size: 18))
                     .bold()
                 
-                ProgressSliderView<T>(progress: $mediaDetailViewModel.progress)
+                ProgressSliderView<T>(progress: $mediaDetailViewModel.progress, media: media)
                 
                 Divider()
                     .padding(.vertical, 8)
@@ -137,13 +137,13 @@ struct AddMediaView<T: Media>: View {
                 
             }
             .padding()
-            .navigationTitle( mediaDetailViewModel.media.title)
+            .navigationTitle(media.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button {
                         Task {
-                            let updatedMedia = await mediaDetailViewModel.didTapSaveButton()
+                            await mediaDetailViewModel.didTapSaveButton()
                             dismiss()
                         }
                     } label: {
@@ -164,6 +164,7 @@ struct AddMediaView<T: Media>: View {
         }
         .environmentObject( mediaDetailViewModel)
         .background(Color.ui.background)
+
     }
 }
 
@@ -199,12 +200,4 @@ struct StatusButton: ButtonStyle {
         }
         .font(.system(size: 14))
     }
-}
-struct NoShape: Shape { func path(in rect: CGRect) -> Path { return Path() } }
-
-func ??<T>(lhs: Binding<Optional<T>>, rhs: T) -> Binding<T> {
-    Binding(
-        get: { lhs.wrappedValue ?? rhs },
-        set: { lhs.wrappedValue = $0 }
-    )
 }

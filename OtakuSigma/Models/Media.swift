@@ -38,10 +38,10 @@ protocol Media: Codable, WeebItemConfiguration {
     var rank: Int? { get }
     var popularity: Int { get }
     var numListUsers: Int { get }
-    var relatedAnime: [RelatedItem] { get }
-    var relatedManga: [RelatedItem] { get }
+    var relatedAnime: [RelatedItem] { get set }
+    var relatedManga: [RelatedItem] { get set }
     var mediaType: String { get }
-    var recommendations: [RecommendedItem] { get }
+    var recommendations: [RecommendedItem] { get set }
     
     func episodeOrChapterString() -> String
     

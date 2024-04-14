@@ -13,6 +13,7 @@ class AppState: ObservableObject {
     var state: State = .unregistered
     
     @Published var userAnimeList: [AnimeWatchListStatus : [Anime]] = [:]
+    @Published var userMangaList: [MangaReadListStatus : [Manga]] = [:]
 
     var isLoggedIn: Bool {
         if case .loggedIn(_) = state { return true }
@@ -57,7 +58,7 @@ class AppState: ObservableObject {
         print(#function)
         do {
             let mediaService = MALService()
-            userAnimeList[.watching] = try await mediaService.getUserList(status: AnimeWatchListStatus.watching, sort: AnimeSort.listUpdatedAt, fields: Anime.fields)
+            userAnimeList[.watching] = try await mediaService.getUserList(status: AnimeWatchListStatus.watching, sort: AnimeSort.listUpdatedAt)
         } catch {
             userAnimeList[.watching] = []
             print("Error getting user anime list. Check if access token is valid: \(error)")
@@ -91,13 +92,40 @@ class AppState: ObservableObject {
         return nil
     }
     
-    func getMediaItem(id: Int) -> (Media, any MediaListStatus, Int)? {
+    // Returns section and index of item (ex. "watching", 2 or "reading", 5)
+    func getSectionAndIndex(id: Int) -> (any MediaListStatus, Int)? {
         for (animeStatus, animes) in userAnimeList {
             if let index = animes.firstIndex(where: { $0.id == id }) {
-                return (animes[index], animeStatus, index)
+                return (animeStatus, index)
             }
         }
         
+        for (mangaStatus, mangas) in userMangaList {
+            if let index = mangas.firstIndex(where: { $0.id == id }) {
+                return (mangaStatus, index)
+            }
+        }
         return nil
     }
+    
+    // Update media's status. Does nothing if media not in user's list
+    func updateListStatus(id: Int, listStatus: ListStatus) {
+        if listStatus is AnimeListStatus {
+            guard let (status, i) = getSectionAndIndex(id: id) as? (AnimeWatchListStatus, Int) else { return }
+            userAnimeList[status]?[i].myListStatus = listStatus
+        } else if listStatus is MangaListStatus {
+            guard let (status, i) = getSectionAndIndex(id: id) as? (MangaReadListStatus, Int) else { return }
+            userMangaList[status]?[i].myListStatus = listStatus
+        }
+        
+    }
+    
+//    func insert<T: Media>(media: T, to status: any MediaListStatus, at index: Int) {
+//        if let anime = media as? Anime, let status = status as? AnimeWatchListStatus {
+//            userAnimeList[status]?.insert(anime, at: index)
+//        } else if let manga = media as? Manga, let status = status as? MangaReadListStatus {
+//            userMangaList[status]?.insert(manga, at: index)
+//        }
+//    }
+
 }
