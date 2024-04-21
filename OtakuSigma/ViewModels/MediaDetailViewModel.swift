@@ -111,16 +111,17 @@ class MediaDetailViewModel<T: Media>: ObservableObject {
             do {
                 // Type checking to check wheter an instance is of a certain subclass
                 if media is Anime {
-                    let mediaService = MALService()
                     let response: AnimeUpdateResponse = try await mediaService.updateMediaListStatus(id: media.id, status: selectedStatus.rawValue, score: Int(score), progress: Int(progress), comments: comments)
                     
                     // Update local media
                     mediaState.updateListStatus(listStatus: response.listStatus)
-
                     // Update user data (which updates homeview)
                     appState.updateListStatus(id: media.id, listStatus: response.listStatus)
                 } else if media is Manga {
+                    let response: MangaUpdateResponse = try await mediaService.updateMediaListStatus(id: media.id, status: selectedStatus.rawValue, score: Int(score), progress: Int(progress), comments: comments)
                     
+                    mediaState.updateListStatus(listStatus: response.listStatus)
+                    appState.updateListStatus(id: media.id, listStatus: response.listStatus)
                 }
                 
             } catch {

@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 // Contains app-level information (i.e. user info)
+@MainActor
 class AppState: ObservableObject {
     var state: State = .unregistered
     
@@ -29,7 +30,7 @@ class AppState: ObservableObject {
     init() {
         Task {
             await loadUser()
-            await loadUserAnimeList()
+            await loadUserAnimeList(status: .watching)
         }
         
 //        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [self] _ in
@@ -53,14 +54,15 @@ class AppState: ObservableObject {
         }
     }
     
-    func loadUserAnimeList() async {
-        guard userAnimeList[.watching, default: []].isEmpty else { return }
-        print(#function)
+    func loadUserAnimeList(status: AnimeWatchListStatus) async {
+        guard userAnimeList[status, default: []].isEmpty else { return }
+        print(status.rawValue)
         do {
             let mediaService = MALService()
-            userAnimeList[.watching] = try await mediaService.getUserList(status: AnimeWatchListStatus.watching, sort: AnimeSort.listUpdatedAt)
+            userAnimeList[status] = try await mediaService.getUserList(status: status, sort: AnimeSort.listUpdatedAt)
+            print(userAnimeList[status]?.count)
         } catch {
-            userAnimeList[.watching] = []
+            userAnimeList[status] = []
             print("Error getting user anime list. Check if access token is valid: \(error)")
         }
     }

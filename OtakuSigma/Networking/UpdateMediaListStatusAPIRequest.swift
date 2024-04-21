@@ -55,6 +55,8 @@ protocol UpdateResponse: Codable {
     var progress: Int { get }
     var updatedAt: String { get }
     var comments: String { get }
+    
+    var listStatus: ListStatus { get }
 }
 
 struct AnimeUpdateResponse: UpdateResponse {
@@ -68,14 +70,14 @@ struct AnimeUpdateResponse: UpdateResponse {
     var updatedAt: String
     var comments: String
     
-    var listStatus: AnimeListStatus {
-        return AnimeListStatus(status: status, score: Int(score), numEpisodesWatched: Int(progress), comments: comments)
+    var listStatus: ListStatus { // TODO: Beautiful generic
+        return AnimeListStatus(status: status, score: score, numEpisodesWatched: numEpisodesWatched, comments: comments)
     }
     
     enum CodingKeys: String, CodingKey {
         case status
         case score
-        case numEpisodesWatched = "num_episodes_watched"
+        case numEpisodesWatched = "num_episodes_watched" // key is different
         case updatedAt = "updated_at"
         case comments
     }
@@ -91,6 +93,10 @@ struct MangaUpdateResponse: UpdateResponse {
     var progress: Int { numChaptersRead }
     var updatedAt: String
     var comments: String
+    
+    var listStatus: ListStatus {
+        return MangaListStatus(status: status, score: score, numChaptersRead: numChaptersRead)
+    }
     
     enum CodingKeys: String, CodingKey {
         case status

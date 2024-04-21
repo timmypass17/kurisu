@@ -22,10 +22,11 @@ protocol MediaService {
     func getRelatedMangas<T: Media>(id: Int, mediaType: T.Type) async throws -> [RelatedItem]
 }
 
+// Object that can do api stuff
 struct MALService: MediaService {
     
     func getUserList<T: Media>(status: any MediaListStatus, sort: any MediaSort, fields: [String] = T.fields) async throws -> [T] {
-        print(T.fields)
+//        print(T.fields)
         let request = UserListAPIRequest<T>(status: status, sort: sort, fields: fields)
         let animeListResponse = try await sendRequest(request)
         return animeListResponse

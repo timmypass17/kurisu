@@ -14,10 +14,11 @@ struct OtakuSigmaApp: App {
     @StateObject var discoverViewModel: DiscoverViewModel
     let authService = MALAuthService()
     let mediaService = MALService()
-    @StateObject var appState = AppState()   // inject into viewmodels (contains user data)
+    @StateObject var appState: AppState   // inject into viewmodels (contains user data)
 
     init() {
-        let homeViewModel = HomeViewModel(mediaService: mediaService, authService: authService)
+        _appState = StateObject(wrappedValue: AppState())
+        let homeViewModel = HomeViewModel(appState: _appState.wrappedValue, mediaService: mediaService, authService: authService)
         let discoverViewModel = DiscoverViewModel(mediaService: mediaService)
         _homeViewModel = StateObject(wrappedValue: homeViewModel)
         _discoverViewModel = StateObject(wrappedValue: discoverViewModel)
@@ -58,7 +59,7 @@ struct OtakuSigmaApp: App {
         do {
             let user = try await mediaService.getUser(accessToken: tokenResponse.accessToken)
             appState.state = .loggedIn(user)
-            await appState.loadUserAnimeList()
+            await appState.loadUserAnimeList(status: homeViewModel.selectedAnimeStatus)
         } catch {
             print("Error logging in: \(error)")
             appState.state = .unregistered
