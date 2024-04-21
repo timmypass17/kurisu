@@ -161,6 +161,15 @@ struct AddMediaView<T: Media>: View {
                     }
                 }
             }
+            
+            if mediaDetailViewModel.isInUserList {
+                Button("Delete", role: .destructive) {
+                    Task {
+                        await mediaDetailViewModel.didTapDeleteButton()
+                        dismiss()
+                    }
+                }
+            }
         }
         .environmentObject( mediaDetailViewModel)
         .background(Color.ui.background)

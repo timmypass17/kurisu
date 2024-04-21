@@ -14,7 +14,7 @@ import Combine
 class HomeViewModel: ObservableObject {
     @Published var selectedAnimeStatus: AnimeWatchListStatus = .watching
     {
-        willSet { Task { await appState.loadUserAnimeList(status: newValue) } }
+        willSet { Task { await appState?.loadUserAnimeList(status: newValue) } }
     }
     
     @Published var selectedMangaStatus: MangaReadListStatus = .reading
@@ -43,7 +43,7 @@ class HomeViewModel: ObservableObject {
     // @Publish doesnt work with reference types (i.e. classes) because reference 'value' doesn't change, variable still points to the same reference while structs values do actually change.
     // Nested ObservableObjects are supported yet but u can do this https://stackoverflow.com/questions/58406287/how-to-tell-swiftui-views-to-bind-to-nested-observableobjects
     
-    let appState: AppState
+    var appState: AppState?
     var authService: OAuthService
     let mediaService: MediaService
     
@@ -51,8 +51,7 @@ class HomeViewModel: ObservableObject {
         selectedMediaType == .anime ? "book" : "tv"
     }
         
-    init(appState: AppState, mediaService: MediaService, authService: OAuthService) {
-        self.appState = appState
+    init(mediaService: MediaService, authService: OAuthService) {
         self.mediaService = mediaService
         self.authService = authService
 //        

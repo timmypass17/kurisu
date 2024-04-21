@@ -62,7 +62,7 @@ struct MALService: MediaService {
         return data
     }
     
-    func deleteMediaItem<T: Media>(id: Int) async throws -> T? {
+    func deleteMediaItem<T: Media>(id: Int) async throws -> T? { // note: always returns nil, we just need to use T somewhere
         let request = DeleteMediaAPIRequest<T>(id: id)
         try await sendRequest(request)
         return nil

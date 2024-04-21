@@ -37,9 +37,6 @@ struct WatchListView<T: Media/*, U: MediaListStatus*/>: View {
             }
         }
         .padding(.top, 8)
-        .onAppear {
-            print(data.forEach { print($0.title) })
-        }
     }
     
 }

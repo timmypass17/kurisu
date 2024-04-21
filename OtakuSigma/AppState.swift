@@ -27,10 +27,13 @@ class AppState: ObservableObject {
         case sessionExpired(User)
     }
     
+    var homeViewModel: HomeViewModel!
+    
     init() {
         Task {
             await loadUser()
             await loadUserAnimeList(status: .watching)
+            await loadUserAnimeList(status: .completed)
         }
         
 //        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [self] _ in
@@ -45,7 +48,7 @@ class AppState: ObservableObject {
                 return
             }
             let mediaService = MALService()
-            print("Fetching user.. Access Token: \(accessToken)")
+            print("Fetching user.. Access Token:")
             let user = try await mediaService.getUser(accessToken: accessToken)
             print("Got User!")
             state = .loggedIn(user)
@@ -129,5 +132,23 @@ class AppState: ObservableObject {
 //            userMangaList[status]?.insert(manga, at: index)
 //        }
 //    }
+    
+    func removeMedia(id: Int) {
+        for (animeStatus, animes) in userAnimeList {
+            if let index = animes.firstIndex(where: { $0.id == id }) {
+                print("Found anime to delete")
+                userAnimeList[animeStatus]?.remove(at: index)
+                return
+            }
+        }
+        
+        for (mangaStatus, mangas) in userMangaList {
+            if let index = mangas.firstIndex(where: { $0.id == id }) {
+                print("Found manga to delete")
+                userMangaList[mangaStatus]?.remove(at: index)
+                return
+            }
+        }
+    }
 
 }

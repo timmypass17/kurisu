@@ -66,7 +66,15 @@ struct MediaDetailView<T: Media>: View {
                 }
                 .padding()
                 .padding(.top)
-                Spacer()
+                
+//                if mediaDetailViewModel.isInUserList {
+//                    Button("Delete", role: .destructive) {
+//                        Task {
+//                            await mediaDetailViewModel.didTapDeleteButton()
+//                        }
+//                    }
+//                }
+//                Spacer()
             }
             .onAppear {
     //            if let (media, status, index) = appState.getMediaItem(id: mediaDetailViewModel.media.id) {
@@ -90,6 +98,7 @@ struct MediaDetailView<T: Media>: View {
                     AddMediaView<T>(media: media)
                         .onAppear {
                             mediaDetailViewModel.progress = Double(media.myListStatus?.progress ?? 0)
+                            mediaDetailViewModel.score = Double(media.myListStatus?.score ?? 0)
                         }
                 }
             })
@@ -98,7 +107,11 @@ struct MediaDetailView<T: Media>: View {
                     Button {
                         mediaDetailViewModel.isShowingAddMediaView = true
                     } label: {
-                        Image(systemName: "plus")
+                        if mediaDetailViewModel.isInUserList {
+                            Image(systemName: "square.and.pencil")
+                        } else {
+                            Image(systemName: "plus")
+                        }
                     }
 
                 }

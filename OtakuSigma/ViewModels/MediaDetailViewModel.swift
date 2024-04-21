@@ -36,17 +36,17 @@ class MediaDetailViewModel<T: Media>: ObservableObject {
         
         // can't update associated value of enum directly because it's just a copy, need to have mutating func and reassign new copy to update values
         // https://stackoverflow.com/questions/31488603/can-i-change-the-associated-values-of-a-enum
-        mutating func updateListStatus(listStatus: ListStatus) {
-            switch self {
-            case .success(let media):
-                var updatedMedia = media
-                updatedMedia.myListStatus = listStatus
-                self = .success(media: updatedMedia)
-            default:
-                return
-            }
-        }
-        
+//        mutating func updateListStatus(listStatus: ListStatus) {
+//            switch self {
+//            case .success(let media):
+//                var updatedMedia = media
+//                updatedMedia.myListStatus = listStatus
+//                self = .success(media: updatedMedia)
+//            default:
+//                return
+//            }
+//        }
+//        
         mutating func updateMediaRecs(fetchedMedia: T) {
             switch self {
             case .success(let media):
@@ -62,7 +62,14 @@ class MediaDetailViewModel<T: Media>: ObservableObject {
     }
     
     let mediaService = MALService()
-    let appState: AppState
+    var appState: AppState
+    
+    var isInUserList: Bool {
+        if case .success(let media) = mediaState {
+            return media.myListStatus != nil
+        }
+        return false
+    }
     
     init(media: T, userListStatus: ListStatus?, appState: AppState) {
         self.mediaState = .success(media: media)
@@ -76,7 +83,10 @@ class MediaDetailViewModel<T: Media>: ObservableObject {
         if let userListStatus {
             print("Has list status")
             if case .success(_) = mediaState {
-                mediaState.updateListStatus(listStatus: userListStatus)
+                var updatedMedia = media
+                updatedMedia.myListStatus = userListStatus
+                self.mediaState = .success(media: updatedMedia)
+//                mediaState.updateListStatus(listStatus: userListStatus)
                 self.selectedStatus = SelectedStatus(rawValue: userListStatus.status)!
                 self.progress = Double(userListStatus.progress)
                 self.score = Double(userListStatus.score)
@@ -114,14 +124,31 @@ class MediaDetailViewModel<T: Media>: ObservableObject {
                     let response: AnimeUpdateResponse = try await mediaService.updateMediaListStatus(id: media.id, status: selectedStatus.rawValue, score: Int(score), progress: Int(progress), comments: comments)
                     
                     // Update local media
-                    mediaState.updateListStatus(listStatus: response.listStatus)
-                    // Update user data (which updates homeview)
-                    appState.updateListStatus(id: media.id, listStatus: response.listStatus)
-                } else if media is Manga {
-                    let response: MangaUpdateResponse = try await mediaService.updateMediaListStatus(id: media.id, status: selectedStatus.rawValue, score: Int(score), progress: Int(progress), comments: comments)
+                    var updatedMedia = media
+                    updatedMedia.myListStatus = response.listStatus
+                    mediaState = .success(media: updatedMedia)
                     
-                    mediaState.updateListStatus(listStatus: response.listStatus)
-                    appState.updateListStatus(id: media.id, listStatus: response.listStatus)
+                    // Update user data (which updates homeview)
+//                    appState.updateListStatus(id: media.id, listStatus: response.listStatus)
+                    
+                    if let animeListStatus = AnimeWatchListStatus(rawValue: response.listStatus.status) {
+                        guard let (status, i) = appState.getSectionAndIndex(id: media.id) as? (AnimeWatchListStatus, Int) else {
+                            // Add item
+                            print("insert item")
+                            appState.userAnimeList[animeListStatus]!.insert(updatedMedia as! Anime, at: 0)
+                            return
+                        }
+                        // Update item
+                        appState.userAnimeList[status]?[i].myListStatus = response.listStatus
+                    } else if response.listStatus is MangaListStatus {
+                        guard let (status, i) = appState.getSectionAndIndex(id: media.id) as? (MangaReadListStatus, Int) else { return }
+                        appState.userMangaList[status]?[i].myListStatus = response.listStatus
+                    }
+                } else if media is Manga {
+//                    let response: MangaUpdateResponse = try await mediaService.updateMediaListStatus(id: media.id, status: selectedStatus.rawValue, score: Int(score), progress: Int(progress), comments: comments)
+//                    
+//                    mediaState.updateListStatus(listStatus: response.listStatus)
+//                    appState.updateListStatus(id: media.id, listStatus: response.listStatus)
                 }
                 
             } catch {
@@ -130,5 +157,22 @@ class MediaDetailViewModel<T: Media>: ObservableObject {
         }
         
     }
+    
+    func didTapDeleteButton() async {
+        print(#function)
+        if case .success(let media) = mediaState {
+            do {
+                var updatedMedia = media
+                updatedMedia.myListStatus = nil
+                mediaState = .success(media: updatedMedia)
+                
+                if let _: T = try await mediaService.deleteMediaItem(id: media.id) {}
+                appState.removeMedia(id: media.id)
+            } catch {
+                print("Error deleting item")
+            }
+        }
+    }
+    
 }
 
