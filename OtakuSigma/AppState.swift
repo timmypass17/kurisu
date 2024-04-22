@@ -33,7 +33,7 @@ class AppState: ObservableObject {
         Task {
             await loadUser()
             await loadUserAnimeList(status: .watching)
-            await loadUserAnimeList(status: .completed)
+//            await loadUserAnimeList(status: .completed)
         }
         
 //        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [self] _ in

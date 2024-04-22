@@ -18,7 +18,7 @@ struct DetailProgressView<T: Media>: View {
                 total: Float(media.numEpisodesOrChapters)
             ) {
                 HStack(spacing: 4) {
-                    StatusView(status: media.status.description, color: .green)
+                    AiringView(status: media.status)
 
                     Spacer()
                     
@@ -28,8 +28,15 @@ struct DetailProgressView<T: Media>: View {
                     Text("\(Int(progress)) /")
                         .font(.caption)
                     
-                    Text("\(media.numEpisodesOrChapters)")
-                        .font(.caption)
+                    Group {
+                        if media.numEpisodesOrChapters == 0 {
+                            Text("?")
+                        } else {
+                            Text("\(media.numEpisodesOrChapters)")
+                        }
+                    }
+                    .font(.caption)
+
                 }
             }
             .progressViewStyle(.linear)

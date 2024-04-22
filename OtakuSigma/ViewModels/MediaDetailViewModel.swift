@@ -33,32 +33,6 @@ class MediaDetailViewModel<T: Media>: ObservableObject {
         case loading
         case success(media: T)
         case failure(error: Error)
-        
-        // can't update associated value of enum directly because it's just a copy, need to have mutating func and reassign new copy to update values
-        // https://stackoverflow.com/questions/31488603/can-i-change-the-associated-values-of-a-enum
-//        mutating func updateListStatus(listStatus: ListStatus) {
-//            switch self {
-//            case .success(let media):
-//                var updatedMedia = media
-//                updatedMedia.myListStatus = listStatus
-//                self = .success(media: updatedMedia)
-//            default:
-//                return
-//            }
-//        }
-//        
-        mutating func updateMediaRecs(fetchedMedia: T) {
-            switch self {
-            case .success(let media):
-                var updatedMedia = media
-                updatedMedia.relatedAnime = fetchedMedia.relatedAnime
-                updatedMedia.relatedManga = fetchedMedia.relatedManga
-                updatedMedia.recommendations = fetchedMedia.recommendations
-                self = .success(media: updatedMedia)
-            default:
-                return
-            }
-        }
     }
     
     let mediaService = MALService()
@@ -77,25 +51,22 @@ class MediaDetailViewModel<T: Media>: ObservableObject {
         
         Task {
             let fetchedMedia: T =  try await mediaService.getMediaDetail(id: media.id)
-            mediaState.updateMediaRecs(fetchedMedia: fetchedMedia)
+            self.mediaState = .success(media: fetchedMedia)
         }
         
+        // Hit cache
         if let userListStatus {
             print("Has list status")
             if case .success(_) = mediaState {
                 var updatedMedia = media
                 updatedMedia.myListStatus = userListStatus
                 self.mediaState = .success(media: updatedMedia)
-//                mediaState.updateListStatus(listStatus: userListStatus)
                 self.selectedStatus = SelectedStatus(rawValue: userListStatus.status)!
                 self.progress = Double(userListStatus.progress)
                 self.score = Double(userListStatus.score)
                 self.comments = userListStatus.comments ?? ""
             }
             
-        } else {
-            print("No list status")
-            // TODO: Fetch user's list status
         }
     }
     
@@ -121,34 +92,40 @@ class MediaDetailViewModel<T: Media>: ObservableObject {
             do {
                 // Type checking to check wheter an instance is of a certain subclass
                 if media is Anime {
+                    // Update MAL user list
                     let response: AnimeUpdateResponse = try await mediaService.updateMediaListStatus(id: media.id, status: selectedStatus.rawValue, score: Int(score), progress: Int(progress), comments: comments)
                     
-                    // Update local media
-                    var updatedMedia = media
-                    updatedMedia.myListStatus = response.listStatus
-                    mediaState = .success(media: updatedMedia)
+                    // Update detail media
+                    guard var updatedAnime = media as? Anime else { return }
+                    updatedAnime.myListStatus = response.listStatus
+                    mediaState = .success(media: updatedAnime as! T)
                     
-                    // Update user data (which updates homeview)
-//                    appState.updateListStatus(id: media.id, listStatus: response.listStatus)
-                    
+                    // Update home view
                     if let animeListStatus = AnimeWatchListStatus(rawValue: response.listStatus.status) {
                         guard let (status, i) = appState.getSectionAndIndex(id: media.id) as? (AnimeWatchListStatus, Int) else {
                             // Add item
-                            print("insert item")
-                            appState.userAnimeList[animeListStatus]!.insert(updatedMedia as! Anime, at: 0)
+                            print("Item not found, inserting item")
+                            appState.userAnimeList[animeListStatus]!.insert(updatedAnime , at: 0)
                             return
                         }
-                        // Update item
-                        appState.userAnimeList[status]?[i].myListStatus = response.listStatus
+                        
+                        guard let oldListStatus = media.myListStatus,
+                              let newListStatus = updatedAnime.myListStatus,
+                              let oldStatus = AnimeWatchListStatus(rawValue: oldListStatus.status),
+                              let newStatus = AnimeWatchListStatus(rawValue: newListStatus.status)
+                        else { return }
+                        
+                        // User may have changed status
+                        print("User changed section from \(oldStatus.rawValue) -> \(newStatus.rawValue)")
+                        // Move item to the top
+                        appState.userAnimeList[oldStatus]?.remove(at: i)
+                        appState.userAnimeList[newStatus]?.insert(updatedAnime , at: 0)
                     } else if response.listStatus is MangaListStatus {
-                        guard let (status, i) = appState.getSectionAndIndex(id: media.id) as? (MangaReadListStatus, Int) else { return }
-                        appState.userMangaList[status]?[i].myListStatus = response.listStatus
+//                        guard let (status, i) = appState.getSectionAndIndex(id: media.id) as? (MangaReadListStatus, Int) else { return }
+//                        appState.userMangaList[status]?[i].myListStatus = response.listStatus
                     }
                 } else if media is Manga {
-//                    let response: MangaUpdateResponse = try await mediaService.updateMediaListStatus(id: media.id, status: selectedStatus.rawValue, score: Int(score), progress: Int(progress), comments: comments)
-//                    
-//                    mediaState.updateListStatus(listStatus: response.listStatus)
-//                    appState.updateListStatus(id: media.id, listStatus: response.listStatus)
+                    
                 }
                 
             } catch {

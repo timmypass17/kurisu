@@ -48,7 +48,7 @@ struct WatchListCell: View {
                             .font(.caption)
                         
                         Text("\(Int(item.myListStatus?.progress ?? 0)) /")
-                            .foregroundColor(.secondary)
+//                            .foregroundColor(.secondary)
                             .font(.caption)
                         
                         Group {
@@ -58,7 +58,7 @@ struct WatchListCell: View {
                                 Text("\(item.numEpisodesOrChapters)")
                             }
                         }
-                        .foregroundColor(.secondary)
+//                        .foregroundColor(.secondary)
                         .font(.caption)
                         
                     }
