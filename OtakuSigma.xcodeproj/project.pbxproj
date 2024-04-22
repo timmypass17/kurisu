@@ -33,7 +33,7 @@
 		322BBF892AE5F94300DB9ACD /* WeebResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322BBF882AE5F94300DB9ACD /* WeebResponse.swift */; };
 		322BBF8B2AE8616F00DB9ACD /* PosterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322BBF8A2AE8616F00DB9ACD /* PosterView.swift */; };
 		322BBF8D2AE8647F00DB9ACD /* GenreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322BBF8C2AE8647F00DB9ACD /* GenreView.swift */; };
-		322BBF8F2AE866AB00DB9ACD /* AiringStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322BBF8E2AE866AB00DB9ACD /* AiringStatusView.swift */; };
+		322BBF8F2AE866AB00DB9ACD /* AiringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322BBF8E2AE866AB00DB9ACD /* AiringView.swift */; };
 		322BBF912AE8B35600DB9ACD /* WatchProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322BBF902AE8B35600DB9ACD /* WatchProgressView.swift */; };
 		323E4D772AF02A8D001F2CA1 /* SearchCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323E4D762AF02A8D001F2CA1 /* SearchCellView.swift */; };
 		323E4D792AF18997001F2CA1 /* StatusPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323E4D782AF18997001F2CA1 /* StatusPickerView.swift */; };
@@ -78,6 +78,7 @@
 		32B002172B08188D00D9C5D6 /* RecommendedCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B002162B08188D00D9C5D6 /* RecommendedCellView.swift */; };
 		32B82BD22B1FF7870079A724 /* ProfileStatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B82BD12B1FF7870079A724 /* ProfileStatView.swift */; };
 		32BA95F82B14512600EFC84D /* DeleteMediaAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BA95F72B14512600EFC84D /* DeleteMediaAPIRequest.swift */; };
+		32CB70022BD5D3860040CC68 /* ProgressStepperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CB70012BD5D3860040CC68 /* ProgressStepperView.swift */; };
 		32CCAB3D2B16B08400C5C18C /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CCAB3C2B16B08400C5C18C /* AppState.swift */; };
 		32CCAB3F2B16B0E500C5C18C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CCAB3E2B16B0E500C5C18C /* User.swift */; };
 		32CCAB412B16B15B00C5C18C /* UserAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CCAB402B16B15B00C5C18C /* UserAPIRequest.swift */; };
@@ -87,6 +88,7 @@
 		32F37ED42B0C2E940015F225 /* ProgressSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F37ED32B0C2E940015F225 /* ProgressSliderView.swift */; };
 		32F37ED62B0D70EA0015F225 /* AddMediaViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F37ED52B0D70EA0015F225 /* AddMediaViewModel.swift */; };
 		32F37ED82B0D74C20015F225 /* ScoreSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F37ED72B0D74C20015F225 /* ScoreSliderView.swift */; };
+		32FD461B2BD6133B00559302 /* MediaStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32FD461A2BD6133B00559302 /* MediaStatusView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -117,7 +119,7 @@
 		322BBF882AE5F94300DB9ACD /* WeebResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeebResponse.swift; sourceTree = "<group>"; };
 		322BBF8A2AE8616F00DB9ACD /* PosterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosterView.swift; sourceTree = "<group>"; };
 		322BBF8C2AE8647F00DB9ACD /* GenreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenreView.swift; sourceTree = "<group>"; };
-		322BBF8E2AE866AB00DB9ACD /* AiringStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AiringStatusView.swift; sourceTree = "<group>"; };
+		322BBF8E2AE866AB00DB9ACD /* AiringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AiringView.swift; sourceTree = "<group>"; };
 		322BBF902AE8B35600DB9ACD /* WatchProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchProgressView.swift; sourceTree = "<group>"; };
 		323E4D762AF02A8D001F2CA1 /* SearchCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCellView.swift; sourceTree = "<group>"; };
 		323E4D782AF18997001F2CA1 /* StatusPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusPickerView.swift; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 		32B002162B08188D00D9C5D6 /* RecommendedCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendedCellView.swift; sourceTree = "<group>"; };
 		32B82BD12B1FF7870079A724 /* ProfileStatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileStatView.swift; sourceTree = "<group>"; };
 		32BA95F72B14512600EFC84D /* DeleteMediaAPIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteMediaAPIRequest.swift; sourceTree = "<group>"; };
+		32CB70012BD5D3860040CC68 /* ProgressStepperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressStepperView.swift; sourceTree = "<group>"; };
 		32CCAB3C2B16B08400C5C18C /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		32CCAB3E2B16B0E500C5C18C /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		32CCAB402B16B15B00C5C18C /* UserAPIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPIRequest.swift; sourceTree = "<group>"; };
@@ -172,6 +175,7 @@
 		32F37ED32B0C2E940015F225 /* ProgressSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressSliderView.swift; sourceTree = "<group>"; };
 		32F37ED52B0D70EA0015F225 /* AddMediaViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMediaViewModel.swift; sourceTree = "<group>"; };
 		32F37ED72B0D74C20015F225 /* ScoreSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreSliderView.swift; sourceTree = "<group>"; };
+		32FD461A2BD6133B00559302 /* MediaStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaStatusView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -197,6 +201,7 @@
 				322BBF692AE5C08400DB9ACD /* WatchListView.swift */,
 				322BBF902AE8B35600DB9ACD /* WatchProgressView.swift */,
 				3219EE4F2BC5B1D300F57A95 /* LoginOverlayView.swift */,
+				32FD461A2BD6133B00559302 /* MediaStatusView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -356,7 +361,7 @@
 			isa = PBXGroup;
 			children = (
 				32F37ED12B0C24830015F225 /* AddMediaView.swift */,
-				322BBF8E2AE866AB00DB9ACD /* AiringStatusView.swift */,
+				322BBF8E2AE866AB00DB9ACD /* AiringView.swift */,
 				32F37ECF2B0972E40015F225 /* BarChartView.swift */,
 				326CC9652AFD9C2700EAEFDC /* DetailProgressView.swift */,
 				320EE2062B05BECD00041382 /* DetailTabView.swift */,
@@ -373,6 +378,7 @@
 				32F37ED72B0D74C20015F225 /* ScoreSliderView.swift */,
 				32F37ECD2B0969470015F225 /* StatsView.swift */,
 				320EE2082B05BF8E00041382 /* SynopsisView.swift */,
+				32CB70012BD5D3860040CC68 /* ProgressStepperView.swift */,
 			);
 			path = Parts;
 			sourceTree = "<group>";
@@ -465,7 +471,7 @@
 				323E4D7F2AF30129001F2CA1 /* ProfileView.swift in Sources */,
 				326CC9582AF96DE000EAEFDC /* DiscoverDetailCellView.swift in Sources */,
 				322BBF6F2AE5C9C000DB9ACD /* WatchListCell.swift in Sources */,
-				322BBF8F2AE866AB00DB9ACD /* AiringStatusView.swift in Sources */,
+				322BBF8F2AE866AB00DB9ACD /* AiringView.swift in Sources */,
 				326CA7392AEB09A1004EFB16 /* AuthSerivce.swift in Sources */,
 				322BBF7A2AE5DD4E00DB9ACD /* HomeViewModel.swift in Sources */,
 				326CC9602AFD897200EAEFDC /* DetailTopSection.swift in Sources */,
@@ -479,6 +485,7 @@
 				322BBF8B2AE8616F00DB9ACD /* PosterView.swift in Sources */,
 				32F37ECE2B0969470015F225 /* StatsView.swift in Sources */,
 				326CC9662AFD9C2700EAEFDC /* DetailProgressView.swift in Sources */,
+				32CB70022BD5D3860040CC68 /* ProgressStepperView.swift in Sources */,
 				322BBF742AE5CEDF00DB9ACD /* APIRequest.swift in Sources */,
 				32A2A4AD2AEC51480083DA44 /* RefreshTokenAPIRequest.swift in Sources */,
 				32CCAB3D2B16B08400C5C18C /* AppState.swift in Sources */,
@@ -493,6 +500,7 @@
 				3219EE522BC5B6EE00F57A95 /* MediaSort.swift in Sources */,
 				326CC95C2AFD6EA900EAEFDC /* MediaDetailView.swift in Sources */,
 				320EE2072B05BECD00041382 /* DetailTabView.swift in Sources */,
+				32FD461B2BD6133B00559302 /* MediaStatusView.swift in Sources */,
 				322BBF5C2AE5BD7500DB9ACD /* OtakuSigmaApp.swift in Sources */,
 				323E4D852AF3052D001F2CA1 /* DiscoverCellView.swift in Sources */,
 				32B002132B06BD6300D9C5D6 /* InfoView.swift in Sources */,

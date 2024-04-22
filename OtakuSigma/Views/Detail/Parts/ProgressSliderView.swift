@@ -9,8 +9,7 @@ import SwiftUI
 
 struct ProgressSliderView<T: Media>: View {
     @Binding var progress: Double
-    @EnvironmentObject var mediaDetailViewModel: MediaDetailViewModel<T>
-    var media: T // TODO: Binding?
+    var media: T
     
     var body: some View {
         VStack {

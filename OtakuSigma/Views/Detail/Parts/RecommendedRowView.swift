@@ -13,7 +13,7 @@ struct RecommendedRowView<T: Media>: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text("You May Also Like (\(recommendedItems.count))")
+            Text("You May Also Like")
             
             ScrollView(.horizontal) {
                 HStack(alignment: .top) {

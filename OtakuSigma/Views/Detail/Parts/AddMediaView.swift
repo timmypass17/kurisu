@@ -112,7 +112,12 @@ struct AddMediaView<T: Media>: View {
                     .font(.system(size: 18))
                     .bold()
                 
-                ProgressSliderView<T>(progress: $mediaDetailViewModel.progress, media: media)
+                if media.numEpisodesOrChapters == 0 {
+                    ProgressStepper(progress: $mediaDetailViewModel.progress, media: media)
+                } else {
+                    ProgressSliderView(progress: $mediaDetailViewModel.progress, media: media)
+                }
+                
                 
                 Divider()
                     .padding(.vertical, 8)

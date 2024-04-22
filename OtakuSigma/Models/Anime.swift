@@ -90,23 +90,22 @@ struct Anime: Media {
             
             return nextEpisodeDate.formatted(date: .abbreviated, time: .shortened)
         case .notYetAired:
-            guard let startDateString = startDate else { return "No airing date found" }
-            let startTime = broadcast?.startTime ?? "12:00" // estimate start
-            // Create a date formatter
+            guard let startDateString = startDate else { return "TBA" }
+            print(title, startDateString)
+
             let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd"
+            dateFormatter.dateFormat = "yyyy-MM-dd" // ex. 2024-05-12
+            
+            let otherDateFormatter = DateFormatter()
+            otherDateFormatter.dateFormat = "yyyy-MM" // ex. 2024-10
             
             if var jspDate = dateFormatter.date(from: startDateString) {
-                var dateComponents = DateComponents()
-                let militaryTimeComponents = startTime.split(separator: ":")
-                if militaryTimeComponents.count == 2,
-                   let hour = Int(militaryTimeComponents[0]),
-                   let minute = Int(militaryTimeComponents[1]) {
-                    jspDate = Calendar.current.date(bySettingHour: hour, minute: minute, second: 0, of: jspDate)!
-                }
-                let pstDate = jspDate.convertToTimeZone(initTimeZone: TimeZone(identifier: "JST")!, timeZone: TimeZone.current)
-                return pstDate.formatted(date: .abbreviated, time: .shortened)
+                return jspDate.formatted(date: .abbreviated, time: .omitted)
+            } else if var jspDate = otherDateFormatter.date(from: startDateString) {
+                let dateParts = Calendar.current.dateComponents([.year, .month], from: jspDate)
+                return "\(otherDateFormatter.monthSymbols[dateParts.month! - 1]) \(dateParts.year!)"
             }
+            
             return "Failed to convert JSP to PST"
         case .finishedAiring:
             return "Finished Airing"

@@ -39,10 +39,10 @@ struct WatchListCell: View {
                     total: Float(item.numEpisodesOrChapters)
                 ) {
                     HStack(spacing: 4) {
-                        MediaStatusView(status: item.status)
-                            .font(.caption)
+                        AiringView(status: item.status)
                         
                         Spacer()
+                        
                         Text("\(item.episodeOrChapterString()): ")
                             .foregroundColor(.secondary)
                             .font(.caption)
@@ -51,30 +51,23 @@ struct WatchListCell: View {
                             .foregroundColor(.secondary)
                             .font(.caption)
                         
-                        Text("\(item.numEpisodesOrChapters)")
-                            .foregroundColor(.secondary)
-                            .font(.caption)
+                        Group {
+                            if item.numEpisodesOrChapters == 0 {
+                                Text("?")
+                            } else {
+                                Text("\(item.numEpisodesOrChapters)")
+                            }
+                        }
+                        .foregroundColor(.secondary)
+                        .font(.caption)
                         
                     }
                     
                 }
                 .progressViewStyle(.linear)
                 
-                HStack {
-                    Image(systemName: "clock")
-                    
-                    if let status = item.status as? AnimeStatus {
-                        if status == .currentlyAiring {
-                            Text("Next Episode: \(item.nextReleaseString)")
-                        } else if status == .notYetAired {
-                            Text("Airing Date: \(item.nextReleaseString)")
-                        } else if status == .finishedAiring {
-                            Text("Finished Airing")
-                        }
-                    }
-                }
-                .foregroundColor(.secondary)
-                .font(.caption)
+                MediaStatusView(item: item)
+
             }
         }
     }
@@ -144,27 +137,3 @@ struct GenreRow: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
-
-struct MediaStatusView: View {
-    let status: MediaStatus
-    
-    var body: some View {
-        HStack(alignment: .center, spacing: 4) {
-            Circle()
-                .fill(status.color)
-                .frame(width: 5)
-                .padding(.top, 2)
-            
-            Text(status.description)
-                .font(.system(size: 10))
-                .lineLimit(1)
-        }
-        .padding(.vertical, 2)
-        .padding(.horizontal, 4)
-        .background{
-            RoundedRectangle(cornerRadius: 2)
-                .fill(.regularMaterial)
-        }
-    }
-}
-

@@ -17,7 +17,7 @@ class MediaDetailViewModel<T: Media>: ObservableObject {
     @Published var score: Double = 0    // slider only takes double
     @Published var comments: String = ""
         
-    @Published var selectedStatus: SelectedStatus = .plan_to_watch 
+    @Published var selectedStatus: SelectedStatus = .watching
 //    {
 //        didSet {
 //            if selectedStatus == .completed && media.numEpisodesOrChapters > 0 {

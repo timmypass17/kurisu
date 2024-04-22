@@ -12,7 +12,7 @@ struct DetailProgressView<T: Media>: View {
     var progress: Double
     
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 10) {
             ProgressView(
                 value: Float(progress),
                 total: Float(media.numEpisodesOrChapters)
@@ -34,9 +34,10 @@ struct DetailProgressView<T: Media>: View {
             }
             .progressViewStyle(.linear)
             
-            Label("Next Episode: ", systemImage: "clock")
-                .foregroundColor(.secondary)
-                .font(.caption)
+            MediaStatusView(item: media)
+//            Label("Next Episode: ", systemImage: "clock")
+//                .foregroundColor(.secondary)
+//                .font(.caption)
         }
     }
 }

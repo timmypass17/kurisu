@@ -30,6 +30,7 @@ struct MediaDetailView<T: Media>: View {
                     
                     switch mediaDetailViewModel.selectedTab {
                     case .background:
+                        
                         SynopsisView(text: media.synopsis)
                             .padding(.top)
                         
@@ -51,7 +52,6 @@ struct MediaDetailView<T: Media>: View {
                         InfoView(media: media)
                             .padding(.top)
                         
-                        
                     case .statistic:
                         StatsView(media: media)
                             .padding(.top)
@@ -63,33 +63,13 @@ struct MediaDetailView<T: Media>: View {
                         }
                     }
                     
+                    Spacer()
+
                 }
                 .padding()
                 .padding(.top)
                 
-//                if mediaDetailViewModel.isInUserList {
-//                    Button("Delete", role: .destructive) {
-//                        Task {
-//                            await mediaDetailViewModel.didTapDeleteButton()
-//                        }
-//                    }
-//                }
 //                Spacer()
-            }
-            .onAppear {
-    //            if let (media, status, index) = appState.getMediaItem(id: mediaDetailViewModel.media.id) {
-    //                print("Updating progress")
-                    // TODO: Key is to update progress BOTH locally (mediaDetailViewModel) and globally (appState)
-                    // Why do I have to update in 2 different places?
-                    // - We inject a media into the detail viewmodel so the viewmodel has it's own anime instance, separate from appState
-                    //     - So changes in viewmodel's anime instance are not updating underlying appState's anime list
-                    //     - TODO: Possible solution is to pass a binding of the anime object to the detailView instead of injecting a separate copy into the viewmodel.
-    //                mediaDetailViewModel.media.myListStatus?.progress = 11
-    //                mediaDetailViewModel.progress = 11  // note: Make sure to update progress field aswell
-    //                appState.userAnimeList[status as! AnimeWatchListStatus]?[index].myListStatus?.progress = 11
-
-    //            }
-
             }
             .navigationTitle(media.title)
             .navigationBarTitleDisplayMode(.inline)
