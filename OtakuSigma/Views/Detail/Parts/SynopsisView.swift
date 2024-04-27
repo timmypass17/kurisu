@@ -37,7 +37,7 @@ struct SynopsisView: View {
         .padding()
         .background {
             RoundedRectangle(cornerRadius: 4)
-                .fill(.regularMaterial)
+                .fill(.quinary)
         }
     }
 }

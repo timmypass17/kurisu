@@ -17,15 +17,6 @@ struct GenreView: View {
                 ForEach(item.genres.prefix(maxTags), id: \.name) { tag in
                     TagView(text: tag.name)
                 }
-                
-//                if item.genres.count > maxTags {
-//                    HStack(spacing: 0) {
-//                        Image(systemName: "plus")
-//                        Text("\((item.genres.count) - maxTags) more")
-//                    }
-//                    .foregroundColor(.secondary)
-//                    .padding(.leading, 2)
-//                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

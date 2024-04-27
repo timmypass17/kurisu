@@ -16,7 +16,7 @@ class DiscoverDetailViewModel<T: Media>: ObservableObject {
     let season: Season?
     
     let mediaService: MediaService
-    private let limit = 10
+    private let limit = 25
     private var page = 0
     
     var mediaTask: Task<Void, Never>? = nil

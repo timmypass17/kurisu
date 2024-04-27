@@ -14,27 +14,27 @@ struct DiscoverCellView<T: Media>: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            AsyncImage(url: URL(string: media.mainPicture.medium)) { image in
+            AsyncImage(url: URL(string: media.mainPicture.large)) { image in
                 image
                     .resizable()
                     .scaledToFill()
-                    .frame(width: width, height: height)
-                    .clipShape(RoundedRectangle(cornerRadius: 5))
             } placeholder: {
-                ProgressView()
+                Color(uiColor: UIColor.tertiarySystemFill)
             }
             .frame(width: width, height: height)
+            .clipShape(RoundedRectangle(cornerRadius: 5))
             
-            Text(media.title)
+            Text(media.getTitle())
                 .font(.system(size: 14))
                 .lineLimit(1)
                 .padding(.top, 4)
-
-            Text("\(media.mediaType.uppercased()) - \(media.numEpisodesOrChapters) \(T.episodesOrChaptersString)")
+            
+            let numEpisodesOrChaptersString = media.numEpisodesOrChapters > 0 ? "\(media.numEpisodesOrChapters)" : "?"
+            Text("\(media.mediaType.uppercased()) - \(numEpisodesOrChaptersString) \(T.episodesOrChaptersString)")
                 .foregroundColor(.secondary)
                 .font(.system(size: 10))
-            
-            StatusView(status: media.status.description.capitalized.replacingOccurrences(of: "_", with: " "), color: media.status.color)
+
+            AiringView(status: media.status)
                 .padding(.top, 2)
                         
         }
@@ -43,29 +43,6 @@ struct DiscoverCellView<T: Media>: View {
     }
 }
 
-struct StatusView: View {
-    let status: String
-    let color: Color
-    
-    var body: some View {
-        HStack(alignment: .center, spacing: 4) {
-            Circle()
-                .fill(color)
-                .frame(width: 5)
-                .padding(.top, 2)
-            
-            Text(status)
-                .font(.system(size: 10))
-                .lineLimit(1)
-        }
-        .padding(.vertical, 2)
-        .padding(.horizontal, 4)
-        .background{
-            RoundedRectangle(cornerRadius: 2)
-                .fill(.regularMaterial)
-        }
-    }
-}
 
 struct DiscoverCellView_Previews: PreviewProvider {
     static var previews: some View {

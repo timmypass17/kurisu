@@ -20,16 +20,22 @@ struct PosterView: View {
                     image
                         .resizable()
                         .scaledToFill()
-                        .frame(width: width, height: height)
-                        .clipShape(RoundedRectangle(cornerRadius: 5))
 //                        .overlay {
 //                            RoundedRectangle(cornerRadius: 5)
 //                                .stroke(.secondary)
 //                        }
 //                        .shadow(radius: 2)
                 } placeholder: {
-                    ProgressView()
+                    Color(uiColor: UIColor.tertiarySystemFill)
                 }
+                .frame(width: width, height: height)
+                .clipShape(RoundedRectangle(cornerRadius: 5))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 5)
+                        .stroke(.secondary)
+                }
+                .shadow(radius: 2)
+
             } else {
                 RoundedRectangle(cornerRadius: 5)
                     .fill(Color(.placeholderText))

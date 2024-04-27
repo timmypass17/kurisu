@@ -50,10 +50,20 @@ protocol Media: Codable, WeebItemConfiguration {
     var nextReleaseString: String { get }
     
     func changeTitle() 
+    
+    func getTitle() -> String
 }
 
 extension Media {
+    
     // Default implementations
+    func getTitle() -> String {
+        if alternativeTitles.en.isEmpty {
+            return title    // japanese title
+        }
+        return alternativeTitles.en
+    }
+    
     func changeTitle() {
 //        title = "New Title"
     }

@@ -11,7 +11,7 @@ struct MediaStatusView: View {
     var item: Media
     
     var body: some View {
-        HStack {
+        HStack(spacing: 6) {
             if let status = item.status as? AnimeStatus {
                 if status == .currentlyAiring {
                     Image(systemName: "clock")
@@ -20,7 +20,7 @@ struct MediaStatusView: View {
                     Image(systemName: "clock")
                     Text("Airing Date: \(item.nextReleaseString)")
                 } else if status == .finishedAiring {
-                    Image(systemName: "flag")
+                    Image(systemName: "sparkles")
                     Text("Finished Airing")
                 }
             }

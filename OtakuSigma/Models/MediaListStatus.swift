@@ -11,7 +11,7 @@ protocol MediaListStatus: CaseIterable, Identifiable, Hashable {
     static var tabItems: [Self] { get }
     var key: String { get }
     var id: Self { get }
-    
+    var description: String { get }
 }
 
 extension MediaListStatus {
@@ -19,7 +19,7 @@ extension MediaListStatus {
 }
 
 enum AnimeWatchListStatus: String, MediaListStatus {
-    case all
+    case all = ""   // ommit value if query for 'all'
     case watching
     case completed
     case dropped
@@ -28,6 +28,15 @@ enum AnimeWatchListStatus: String, MediaListStatus {
     
     static var tabItems: [AnimeWatchListStatus] = [.all, .watching, .completed, .planToWatch]
     var key: String { self.rawValue }
+    
+    var description: String {
+        switch self {
+        case .all:
+            return "All"
+        default:
+            return self.key.replacingOccurrences(of: "_", with: " ").capitalized
+        }
+    }
 }
 
 enum MangaReadListStatus: String, MediaListStatus {
@@ -40,4 +49,13 @@ enum MangaReadListStatus: String, MediaListStatus {
     
     static var tabItems: [MangaReadListStatus] = [.all, .reading, .completed, .planToRead]
     var key: String { self.rawValue }
+    
+    var description: String {
+        switch self {
+        case .all:
+            return "All"
+        default:
+            return self.key.replacingOccurrences(of: "_", with: " ").capitalized
+        }
+    }
 }

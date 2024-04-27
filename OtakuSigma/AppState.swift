@@ -32,8 +32,10 @@ class AppState: ObservableObject {
     init() {
         Task {
             await loadUser()
+            await loadUserAnimeList(status: .all)
             await loadUserAnimeList(status: .watching)
-//            await loadUserAnimeList(status: .completed)
+            await loadUserAnimeList(status: .completed)
+            await loadUserAnimeList(status: .planToWatch)
         }
         
 //        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [self] _ in
@@ -100,6 +102,7 @@ class AppState: ObservableObject {
     // Returns section and index of item (ex. "watching", 2 or "reading", 5)
     func getSectionAndIndex(id: Int) -> (any MediaListStatus, Int)? {
         for (animeStatus, animes) in userAnimeList {
+            if animeStatus == .all { continue }
             if let index = animes.firstIndex(where: { $0.id == id }) {
                 return (animeStatus, index)
             }
@@ -125,18 +128,37 @@ class AppState: ObservableObject {
         
     }
     
-//    func insert<T: Media>(media: T, to status: any MediaListStatus, at index: Int) {
-//        if let anime = media as? Anime, let status = status as? AnimeWatchListStatus {
-//            userAnimeList[status]?.insert(anime, at: index)
-//        } else if let manga = media as? Manga, let status = status as? MangaReadListStatus {
-//            userMangaList[status]?.insert(manga, at: index)
-//        }
-//    }
+    func addMedia(media: Media, myListStatus: ListStatus) {
+        if let anime = media as? Anime,
+           let myAnimeListStatus = myListStatus as? AnimeListStatus {
+            // Delete old item (if it exists)
+            if let (oldStatus, i) = getSectionAndIndex(id: media.id) as? (AnimeWatchListStatus, Int) {
+                print("User changed section from \(oldStatus.rawValue) -> \(myAnimeListStatus.status)")
+                userAnimeList[oldStatus]?.remove(at: i)
+            }
+            
+            // Insert new item to top
+            userAnimeList[AnimeWatchListStatus(rawValue: myAnimeListStatus.status)!]?.insert(anime, at: 0)
+            
+            // Delete old item in 'all' (if it exists)
+            if let i = userAnimeList[.all]?.firstIndex(where: { $0.id == media.id }) {
+                userAnimeList[.all]?.remove(at: i)
+            }
+            // Insert new item to top of 'all'
+            userAnimeList[.all]?.insert(anime, at: 0)
+        }
+    }
     
     func removeMedia(id: Int) {
+        // Remove from 'all' if necessary
+        if let i = userAnimeList[.all]?.firstIndex(where: { $0.id == id }) {
+            userAnimeList[.all]?.remove(at: i)
+        }
+        
+        // Look through each section to find item
         for (animeStatus, animes) in userAnimeList {
             if let index = animes.firstIndex(where: { $0.id == id }) {
-                print("Found anime to delete")
+                print("Found anime to delete in \(animeStatus.rawValue)")
                 userAnimeList[animeStatus]?.remove(at: index)
                 return
             }
@@ -149,6 +171,8 @@ class AppState: ObservableObject {
                 return
             }
         }
+        
+        print("Did not find item to delete")
     }
 
 }

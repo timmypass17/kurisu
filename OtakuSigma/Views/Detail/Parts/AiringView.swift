@@ -15,7 +15,6 @@ struct AiringView: View {
             Circle()
                 .fill(status.color)
                 .frame(width: 5)
-                .padding(.top, 2)
             
             Text(status.description)
                 .font(.system(size: 10))

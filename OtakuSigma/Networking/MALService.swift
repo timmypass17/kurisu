@@ -14,7 +14,7 @@ protocol MediaService {
     func getMediaRanking<T: Media>(rankingType: String, limit: Int, offset: Int) async throws -> [T]
     func getSeasonalAnime<T: Media>(year: String, season: Season, sort: RankingSort, limit: Int, offset: Int) async throws -> [T]
     func getMediaDetail<T: Media>(id: Int, fields: [String]) async throws -> T
-    func updateMediaListStatus<T: UpdateResponse>(id: Int, status: String, score: Int, progress: Int, comments: String) async throws -> T
+    func updateMediaListStatus<T: UpdateResponse>(id: Int, listStatus: ListStatus) async throws -> T
     func deleteMediaItem<T: Media>(id: Int) async throws -> T?  // return not used
     func getUser(accessToken: String) async throws -> User
     func getAdditionalUserListInfo<T: GenreItemProtocol>() async throws -> [T]
@@ -56,11 +56,17 @@ struct MALService: MediaService {
         return data
     }
     
-    func updateMediaListStatus<T: UpdateResponse>(id: Int, status: String, score: Int, progress: Int, comments: String) async throws -> T {
-        let request = UpdateMediaListStatusAPIRequest<T>(id: id, status: status, score: score, progress: progress, comments: comments)
+    func updateMediaListStatus<T: UpdateResponse>(id: Int, listStatus: ListStatus) async throws -> T {
+        let request = UpdateMediaListStatusAPIRequest<T>(id: id, listStatus: listStatus)
         let data = try await sendRequest(request)
         return data
     }
+    
+//    func updateMediaListStatus<T: UpdateResponse>(id: Int, status: String, score: Int, progress: Int, comments: String) async throws -> T {
+//        let request = UpdateMediaListStatusAPIRequest<T>(id: id, status: status, score: score, progress: progress, comments: comments)
+//        let data = try await sendRequest(request)
+//        return data
+//    }
     
     func deleteMediaItem<T: Media>(id: Int) async throws -> T? { // note: always returns nil, we just need to use T somewhere
         let request = DeleteMediaAPIRequest<T>(id: id)

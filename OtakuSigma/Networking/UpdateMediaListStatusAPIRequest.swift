@@ -9,10 +9,11 @@ import Foundation
 
 struct UpdateMediaListStatusAPIRequest<T: UpdateResponse>: APIRequest {
     var id: Int
-    var status: String
-    var score: Int
-    var progress: Int
-    var comments: String
+    var listStatus: ListStatus
+//    var status: String
+//    var score: Int
+//    var progress: Int
+//    var comments: String
     
     var urlRequest: URLRequest {
         let urlComponents = URLComponents(string: "\(T.baseURL)/\(id)/my_list_status")!
@@ -20,12 +21,17 @@ struct UpdateMediaListStatusAPIRequest<T: UpdateResponse>: APIRequest {
         var request = URLRequest(url: urlComponents.url!)
         request.httpMethod = "PUT"
         
-        let params: [String: Any] = [
-            "status": status,
-            "score": score,
-            T.progressKey: progress,
-            "comments": comments
+        var params: [String: Any] = [
+            "status": listStatus.status,
+            "score": listStatus.score,
+            T.progressKey: listStatus.progress
+//            "comments": listStatus.comments
         ]
+        
+        if let comments = listStatus.comments {
+            params["comments"] = comments
+        }
+        
         print(params)
         
         let queryString = params.map { "\($0.key)=\($0.value)" }.joined(separator: "&")

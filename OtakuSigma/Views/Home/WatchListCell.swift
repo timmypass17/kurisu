@@ -23,7 +23,7 @@ struct WatchListCell: View {
                         .font(.caption)
                     
                     HStack(spacing: 4){
-                        Text(item.title)
+                        Text(item.getTitle())
                     }
                     .lineLimit(1)
                     .truncationMode(.tail)
@@ -89,21 +89,21 @@ struct DetailPoster: View {
     
     var body: some View {
         if let poster = poster {
-            AsyncImage(url: URL(string: poster.medium)) { image in
+            AsyncImage(url: URL(string: poster.large)) { image in
                 image
                     .resizable()
                     .scaledToFill()
-                    .frame(width: width, height: height)
-                    .clipShape(RoundedRectangle(cornerRadius: 5))
                     .overlay {
                         RoundedRectangle(cornerRadius: 5)
                             .stroke(.secondary)
                     }
                     .shadow(radius: 2)
             } placeholder: {
-                ProgressView()
-                    .frame(width: width, height: height)
+                Color(uiColor: UIColor.tertiarySystemFill)
             }
+            .frame(width: width, height: height)
+            .clipShape(RoundedRectangle(cornerRadius: 5))
+
         } else {
             RoundedRectangle(cornerRadius: 5)
                 .fill(Color(.placeholderText))

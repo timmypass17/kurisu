@@ -12,16 +12,15 @@ struct RecommendedCellView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            AsyncImage(url: URL(string: recommendedItem.node.mainPicture.medium)) { image in
+            AsyncImage(url: URL(string: recommendedItem.node.mainPicture.large)) { image in
                 image
                     .resizable()
                     .scaledToFill()
-                    .frame(width: 100, height: 150)
-                    .clipShape(RoundedRectangle(cornerRadius: 5))
             } placeholder: {
-                ProgressView()
-                    .frame(width: 100, height: 150)
+                Color(uiColor: UIColor.tertiarySystemFill)
             }
+            .frame(width: 100, height: 150)
+            .clipShape(RoundedRectangle(cornerRadius: 5))
             
             Label("\(recommendedItem.numRecommendations) Recs", systemImage: "person")
                 .font(.system(size: 12))

@@ -67,11 +67,16 @@ struct MediaDetailView<T: Media>: View {
 
                 }
                 .padding()
-                .padding(.top)
+                .padding(.top, 127) // 45, 115
+                .background(alignment: .top) {
+                    DetailBackground(url: media.mainPicture.large)
+                }
                 
 //                Spacer()
             }
-            .navigationTitle(media.title)
+            .ignoresSafeArea(edges: .top)
+//            .edgesIgnoringSafeArea(.top)
+            .navigationTitle(media.getTitle())
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $mediaDetailViewModel.isShowingAddMediaView, content: {
                 NavigationStack {
@@ -82,6 +87,7 @@ struct MediaDetailView<T: Media>: View {
                         }
                 }
             })
+            .toolbarBackground(.visible, for: .navigationBar) // always show it
             .toolbar {
                 ToolbarItemGroup {
                     Button {
@@ -99,9 +105,26 @@ struct MediaDetailView<T: Media>: View {
             .background(Color.ui.background)
             .environmentObject(mediaDetailViewModel)
         case .loading:
-            ProgressView()
+            Color.ui.background
+                .ignoresSafeArea()
+                .overlay {
+                    ProgressView()
+                }
+                .toolbar {
+                    Button {
+                        
+                    } label: {
+                        if mediaDetailViewModel.isInUserList {
+                            Image(systemName: "square.and.pencil")
+                        } else {
+                            Image(systemName: "plus")
+                        }
+                    }
+                    .disabled(true)
+
+                }
         case .failure(let error):
-            Text("Error loading media")
+            Text("Error loading media. Please email timmysappstuff@gmail.com to report bugs!")
         }
 
     }
@@ -119,3 +142,33 @@ struct MediaDetailView<T: Media>: View {
 //        }
 //    }
 //}
+
+struct DetailBackground: View {
+    let url: String
+
+    let gradient = LinearGradient(
+        gradient: Gradient(stops: [
+            .init(color: Color.ui.background, location: 0),
+            .init(color: .clear, location: 1.0) // 1.5 height of gradient
+        ]),
+        startPoint: .bottom,
+        endPoint: .top
+    )
+    
+    var body: some View {
+        AsyncImage(url: URL(string: url)) { image in
+            image
+                .resizable()
+                .scaledToFill()
+                .frame(height: 350)
+                .clipShape(Rectangle())
+                .overlay {
+                    gradient
+                }
+                .clipped()
+        } placeholder: {
+//            ProgressView()
+//                .frame(height: 350)
+        }
+    }
+}

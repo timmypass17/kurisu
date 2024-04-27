@@ -113,7 +113,7 @@ extension Manga: Decodable {
         alternativeTitles = try values.decode(AlternativeTitles.self, forKey: .alternativeTitles)
         numChapters = try values.decode(Int.self, forKey: .numChapters)
         mainPicture = try values.decode(MainPicture.self, forKey: .mainPicture)
-        genres = try values.decode([Genre].self, forKey: .genres)
+        genres = try values.decodeIfPresent([Genre].self, forKey: .genres) ?? []
         mangaStatus = try values.decode(MangaStatus.self, forKey: .mangaStatus)
         startDate = try values.decodeIfPresent(String.self, forKey: .startDate)
         endDate = try values.decodeIfPresent(String.self, forKey: .endDate)

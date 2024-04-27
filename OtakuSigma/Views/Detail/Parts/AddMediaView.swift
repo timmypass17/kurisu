@@ -142,14 +142,16 @@ struct AddMediaView<T: Media>: View {
                 
             }
             .padding()
-            .navigationTitle(media.title)
+            .navigationTitle(media.getTitle())
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button {
                         Task {
-                            await mediaDetailViewModel.didTapSaveButton()
+                            
                             dismiss()
+                            
+                            await mediaDetailViewModel.didTapSaveButton()
                         }
                     } label: {
                         Text("Save")

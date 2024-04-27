@@ -10,7 +10,7 @@ import SwiftUI
 struct ScoreCellView: View {
     let title: String
     let description: String
-    var imageString: String? = nil
+    var systemImage: String? = nil
     
     var body: some View {
         VStack(spacing: 2) {
@@ -22,8 +22,8 @@ struct ScoreCellView: View {
             
             
             HStack(spacing: 0) {
-                if let imageString {
-                    Image(systemName: imageString)
+                if let systemImage {
+                    Image(systemName: systemImage)
                 }
                 
                 Text(description)
@@ -34,8 +34,8 @@ struct ScoreCellView: View {
     }
 }
 
-struct ScoreCellView_Previews: PreviewProvider {
-    static var previews: some View {
-        ScoreCellView(title: "Score", description: "8.65", imageString: "star.fill")
-    }
-}
+//struct ScoreCellView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ScoreCellView(title: "Score", description: "8.65", imageString: "star.fill")
+//    }
+//}

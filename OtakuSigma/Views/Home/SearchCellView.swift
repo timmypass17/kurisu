@@ -20,7 +20,7 @@ struct SearchCellView: View {
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
             
-            PosterView(imageURL: item.mainPicture.medium, width: 100, height: 140)
+            PosterView(imageURL: item.mainPicture.large, width: 100, height: 140)
             
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
@@ -36,7 +36,7 @@ struct SearchCellView: View {
                 }
                 
                 HStack(spacing: 4){
-                    Text(item.title)
+                    Text(item.getTitle())
                 }
                 .lineLimit(1)
                 .truncationMode(.tail)

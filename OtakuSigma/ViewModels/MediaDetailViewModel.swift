@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import UIKit
 
 @MainActor
 class MediaDetailViewModel<T: Media>: ObservableObject {
@@ -88,42 +89,23 @@ class MediaDetailViewModel<T: Media>: ObservableObject {
     }
     
     func didTapSaveButton() async {
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
+        
         if case .success(let media) = mediaState {
             do {
                 // Type checking to check wheter an instance is of a certain subclass
                 if media is Anime {
-                    // Update MAL user list
-                    let response: AnimeUpdateResponse = try await mediaService.updateMediaListStatus(id: media.id, status: selectedStatus.rawValue, score: Int(score), progress: Int(progress), comments: comments)
-                    
                     // Update detail media
                     guard var updatedAnime = media as? Anime else { return }
-                    updatedAnime.myListStatus = response.listStatus
+                    let listStatus = AnimeListStatus(status: selectedStatus.rawValue, score: Int(score), numEpisodesWatched: Int(progress), comments: comments)
+                    updatedAnime.myListStatus = listStatus
                     mediaState = .success(media: updatedAnime as! T)
+                    appState.addMedia(media: updatedAnime, myListStatus: listStatus)
+
+                    // Update MAL user list
+                    let _: AnimeUpdateResponse = try await mediaService.updateMediaListStatus(id: media.id, listStatus: listStatus)
                     
-                    // Update home view
-                    if let animeListStatus = AnimeWatchListStatus(rawValue: response.listStatus.status) {
-                        guard let (status, i) = appState.getSectionAndIndex(id: media.id) as? (AnimeWatchListStatus, Int) else {
-                            // Add item
-                            print("Item not found, inserting item")
-                            appState.userAnimeList[animeListStatus]!.insert(updatedAnime , at: 0)
-                            return
-                        }
-                        
-                        guard let oldListStatus = media.myListStatus,
-                              let newListStatus = updatedAnime.myListStatus,
-                              let oldStatus = AnimeWatchListStatus(rawValue: oldListStatus.status),
-                              let newStatus = AnimeWatchListStatus(rawValue: newListStatus.status)
-                        else { return }
-                        
-                        // User may have changed status
-                        print("User changed section from \(oldStatus.rawValue) -> \(newStatus.rawValue)")
-                        // Move item to the top
-                        appState.userAnimeList[oldStatus]?.remove(at: i)
-                        appState.userAnimeList[newStatus]?.insert(updatedAnime , at: 0)
-                    } else if response.listStatus is MangaListStatus {
-//                        guard let (status, i) = appState.getSectionAndIndex(id: media.id) as? (MangaReadListStatus, Int) else { return }
-//                        appState.userMangaList[status]?[i].myListStatus = response.listStatus
-                    }
                 } else if media is Manga {
                     
                 }

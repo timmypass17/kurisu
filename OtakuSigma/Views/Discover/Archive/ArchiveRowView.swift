@@ -33,7 +33,7 @@ struct ArchiveRowView: View {
 }
 
 struct ArchiveRowView_Previews: PreviewProvider {
-    static let sampleURL = sampleAnimes[0].mainPicture.medium
+    static let sampleURL = sampleAnimes[0].mainPicture.large
     static var previews: some View {
         ArchiveRowView(archiveSection: ArchiveSection(
             year: "2022",

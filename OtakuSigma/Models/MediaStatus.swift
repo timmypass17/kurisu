@@ -25,11 +25,11 @@ enum AnimeStatus: String, MediaStatus {
     var color: Color {
         switch self {
         case .currentlyAiring:
-            return .green
-        case .notYetAired:
             return .yellow
+        case .notYetAired:
+            return .pink
         case .finishedAiring:
-            return .blue
+            return .green
         }
     }
 }
@@ -46,9 +46,9 @@ enum MangaStatus: String, MediaStatus {
     var color: Color {
         switch self {
         case .currentlyPublishing:
-            return .green
+            return .yellow
         case .finished:
-            return .blue
+            return .green
         case .onHiatus:
             return .pink
         }

@@ -14,20 +14,23 @@ struct DetailTopSection<T: Media>: View {
     
     var body: some View {
         HStack(alignment: .top) {
-            PosterView(imageURL: media.mainPicture.medium, width: 120, height: 200)
+            PosterView(imageURL: media.mainPicture.large, width: 120, height: 200)
             
             
             VStack(alignment: .leading, spacing: 0) {
                 Text(media.startSeasonString)
                     .foregroundStyle(.secondary)
+                    .shadow(radius: 1, x: 1, y: 2)
 
-                Text(media.title)
+                Text(media.getTitle())
                     .font(.system(size: 24))
                     .lineLimit(isTitleExpanded ? nil : 2)
-                
-                Text(media.alternativeTitles.en)
-                    .foregroundStyle(.secondary)
+                    .shadow(radius: 5, x: 1, y: 2)
+
+                Text(media.getTitle())
                     .lineLimit(1)
+                    .foregroundStyle(.secondary)
+                    .shadow(radius: 1, x: 1, y: 2)
                 
                 HStack {
                     Label("\(media.numEpisodesOrChapters) \(T.episodesOrChaptersString)", systemImage: "tv")
@@ -44,9 +47,13 @@ struct DetailTopSection<T: Media>: View {
                 HStack {
                     ScoreCellView(title: "Score", description: media.scoreString)
                     
-                    ScoreCellView(title: "Rank", description: media.rankString, imageString: "number")
+                    if let rank = media.rank {
+                        ScoreCellView(title: "Rank", description: "\(rank)", systemImage: "number")
+                    } else {
+                        ScoreCellView(title: "Rank", description: "?")
+                    }
                     
-                    ScoreCellView(title: "Popularity", description: formatNumber(media.numListUsers), imageString: "person.2")
+                    ScoreCellView(title: "Popularity", description: formatNumber(media.numListUsers), systemImage: "person.2")
                 }
                 .padding(.top)
             }

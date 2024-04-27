@@ -201,7 +201,7 @@ extension Anime: Decodable {
         alternativeTitles = try values.decode(AlternativeTitles.self, forKey: .alternativeTitles)
         numEpisodes = try values.decode(Int.self, forKey: .numEpisodes)
         mainPicture = try values.decode(MainPicture.self, forKey: .mainPicture)
-        genres = try values.decode([Genre].self, forKey: .genres)
+        genres = try values.decodeIfPresent([Genre].self, forKey: .genres) ?? []
         animeStatus = try values.decode(AnimeStatus.self, forKey: .animeStatus)
         startSeason = try values.decodeIfPresent(StartSeason.self, forKey: .startSeason)
         broadcast = try values.decodeIfPresent(Broadcast.self, forKey: .broadcast)
@@ -218,7 +218,7 @@ extension Anime: Decodable {
         relatedManga = try values.decodeIfPresent([RelatedItem].self, forKey: .relatedManga) ?? []
         mediaType = try values.decode(String.self, forKey: .mediaType)
         studios = try values.decode([Studio].self, forKey: .studios)
-        source = try values.decode(String.self, forKey: .source)
+        source = try values.decodeIfPresent(String.self, forKey: .source) ?? "?"
         recommendations = try values.decodeIfPresent([RecommendedItem].self, forKey: .recommendations) ?? []
         rating = (try values.decodeIfPresent(String.self, forKey: .rating) ?? "?").uppercased().replacingOccurrences(of: "_", with: " ")
         statistics = (try values.decodeIfPresent(Statistics.self, forKey: .statistics)) ?? Statistics(status: Status(watching: "0", completed: "0", onHold: "0", dropped: "0", planToWatch: "0"), numListUsers: 0)
