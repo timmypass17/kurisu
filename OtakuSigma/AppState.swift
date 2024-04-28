@@ -23,8 +23,8 @@ class AppState: ObservableObject {
     
     enum State {
         case unregistered
-        case loggedIn(User)
-        case sessionExpired(User)
+        case loggedIn(UserInfo)
+        case sessionExpired(UserInfo)
     }
     
     var homeViewModel: HomeViewModel!
@@ -43,6 +43,7 @@ class AppState: ObservableObject {
             await loadUserList(status: MangaReadListStatus.reading)
             await loadUserList(status: MangaReadListStatus.completed)
             await loadUserList(status: MangaReadListStatus.planToRead)
+            await loadUserList(status: MangaReadListStatus.onHold)
             
             userMangaList[.all] = userMangaList[.reading, default: []] + userMangaList[.completed, default: []] + userMangaList[.planToRead, default: []] + userMangaList[.onHold, default: []]
             
@@ -67,7 +68,7 @@ class AppState: ObservableObject {
                 return
             }
             print("Fetching user.. Access Token:")
-            let user = try await mediaService.getUser(accessToken: accessToken)
+            let user = try await mediaService.getUser()
             print("Got User!")
             state = .loggedIn(user)
         } catch {

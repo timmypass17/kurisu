@@ -8,24 +8,27 @@
 import Foundation
 
 struct UserAPIRequest: APIRequest {
-    let accessToken: String
+//    let accessToken: String
     
     var urlRequest: URLRequest {
         var urlComponents = URLComponents(string: "https://api.myanimelist.net/v2/users/@me")!
         urlComponents.queryItems = [
-            "fields": User.fields.joined(separator: ",")
+            "fields": UserInfo.fields.joined(separator: ",")
         ].map { URLQueryItem(name: $0.key, value: $0.value) }
         
         var request = URLRequest(url: urlComponents.url!)
         
-        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        if let accessToken = Settings.shared.accessToken {
+            request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        }
+//        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         
         return request
     }
     
-    func decodeResponse(data: Data) throws -> User {
+    func decodeResponse(data: Data) throws -> UserInfo {
         let decoder = JSONDecoder()
-        let weebItemResponse = try decoder.decode(User.self, from: data)
+        let weebItemResponse = try decoder.decode(UserInfo.self, from: data)
         return weebItemResponse
     }
 }

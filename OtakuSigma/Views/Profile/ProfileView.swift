@@ -9,86 +9,70 @@ import SwiftUI
 import Charts
 
 struct ProfileView: View {
-    @EnvironmentObject var profileViewModel: ProfileViewModel
-    @State var selectedStat: StatPicker = .all
+    @EnvironmentObject var appState: AppState
     
     var body: some View {
-        switch profileViewModel.appState.state {
-        case .unregistered:
-            Button("Login") {
-//                profileViewModel.loginButtonTapped()
-            }
-        case .loggedIn(let user):
-            
-            ScrollView {
-                VStack(alignment: .leading) {
-                    Picker("Statistic", selection: $selectedStat) {
-                        ForEach(StatPicker.allCases) { stat in
-                            Text(stat.rawValue.capitalized)
-                        }
+        NavigationStack {
+            switch appState.state {
+            case .unregistered:
+                Text("Unregistered")
+            case .loggedIn(let userInfo):
+                List {
+                    Section("My Info") {
+                        ProfileCell(title: "Name", description: "\(userInfo.name)", systemName: "person.fill")
+                        ProfileCell(title: "Joined At", description: "\(userInfo.joinedAtDateFormatted)", systemName: "calendar")
                     }
-                    .pickerStyle(.segmented)
-                    .padding([.horizontal, .top])
                     
-                    
-                    switch selectedStat {
-                    case .all:
-                        ProfileStatView(
-                            statPicker: selectedStat,
-                            listStatusData: profileViewModel.allListStatusData,
-                            genreData: profileViewModel.allGenresData,
-                            themeData: profileViewModel.allThemesData,
-                            demographicData: profileViewModel.allDemographicData
-                        )
-                    case .anime:
-                        ProfileStatView(
-                            statPicker: selectedStat,
-                            listStatusData: user.animeStatistics.toChartData(),
-                            genreData: profileViewModel.animeGenres,
-                            themeData: profileViewModel.animeThemes,
-                            demographicData: profileViewModel.animeDemographics
-                        )
-                    case .manga:
-                        ProfileStatView(
-                            statPicker: selectedStat,
-                            listStatusData: profileViewModel.mangaListStatusData,
-                            genreData: profileViewModel.mangaGenres,
-                            themeData: profileViewModel.mangaThemes,
-                            demographicData: profileViewModel.mangaDemographics
-                        )
+                    Section("Anime Statistics") {
+                        ProfileCell(title: "Total Entries", description: "\(userInfo.animeStatistics.numItems)", systemName: "chart.bar.fill")
+                        ProfileCell(title: "Watching", description: "\(userInfo.animeStatistics.numItemsWatching)", systemName: "play.fill", color: .blue)
+                        ProfileCell(title: "Completed", description: "\(userInfo.animeStatistics.numItemsCompleted)", systemName: "checkmark", color: .green)
+                        ProfileCell(title: "On Hold", description: "\(userInfo.animeStatistics.numItemsOnHold)", systemName: "pause.fill", color: .yellow)
+                        ProfileCell(title: "Dropped", description: "\(userInfo.animeStatistics.numItemsDropped)", systemName: "xmark", color: .red)
+                        ProfileCell(title: "Plan To Watch", description: "\(userInfo.animeStatistics.numItemsPlanToWatch)", systemName: "bookmark.fill", color: .purple)
                     }
-
-                }
-                
-            }
-            .navigationTitle(user.name)
-            .navigationBarTitleDisplayMode(.inline)
-            .background(Color.ui.background)
-            .toolbar {
-                ToolbarItem {
-                    Button("Settings", systemImage: "gearshape.fill") {
-                        
+                    
+                    Section("Anime Info") {
+                        ProfileCell(title: "Mean Score", description: "\(userInfo.animeStatistics.meanScore)", systemName: "star.fill")
+                        ProfileCell(title: "Days", description: "\(userInfo.animeStatistics.numDays)", systemName: "clock")
+                        ProfileCell(title: "Episodes Watched", description: "\(userInfo.animeStatistics.numEpisodes)", systemName: "tv")
+                        ProfileCell(title: "Rewatch Count", description: "\(userInfo.animeStatistics.numTimesRewatched)", systemName: "arrow.clockwise")
                     }
                 }
+                .navigationTitle("My Profile")
+                .toolbar {
+                    NavigationLink {
+                        SettingsView()
+                    } label: {
+                        Image(systemName: "gearshape.fill")
+                    }
+                }
+                // TOOD: Add settings to show dropped and planning items
+            case .sessionExpired(let userInfo):
+                Text("Session expired")
             }
-            
-        case .sessionExpired(_):
-            Text("Refresh Token")
         }
     }
 }
 
-//#Preview("ProfileView") {
-////    let appState = AppState()
-//    appState.state = .loggedIn(User.sampleUser)
-//    return NavigationStack {
-//        ProfileView()
-//            .environmentObject(ProfileViewModel(appState: appState, mediaService: MALService()))
-//    }
-//}
-
-enum StatPicker: String, CaseIterable, Identifiable {
-    case all, anime, manga
+struct ProfileCell: View {
+    var title: String
+    var description: String
+    var systemName: String
+    var color: Color?
     
-    var id: Self { self }
+    var body: some View {
+        HStack {
+            if let color {
+                Image(systemName: systemName)
+                //                    .foregroundStyle(color)
+            } else {
+                Image(systemName: systemName)
+            }
+            Text(title)
+            Spacer()
+            Text(description)
+                .foregroundStyle(.secondary)
+        }
+    }
 }

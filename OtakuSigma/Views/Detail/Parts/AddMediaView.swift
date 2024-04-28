@@ -211,6 +211,9 @@ struct AddMediaView<T: Media>: View {
         }
         .environmentObject( mediaDetailViewModel)
         .background(Color.ui.background)
+        .onAppear {
+            print(mediaDetailViewModel.selectedStatus)
+        }
 
     }
 }

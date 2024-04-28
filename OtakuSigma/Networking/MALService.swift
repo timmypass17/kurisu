@@ -16,7 +16,7 @@ protocol MediaService {
     func getMediaDetail<T: Media>(id: Int, fields: [String]) async throws -> T
     func updateMediaListStatus(id: Int, listStatus: ListStatus) async throws
     func deleteMediaItem<T: Media>(id: Int) async throws -> T?  // return not used
-    func getUser(accessToken: String) async throws -> User
+    func getUser() async throws -> UserInfo
     func getAdditionalUserListInfo<T: GenreItemProtocol>() async throws -> [T]
     func getRelatedAnimes<T: Media>(id: Int, mediaType: T.Type) async throws -> [RelatedItem]
     func getRelatedMangas<T: Media>(id: Int, mediaType: T.Type) async throws -> [RelatedItem]
@@ -75,8 +75,8 @@ struct MALService: MediaService {
         return nil
     }
     
-    func getUser(accessToken: String) async throws -> User {
-        let request = UserAPIRequest(accessToken: accessToken)
+    func getUser() async throws -> UserInfo {
+        let request = UserAPIRequest()
         let user = try await sendRequest(request)
         return user
     }

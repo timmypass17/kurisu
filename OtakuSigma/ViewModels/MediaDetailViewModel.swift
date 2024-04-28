@@ -43,15 +43,15 @@ class MediaDetailViewModel<T: Media>: ObservableObject {
     @Published var progress: Double = 0 // slider only takes double (can't use media's Int progress)
     @Published var score: Double = 0    // slider only takes double
     @Published var comments: String = ""
-        
-    @Published var selectedStatus: any SelectedStatus = T.self is Anime ? SelectedAnimeStatus.watching : SelectedMangaStatus.reading
+    
+    @Published var selectedStatus: any SelectedStatus = SelectedAnimeStatus.watching
     {
         didSet {
             let generator = UIImpactFeedbackGenerator(style: .medium)
             generator.impactOccurred()
-//            if selectedStatus == .completed && media.numEpisodesOrChapters > 0 {
-//                progress = Double(media.numEpisodesOrChapters)
-//            }
+            //            if selectedStatus == .completed && media.numEpisodesOrChapters > 0 {
+            //                progress = Double(media.numEpisodesOrChapters)
+            //            }
         }
     }
     
@@ -79,6 +79,13 @@ class MediaDetailViewModel<T: Media>: ObservableObject {
         self.mediaState = .success(media: media)
         self.appState = appState
         
+        // Initalize selected status
+        if media is Anime {
+            self.selectedStatus = SelectedAnimeStatus.watching
+        } else {
+            self.selectedStatus = SelectedMangaStatus.reading
+        }
+        
         Task {
             let fetchedMedia: T =  try await mediaService.getMediaDetail(id: media.id)
             self.mediaState = .success(media: fetchedMedia)
@@ -87,21 +94,18 @@ class MediaDetailViewModel<T: Media>: ObservableObject {
         // Hit cache
         if let userListStatus {
             print("Has list status")
-            if case .success(_) = mediaState {
-                var updatedMedia = media
-                updatedMedia.myListStatus = userListStatus
-                self.mediaState = .success(media: updatedMedia)
-                if updatedMedia is Anime {
-                    self.selectedStatus = SelectedAnimeStatus(rawValue: userListStatus.status)!
-                } else {
-                    self.selectedStatus = SelectedMangaStatus(rawValue: userListStatus.status)!
-                }
-
-                self.progress = Double(userListStatus.progress)
-                self.score = Double(userListStatus.score)
-                self.comments = userListStatus.comments ?? ""
+            var updatedMedia = media
+            updatedMedia.myListStatus = userListStatus
+            self.mediaState = .success(media: updatedMedia)
+            if updatedMedia is Anime {
+                self.selectedStatus = SelectedAnimeStatus(rawValue: userListStatus.status)!
+            } else {
+                self.selectedStatus = SelectedMangaStatus(rawValue: userListStatus.status)!
             }
             
+            self.progress = Double(userListStatus.progress)
+            self.score = Double(userListStatus.score)
+            self.comments = userListStatus.comments ?? ""
         }
     }
     
@@ -135,7 +139,7 @@ class MediaDetailViewModel<T: Media>: ObservableObject {
                     anime.myListStatus = listStatus
                     mediaState = .success(media: anime as! T)
                     appState.addMedia(media: anime, myListStatus: listStatus)
-
+                    
                     // Update MAL user list
                     try await mediaService.updateMediaListStatus(id: media.id, listStatus: listStatus)
                     
@@ -171,6 +175,6 @@ class MediaDetailViewModel<T: Media>: ObservableObject {
             }
         }
     }
-
+    
 }
 

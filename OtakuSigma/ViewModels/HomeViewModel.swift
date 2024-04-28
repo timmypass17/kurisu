@@ -68,8 +68,16 @@ class HomeViewModel: ObservableObject {
     private func filterTextValueChanged() {
         guard let appState else { return }
         if selectedMediaType == .anime {
+            if filteredText.isEmpty {
+                filteredUserAnimeList = appState.userAnimeList[selectedAnimeStatus, default: []]
+                return
+            }
             filteredUserAnimeList = appState.userAnimeList[selectedAnimeStatus, default: []].filter { $0.title.lowercased().contains(filteredText.lowercased()) }
         } else {
+            if filteredText.isEmpty { 
+                filteredUserMangaList = appState.userMangaList[selectedMangaStatus, default: []]
+                return
+            }
             filteredUserMangaList = appState.userMangaList[selectedMangaStatus, default: []].filter { $0.title.lowercased().contains(filteredText.lowercased()) }
         }
     }

@@ -12,6 +12,7 @@ import SwiftUI
 struct OtakuSigmaApp: App {
     @StateObject var homeViewModel: HomeViewModel
     @StateObject var discoverViewModel: DiscoverViewModel
+//    @StateObject var profileViewModel = ProfileViewModel()
     let authService = MALAuthService()
     let mediaService = MALService()
     @StateObject var appState = AppState()   // inject into viewmodels (contains user data)
@@ -40,7 +41,18 @@ struct OtakuSigmaApp: App {
                 
                 NavigationStack {
                     ProfileView()
-//                        .environmentObject(profileViewModel)
+                        .environmentObject(appState)
+                        .onAppear {
+                            Task {
+                                do {
+                                    let user = try await mediaService.getUser()
+                                    appState.state = .loggedIn(user)
+                                } catch {
+                                    print("Fail to fetch user")
+                                }
+                            }
+                        }
+                    
                 }
                 .tabItem { Label("Profile", systemImage: "person") }
             }
@@ -60,7 +72,7 @@ struct OtakuSigmaApp: App {
     func handleLogin(_ url: URL) async {
         guard let tokenResponse = await authService.handleLogin(url: url) else { return }
         do {
-            let user = try await mediaService.getUser(accessToken: tokenResponse.accessToken)
+            let user = try await mediaService.getUser()
             appState.state = .loggedIn(user)
             await appState.loadUserList(status: homeViewModel.selectedAnimeStatus)
         } catch {
