@@ -14,11 +14,13 @@ struct WatchListCell: View {
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
             
-            DetailPoster(poster: item.mainPicture, width: 85.0, height: 135.0)
+            PosterView(imageURL: item.mainPicture.large, width: 85, height: 135, includeBorder: false)
+
+//            DetailPoster(poster: item.mainPicture, width: 85.0, height: 135.0)
             
             VStack(alignment: .leading, spacing: 10) {
                 VStack(alignment: .leading, spacing: 0) {
-                    Text(item.startSeasonString)
+                    Text("\(item.startSeasonString) \(item.id)")
                         .foregroundColor(.secondary)
                         .font(.caption)
                     
@@ -43,7 +45,7 @@ struct WatchListCell: View {
                         
                         Spacer()
                         
-                        Text("\(item.episodeOrChapterString()): ")
+                        Text("\(item.getEpisodeOrChapterString().capitalized): ")
                             .foregroundColor(.secondary)
                             .font(.caption)
                         
@@ -70,6 +72,8 @@ struct WatchListCell: View {
 
             }
         }
+        .contentShape(Rectangle())
+//        .background(.blue)
     }
 }
 
@@ -81,36 +85,41 @@ struct WatchListCell_Previews: PreviewProvider {
     }
 }
 
-struct DetailPoster: View {
-    let poster: MainPicture?
-    var width: CGFloat
-    var height: CGFloat
-    
-    
-    var body: some View {
-        if let poster = poster {
-            AsyncImage(url: URL(string: poster.large)) { image in
-                image
-                    .resizable()
-                    .scaledToFill()
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 5)
-                            .stroke(.secondary)
-                    }
-                    .shadow(radius: 2)
-            } placeholder: {
-                Color(uiColor: UIColor.tertiarySystemFill)
-            }
-            .frame(width: width, height: height)
-            .clipShape(RoundedRectangle(cornerRadius: 5))
-
-        } else {
-            RoundedRectangle(cornerRadius: 5)
-                .fill(Color(.placeholderText))
-                .frame(width: width, height: height)
-        }
-    }
-}
+//struct DetailPoster: View {
+//    let poster: MainPicture?
+//    var width: CGFloat
+//    var height: CGFloat
+//    
+//    
+//    var body: some View {
+//        if let poster = poster {
+//            AsyncImage(url: URL(string: poster.large)) { image in
+//                image
+//                    .resizable()
+//                    .scaledToFill()
+////                    .overlay {
+////                        RoundedRectangle(cornerRadius: 5)
+////                            .stroke(.secondary)
+////                    }
+////                    .shadow(radius: 2)
+//            } placeholder: {
+//                Color(uiColor: UIColor.tertiarySystemFill)
+//            }
+//            .frame(width: width, height: height)
+//            .clipShape(RoundedRectangle(cornerRadius: 5))
+//            .overlay {
+//                RoundedRectangle(cornerRadius: 5)
+//                    .stroke(.secondary)
+//            }
+//            .shadow(radius: 2)
+//
+//        } else {
+//            RoundedRectangle(cornerRadius: 5)
+//                .fill(Color(.placeholderText))
+//                .frame(width: width, height: height)
+//        }
+//    }
+//}
 
 
 struct GenreRow: View {

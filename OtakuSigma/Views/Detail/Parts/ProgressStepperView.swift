@@ -21,13 +21,14 @@ struct ProgressStepper<T: Media>: View {
                     prompt: Text("0")
                 )
                 .textFieldStyle(.roundedBorder)
+                .keyboardType(.numberPad)
             } onIncrement: {
                 handlePlus()
             } onDecrement: {
                 handleMinus()
             }
             
-            Text("Currently on \(media.episodeOrChapterString().lowercased()): \(Int(progress)) / ?")
+            Text("Currently on \(media.getEpisodeOrChapterString().lowercased()): \(Int(progress)) / ?")
                 .foregroundColor(.secondary)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .font(.caption)

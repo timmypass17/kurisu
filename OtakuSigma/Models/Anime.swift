@@ -72,12 +72,12 @@ struct Anime: Media {
         }
     }
     
-    mutating func updateListStatus(status: String, score: Int, progress: Int, comments: String?) {
-        myAnimeListStatus = AnimeListStatus(status: status, score: score, numEpisodesWatched: progress, comments: comments)
+    mutating func updateListStatus(status: String, score: Int, progress: Int, comments: String?, updatedAt: String) {
+        myAnimeListStatus = AnimeListStatus(status: status, score: score, numEpisodesWatched: progress, comments: comments, updatedAt: updatedAt)
     }
-    
-    func episodeOrChapterString() -> String {
-        return "Episodes"
+
+    func getEpisodeOrChapterString() -> String {
+        return "episode"
     }
     
     var nextReleaseString: String {
@@ -107,6 +107,17 @@ struct Anime: Media {
             }
             
             return "Failed to convert JSP to PST"
+        case .finishedAiring:
+            return "Finished Airing"
+        }
+    }
+    
+    func getStatusString() -> String {
+        switch animeStatus {
+        case .currentlyAiring:
+            return "Next Episode: \(nextReleaseString)"
+        case .notYetAired:
+            return "Airing Date: \(nextReleaseString)"
         case .finishedAiring:
             return "Finished Airing"
         }
@@ -160,8 +171,8 @@ extension Anime: Decodable {
     static var userBaseURL: String { "https://api.myanimelist.net/v2/users/@me/animelist" }
     static var numEpisodesOrChaptersKey: String { CodingKeys.numEpisodes.rawValue }
     static var fields: [String] { CodingKeys.allCases.map { $0.rawValue } }
-    static var episodesOrChaptersString: String { "Episodes" }
-    static var episodeOrChapterString: String { "Episode" }
+//    static var episodesOrChaptersString: String { "Episodes" }
+//    static var episodeOrChapterString: String { "Episode" }
     static var minutesOrVolumesString: String { "Minutes" }
     static var relatedItemString: String { "Related Animes" }
     

@@ -24,7 +24,7 @@ struct ProgressSliderView<T: Media>: View {
                     in: 0.0...Double(media.numEpisodesOrChapters),
                     step: 1.0
                 ) {
-                    Text(media.episodeOrChapterString())
+                    Text(media.getEpisodeOrChapterString())
                 } minimumValueLabel: {
                     Text("")
                 } maximumValueLabel: {
@@ -35,7 +35,7 @@ struct ProgressSliderView<T: Media>: View {
                 }
             }
             
-            Text("Currently on \(media.episodeOrChapterString().lowercased()): \(Int(progress)) / \(media.numEpisodesOrChapters)")
+            Text("Currently on \(media.getEpisodeOrChapterString().lowercased()): \(Int(progress)) / \(media.numEpisodesOrChapters)")
                 .foregroundColor(.secondary)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .font(.caption)
@@ -45,10 +45,14 @@ struct ProgressSliderView<T: Media>: View {
     func handlePlus() {
         let totalEpi = media.numEpisodesOrChapters > 0 ? media.numEpisodesOrChapters : .max
         progress = min(progress + 1, Double(totalEpi))
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
     }
     
     func handleMinus() {
         progress = max((progress) - 1, 0)
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
     }
 }
 

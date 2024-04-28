@@ -33,7 +33,7 @@ struct DetailTopSection<T: Media>: View {
                     .shadow(radius: 1, x: 1, y: 2)
                 
                 HStack {
-                    Label("\(media.numEpisodesOrChapters) \(T.episodesOrChaptersString)", systemImage: "tv")
+                    Label("\(media.numEpisodesOrChapters) \(media.getEpisodeOrChapterString().capitalized)s", systemImage: "tv")
                         .font(.system(size: 12))
                     
                     Circle()

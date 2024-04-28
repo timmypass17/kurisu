@@ -11,6 +11,8 @@ import SwiftUI
 protocol MediaStatus: Codable {
     var description: String { get }
     var color: Color { get }
+    var systemImage: String { get }
+//    var 
 }
 
 enum AnimeStatus: String, MediaStatus {
@@ -32,6 +34,17 @@ enum AnimeStatus: String, MediaStatus {
             return .green
         }
     }
+    
+    var systemImage: String {
+        switch self {
+        case .currentlyAiring:
+            return "clock"
+        case .notYetAired:
+            return "clock"
+        case .finishedAiring:
+            return "sparkles"
+        }
+    }
 }
 
 enum MangaStatus: String, MediaStatus {
@@ -51,6 +64,17 @@ enum MangaStatus: String, MediaStatus {
             return .green
         case .onHiatus:
             return .pink
+        }
+    }
+    
+    var systemImage: String {
+        switch self {
+        case .currentlyPublishing:
+            return "clock"
+        case .finished:
+            return "sparkles"
+        case .onHiatus:
+            return "clock"
         }
     }
 }

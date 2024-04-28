@@ -7,16 +7,12 @@
 
 import Foundation
 
-struct UpdateMediaListStatusAPIRequest<T: UpdateResponse>: APIRequest {
+struct UpdateMediaListStatusAPIRequest: APIRequest {
     var id: Int
     var listStatus: ListStatus
-//    var status: String
-//    var score: Int
-//    var progress: Int
-//    var comments: String
     
     var urlRequest: URLRequest {
-        let urlComponents = URLComponents(string: "\(T.baseURL)/\(id)/my_list_status")!
+        let urlComponents = URLComponents(string: "\(listStatus.postBaseURL)/\(id)/my_list_status")!
 
         var request = URLRequest(url: urlComponents.url!)
         request.httpMethod = "PUT"
@@ -24,7 +20,7 @@ struct UpdateMediaListStatusAPIRequest<T: UpdateResponse>: APIRequest {
         var params: [String: Any] = [
             "status": listStatus.status,
             "score": listStatus.score,
-            T.progressKey: listStatus.progress
+            listStatus.progressKey: listStatus.progress
 //            "comments": listStatus.comments
         ]
         
@@ -45,10 +41,10 @@ struct UpdateMediaListStatusAPIRequest<T: UpdateResponse>: APIRequest {
         return request
     }
     
-    func decodeResponse(data: Data) throws -> T {
-        let decoder = JSONDecoder()
-        let response = try decoder.decode(T.self, from: data)
-        return response
+    func decodeResponse(data: Data) throws {
+//        let decoder = JSONDecoder()
+//        let response = try decoder.decode(T.self, from: data)
+//        return response
     }
 }
 
@@ -77,7 +73,7 @@ struct AnimeUpdateResponse: UpdateResponse {
     var comments: String
     
     var listStatus: ListStatus { // TODO: Beautiful generic
-        return AnimeListStatus(status: status, score: score, numEpisodesWatched: numEpisodesWatched, comments: comments)
+        return AnimeListStatus(status: status, score: score, numEpisodesWatched: numEpisodesWatched, comments: comments, updatedAt: updatedAt)
     }
     
     enum CodingKeys: String, CodingKey {
@@ -101,7 +97,7 @@ struct MangaUpdateResponse: UpdateResponse {
     var comments: String
     
     var listStatus: ListStatus {
-        return MangaListStatus(status: status, score: score, numChaptersRead: numChaptersRead)
+        return MangaListStatus(status: status, score: score, numChaptersRead: numChaptersRead, updatedAt: updatedAt)
     }
     
     enum CodingKeys: String, CodingKey {

@@ -44,10 +44,14 @@ struct ScoreSliderView: View {
     
     func handlePlus() {
         progress = min(progress + 1.0, total)
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
     }
     
     func handleMinus() {
         progress = max((progress) - 1.0, 0)
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
     }
 }
 

@@ -68,9 +68,9 @@ class AddMediaViewModel: ObservableObject {
     
 }
 
-enum SelectedStatus: String, CaseIterable, Identifiable {
-    case completed, on_hold, dropped
-    case watching, plan_to_watch    // anime
-    case reading, plan_to_read      // manga
-    var id: Self { self }
-}
+//enum SelectedStatus: String, CaseIterable, Identifiable {
+//    case completed, on_hold, dropped
+//    case watching, plan_to_watch    // anime
+//    case reading, plan_to_read      // manga
+//    var id: Self { self }
+//}

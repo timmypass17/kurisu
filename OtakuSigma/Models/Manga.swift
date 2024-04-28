@@ -40,16 +40,27 @@ struct Manga: Media {
     var recommendations: [RecommendedItem]
     var authors: [Author]
     
-    mutating func updateListStatus(status: String, score: Int, progress: Int, comments: String?) {
-        myListStatus = MangaListStatus(status: status, score: score, numChaptersRead: progress, comments: comments)
+    mutating func updateListStatus(status: String, score: Int, progress: Int, comments: String?, updatedAt: String) {
+        myListStatus = MangaListStatus(status: status, score: score, numChaptersRead: progress, comments: comments, updatedAt: updatedAt)
     }
     
-    func episodeOrChapterString() -> String {
-        return "Chapters"
+    func getEpisodeOrChapterString() -> String {
+        return "chapter"
     }
     
     var nextReleaseString: String {
         return "N/A"
+    }
+    
+    func getStatusString() -> String {
+        switch mangaStatus {
+        case .currentlyPublishing:
+            return "Currently Publishing"
+        case .finished:
+            return "Finished Publishing"
+        case .onHiatus:
+            return "On Hiatus"
+        }
     }
 }
 
@@ -76,8 +87,8 @@ extension Manga: Decodable {
     static var userBaseURL: String { "https://api.myanimelist.net/v2/users/@me/mangalist" }
     static var numEpisodesOrChaptersKey: String { CodingKeys.numChapters.rawValue }
     static var fields: [String] { CodingKeys.allCases.map { $0.rawValue } + [numEpisodesOrChaptersKey, ",authors{first_name,last_name}"] }
-    static var episodeOrChapterString: String { "Chapters" }
-    static var episodesOrChaptersString: String { "Chapter" }
+//    static var episodeOrChapterString: String { "Chapters" }
+//    static var episodesOrChaptersString: String { "Chapter" }
     static var minutesOrVolumesString: String { "Volumes" }
     static var relatedItemString: String { "Related Mangas" }
 

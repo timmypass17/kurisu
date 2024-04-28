@@ -40,6 +40,8 @@ struct DiscoverDetailView<T: Media>: View {
                 .padding()
                 .navigationTitle(discoverDetailViewModel.ranking?.description ?? "")
             }
+            .background(Color.ui.background)
+
         }
     }
 }

@@ -19,16 +19,20 @@ struct HomeView: View {
                     StatusPickerView(selectedStatus: $homeViewModel.selectedAnimeStatus)
                         .padding(.horizontal)
                     
-                    WatchListView<Anime>(data: appState.userAnimeList[homeViewModel.selectedAnimeStatus, default: []])
+                    WatchListView(data: appState.userAnimeList[homeViewModel.selectedAnimeStatus, default: []])
+                } else {
+                    StatusPickerView(selectedStatus: $homeViewModel.selectedMangaStatus)
+                        .padding(.horizontal)
+                    
+                    WatchListView(data: appState.userMangaList[homeViewModel.selectedMangaStatus, default: []])
                 }
             }
             .searchable(text: $homeViewModel.filteredText, prompt: "Filter by title") {
                 if homeViewModel.selectedMediaType == .anime {
-//                    WatchListView()
+                    WatchListView(data: homeViewModel.filteredUserAnimeList)
+                } else {
+                    WatchListView(data: homeViewModel.filteredUserMangaList)
                 }
-//                else {
-//                    WatchListView(items: homeViewModel.userMangaList[homeViewModel.selectedMangaStatus, default: []])
-//                }
             }
             .toolbar {
                 Button {

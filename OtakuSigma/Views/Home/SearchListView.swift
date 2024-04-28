@@ -9,22 +9,30 @@ import SwiftUI
 
 
 struct SearchListView<T: Media>: View {
+    @EnvironmentObject var appState: AppState
     @EnvironmentObject var discoverViewModel: DiscoverViewModel
     
     var body: some View {
-        LazyVStack(spacing: 0) {
-            ForEach(discoverViewModel.searchResult, id: \.id) { item in
-                Text("Test")
-//                NavigationLink {
-//                    MediaDetailView(mediaDetailViewModel: MediaDetailViewModel<T>(media: item as! T, userListStatus: <#ListStatus?#>))
-//                } label: {
-//                    SearchCellView(item: item)
-//                }
-//                .buttonStyle(.plain)
-                
-                Divider()
+        ScrollView {
+            LazyVStack(spacing: 0) {
+                ForEach(discoverViewModel.searchResult, id: \.id) { item in
+                    NavigationLink {
+                        MediaDetailView(mediaDetailViewModel:
+                                            MediaDetailViewModel(
+                                                media: item as! T,
+                                                userListStatus: appState.getListStatus(for: item.id),
+                                                appState: appState)
+                        )
+                    } label: {
+                        SearchCellView(item: item)
+                    }
+                    .buttonStyle(.plain)
+                    
+                    Divider()
+                }
             }
         }
+//        .scrollDismissesKeyboard(.immediately)
     }
     
 }

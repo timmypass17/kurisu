@@ -22,7 +22,7 @@ struct DetailProgressView<T: Media>: View {
 
                     Spacer()
                     
-                    Text("\(T.episodesOrChaptersString):")
+                    Text("\(media.getEpisodeOrChapterString().capitalized):")
                         .font(.caption)
                     
                     Text("\(Int(progress)) /")

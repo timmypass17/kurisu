@@ -16,7 +16,7 @@ struct InfoView<T: Media>: View {
             if let anime = media as? Anime {
                 StatsCell(title: "Alternate Title", image: "t.square", value: anime.alternativeTitles.en)
                 StatsCell(title: "Type", image: "magnifyingglass", value: anime.mediaType.uppercased())
-                StatsCell(title: T.episodesOrChaptersString, image: "tv", value: anime.numEpisodesOrChapters)
+                StatsCell(title: "\(media.getEpisodeOrChapterString().capitalized)s", image: "tv", value: anime.numEpisodesOrChapters)
                 StatsCell(title: "Status", image: "leaf", value: media.status.description)
                 StatsCell(title: "Aired", image: "calendar", value: anime.airedString)
                 StatsCell(title: "Premiered", image: "calendar", value: media.startSeasonString)

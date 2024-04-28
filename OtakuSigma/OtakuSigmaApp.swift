@@ -62,7 +62,7 @@ struct OtakuSigmaApp: App {
         do {
             let user = try await mediaService.getUser(accessToken: tokenResponse.accessToken)
             appState.state = .loggedIn(user)
-            await appState.loadUserAnimeList(status: homeViewModel.selectedAnimeStatus)
+            await appState.loadUserList(status: homeViewModel.selectedAnimeStatus)
         } catch {
             print("Error logging in: \(error)")
             appState.state = .unregistered

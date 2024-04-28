@@ -13,8 +13,8 @@ protocol WeebItemConfiguration {
     static var userBaseURL: String{ get }
     static var numEpisodesOrChaptersKey: String { get }
     static var fields: [String] { get }
-    static var episodesOrChaptersString: String { get }
-    static var episodeOrChapterString: String { get }
+//    static var episodesOrChaptersString: String { get }
+//    static var episodeOrChapterString: String { get }
     static var minutesOrVolumesString: String { get }
     static var relatedItemString: String { get }
 }
@@ -42,9 +42,7 @@ protocol Media: Codable, WeebItemConfiguration {
     var relatedManga: [RelatedItem] { get set }
     var mediaType: String { get }
     var recommendations: [RecommendedItem] { get set }
-    
-    func episodeOrChapterString() -> String
-    
+        
 //    mutating func updateListStatus(status: String, score: Int, progress: Int, comments: String?)
     
     var nextReleaseString: String { get }
@@ -52,6 +50,8 @@ protocol Media: Codable, WeebItemConfiguration {
     func changeTitle() 
     
     func getTitle() -> String
+    func getEpisodeOrChapterString() -> String
+    func getStatusString() -> String
 }
 
 extension Media {
@@ -219,7 +219,7 @@ let sampleAnimes: [Anime] = [
     )
 ]
 
-let sampleListStatus = AnimeListStatus(status: "watching", score: 8, numEpisodesWatched: 11, comments: "")
+//let sampleListStatus = AnimeListStatus(status: "watching", score: 8, numEpisodesWatched: 11, comments: "", updatedAt: <#String#>)
 
 extension String {
     func snakeToRegularCase() -> String {

@@ -14,6 +14,7 @@ struct SynopsisView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Synopsis".uppercased())
+                .foregroundStyle(.secondary)
             
             Text(text)
                 .fixedSize(horizontal: false, vertical: true) // fixes text from being truncated "..." somehow

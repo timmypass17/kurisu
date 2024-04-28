@@ -29,10 +29,6 @@ struct SearchCellView: View {
                         .font(.caption)
                     
                     Spacer()
-                    
-//                    Label("8.64", systemImage: "star.fill")
-//                        .foregroundColor(.secondary)
-//                        .font(.caption)
                 }
                 
                 HStack(spacing: 4){
@@ -42,10 +38,16 @@ struct SearchCellView: View {
                 .truncationMode(.tail)
                 .padding(.bottom, 5)
                 
-                GenreView(item: item, maxTags: 2)
+                GenreRow(genres: item.genres, tagCount: 2)
                     .font(.caption)
                     .scrollDisabled(true)
                     .padding(.bottom, 10)
+
+//
+//                GenreView(item: item, maxTags: 2)
+//                    .font(.caption)
+//                    .scrollDisabled(true)
+//                    .padding(.bottom, 10)
                 
                 HStack {
                     Label(scoreString, systemImage: "star.fill")
@@ -60,9 +62,7 @@ struct SearchCellView: View {
                           systemImage: "tv"
                     )
                     .font(.system(size: 12))
-                    
-//                    Label("24 mins", systemImage: "clock")
-//                        .font(.system(size: 12))
+                
                 }
                 .foregroundColor(.secondary)
                 

@@ -30,6 +30,7 @@ struct DiscoverView: View {
                 text: $discoverViewModel.searchText,
                 prompt: discoverViewModel.selectedMediaType == .anime ? "Search Anime" : "Search Mangas, Novels, etc"
             ) {
+                
                 if discoverViewModel.selectedMediaType == .anime {
                     SearchListView<Anime>()
                 } else {
@@ -40,20 +41,11 @@ struct DiscoverView: View {
             .onSubmit(of: .search) {
                 discoverViewModel.submitButtonTapped()
             }
-            .onReceive(discoverViewModel.$searchText.debounce(for: 0.5, scheduler: RunLoop.main)
-            ) { _ in
-                discoverViewModel.searchTextValueChanged()
-            }
-            .navigationTitle("Discover Anime")
-//            .toolbar {
-//                NavigationLink {
-//                    ArchiveView()
-//                } label: {
-//                    Image(systemName: "archivebox")
-//
-//                }
-//
+//            .onReceive(discoverViewModel.$searchText.debounce(for: 1.0, scheduler: RunLoop.main)
+//            ) { _ in
+//                discoverViewModel.searchTextValueChanged()
 //            }
+            .navigationTitle(discoverViewModel.title)
             .background(Color.ui.background)
         }
     }

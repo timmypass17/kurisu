@@ -18,7 +18,7 @@ struct StatsView<T: Media>: View {
             StatsCell(title: "Ranked", image: "t.square", value: media.rankString)
             StatsCell(title: "Popularity", image: "t.square", value: media.popularity)
             StatsCell(title: "Members", image: "t.square", value: media.numListUsers)
-            StatsCell(title: "Ranked", image: "t.square", value: media.rankString)
+//            StatsCell(title: "Ranked", image: "t.square", value: media.rankString)
         }
         .padding()
         .background {

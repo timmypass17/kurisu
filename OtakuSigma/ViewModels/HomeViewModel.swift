@@ -13,15 +13,15 @@ import Combine
 @MainActor
 class HomeViewModel: ObservableObject {
     @Published var selectedAnimeStatus: AnimeWatchListStatus = .watching
-    {
-        willSet { Task { await appState?.loadUserAnimeList(status: newValue) } }
-    }
+//    {
+//        willSet { Task { await appState?.loadUserList(status: newValue) } }
+//    }
     
     @Published var selectedMangaStatus: MangaReadListStatus = .reading
 //    {
 //        didSet { Task { await loadUserMangaList() } }
 //    }
-    
+//    
     @Published var selectedMediaType: MediaType = .anime 
 //    {
 //        didSet {
@@ -66,11 +66,12 @@ class HomeViewModel: ObservableObject {
     }
     
     private func filterTextValueChanged() {
-//        if selectedMediaType == .anime {
-//            filteredUserAnimeList = userAnimeList.filter { $0.title.lowercased().contains(filteredText.lowercased()) }
-//        } else {
-//            filteredUserMangaList = userMangaList.filter { $0.title.lowercased().contains(filteredText.lowercased()) }
-//        }
+        guard let appState else { return }
+        if selectedMediaType == .anime {
+            filteredUserAnimeList = appState.userAnimeList[selectedAnimeStatus, default: []].filter { $0.title.lowercased().contains(filteredText.lowercased()) }
+        } else {
+            filteredUserMangaList = appState.userMangaList[selectedMangaStatus, default: []].filter { $0.title.lowercased().contains(filteredText.lowercased()) }
+        }
     }
     
 //    func loadUserAnimeList() async {

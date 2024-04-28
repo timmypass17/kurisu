@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct AddMediaView<T: Media>: View {
     @EnvironmentObject var mediaDetailViewModel: MediaDetailViewModel<T>
     @Environment(\.dismiss) private var dismiss
@@ -30,73 +31,93 @@ struct AddMediaView<T: Media>: View {
                     HStack {
                         Spacer()
                         
-                        if media is Anime {
+                        if let selectedAnimeStatus = mediaDetailViewModel.selectedStatus as? SelectedAnimeStatus {
                             Button {
-                                mediaDetailViewModel.selectedStatus = .watching
+                                mediaDetailViewModel.selectedStatus = SelectedAnimeStatus.watching
                             } label: {
-                                Text("\(SelectedStatus.watching.rawValue.capitalized.replacingOccurrences(of: "_", with: " "))")
+                                Text("\(SelectedAnimeStatus.watching.value.capitalized.replacingOccurrences(of: "_", with: " "))")
                             }
-                            .buttonStyle(StatusButton(isSelected: mediaDetailViewModel.selectedStatus == .watching))
-                        } else {
+                            .buttonStyle(StatusButton(isSelected: selectedAnimeStatus == .watching))
+                            
                             Button {
-                                mediaDetailViewModel.selectedStatus = .reading
+                                mediaDetailViewModel.selectedStatus = SelectedAnimeStatus.completed
+                                
                             } label: {
-                                Text("\(SelectedStatus.reading.rawValue.capitalized.replacingOccurrences(of: "_", with: " "))")
+                                Text("\(SelectedAnimeStatus.completed.value.capitalized.replacingOccurrences(of: "_", with: " "))")
                             }
-                            .buttonStyle(StatusButton(isSelected: mediaDetailViewModel.selectedStatus == .reading))
-                        }
-                        
-                        
-                        Button {
-                            mediaDetailViewModel.selectedStatus = .completed
+                            .buttonStyle(StatusButton(isSelected: selectedAnimeStatus == .completed))
                             
-                        } label: {
-                            Text("\(SelectedStatus.completed.rawValue.capitalized.replacingOccurrences(of: "_", with: " "))")
-                        }
-                        .buttonStyle(StatusButton(isSelected: mediaDetailViewModel.selectedStatus == .completed))
-                        
-                        
-                        Button {
-                            mediaDetailViewModel.selectedStatus = .on_hold
+                            Button {
+                                mediaDetailViewModel.selectedStatus = SelectedAnimeStatus.on_hold
+                                
+                            } label: {
+                                Text("\(SelectedAnimeStatus.on_hold.value.capitalized.replacingOccurrences(of: "_", with: " "))")
+                            }
+                            .buttonStyle(StatusButton(isSelected: selectedAnimeStatus == .on_hold))
+                        } else if let selectedMangaStatus = mediaDetailViewModel.selectedStatus as? SelectedMangaStatus {
+                            Button {
+                                mediaDetailViewModel.selectedStatus = SelectedMangaStatus.reading
+                            } label: {
+                                Text("\(SelectedMangaStatus.reading.value.capitalized.replacingOccurrences(of: "_", with: " "))")
+                            }
+                            .buttonStyle(StatusButton(isSelected: selectedMangaStatus == .reading))
                             
-                        } label: {
-                            Text("\(SelectedStatus.on_hold.rawValue.capitalized.replacingOccurrences(of: "_", with: " "))")
+                            Button {
+                                mediaDetailViewModel.selectedStatus = SelectedMangaStatus.completed
+                                
+                            } label: {
+                                Text("\(SelectedMangaStatus.completed.value.capitalized.replacingOccurrences(of: "_", with: " "))")
+                            }
+                            .buttonStyle(StatusButton(isSelected: selectedMangaStatus == .completed))
+                            
+                            Button {
+                                mediaDetailViewModel.selectedStatus = SelectedMangaStatus.on_hold
+                            } label: {
+                                Text("\(SelectedMangaStatus.on_hold.value.capitalized.replacingOccurrences(of: "_", with: " "))")
+                            }
+                            .buttonStyle(StatusButton(isSelected: selectedMangaStatus == .on_hold))
                         }
-                        .buttonStyle(StatusButton(isSelected:  mediaDetailViewModel.selectedStatus == .on_hold))
-                        
-                        
+
                         Spacer()
                         
                     }
                     HStack {
                         Spacer()
                         
-                        Button {
-                            mediaDetailViewModel.selectedStatus = .dropped
+                        if let selectedAnimeStatus = mediaDetailViewModel.selectedStatus as? SelectedAnimeStatus {
+
+                            Button {
+                                mediaDetailViewModel.selectedStatus = SelectedAnimeStatus.dropped
+                                
+                            } label: {
+                                Text("\(SelectedAnimeStatus.dropped.value.capitalized.replacingOccurrences(of: "_", with: " "))")
+                            }
+                            .buttonStyle(StatusButton(isSelected:  selectedAnimeStatus == .dropped))
                             
-                        } label: {
-                            Text("\(SelectedStatus.dropped.rawValue.capitalized.replacingOccurrences(of: "_", with: " "))")
-                        }
-                        .buttonStyle(StatusButton(isSelected:  mediaDetailViewModel.selectedStatus == .dropped))
-                        
-                        if  media is Anime {
                             Button {
-                                mediaDetailViewModel.selectedStatus = .plan_to_watch
+                                mediaDetailViewModel.selectedStatus = SelectedAnimeStatus.plan_to_watch
                                 
                             } label: {
-                                Text("\(SelectedStatus.plan_to_watch.rawValue.capitalized.replacingOccurrences(of: "_", with: " "))")
+                                Text("\(SelectedAnimeStatus.plan_to_watch.value.capitalized.replacingOccurrences(of: "_", with: " "))")
                             }
-                            .buttonStyle(StatusButton(isSelected:  mediaDetailViewModel.selectedStatus == .plan_to_watch))
-                        } else {
+                            .buttonStyle(StatusButton(isSelected:  selectedAnimeStatus == .plan_to_watch))
+                        } else if let selectedMangaStatus = mediaDetailViewModel.selectedStatus as? SelectedMangaStatus {
                             Button {
-                                mediaDetailViewModel.selectedStatus = .plan_to_read
+                                mediaDetailViewModel.selectedStatus = SelectedMangaStatus.dropped
                                 
                             } label: {
-                                Text("\(SelectedStatus.plan_to_read.rawValue.capitalized.replacingOccurrences(of: "_", with: " "))")
+                                Text("\(SelectedMangaStatus.dropped.value.capitalized.replacingOccurrences(of: "_", with: " "))")
                             }
-                            .buttonStyle(StatusButton(isSelected:  mediaDetailViewModel.selectedStatus == .plan_to_read))
+                            .buttonStyle(StatusButton(isSelected:  selectedMangaStatus == .dropped))
+                            
+                            Button {
+                                mediaDetailViewModel.selectedStatus = SelectedMangaStatus.plan_to_read
+                                
+                            } label: {
+                                Text("\(SelectedMangaStatus.plan_to_read.value.capitalized.replacingOccurrences(of: "_", with: " "))")
+                            }
+                            .buttonStyle(StatusButton(isSelected:  selectedMangaStatus == .plan_to_read))
                         }
-                        
                         
                         Spacer()
                         
@@ -108,7 +129,7 @@ struct AddMediaView<T: Media>: View {
                     .padding(.vertical, 8)
                 
                 
-                Text(media.episodeOrChapterString())
+                Text(media.getEpisodeOrChapterString().capitalized)
                     .font(.system(size: 18))
                     .bold()
                 
@@ -140,6 +161,13 @@ struct AddMediaView<T: Media>: View {
                           text: $mediaDetailViewModel.comments,
                           axis: .vertical)
                 
+                if mediaDetailViewModel.isInUserList {
+                    Button("Remove from list", role: .destructive) {
+                        mediaDetailViewModel.isShowingConfirmationDialog.toggle()
+                    }
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.top, 75)
+                }
             }
             .padding()
             .navigationTitle(media.getTitle())
@@ -148,9 +176,7 @@ struct AddMediaView<T: Media>: View {
                 ToolbarItem(placement: .primaryAction) {
                     Button {
                         Task {
-                            
                             dismiss()
-                            
                             await mediaDetailViewModel.didTapSaveButton()
                         }
                     } label: {
@@ -168,14 +194,19 @@ struct AddMediaView<T: Media>: View {
                     }
                 }
             }
-            
-            if mediaDetailViewModel.isInUserList {
-                Button("Delete", role: .destructive) {
+            .confirmationDialog("Remove \"\(media.getTitle())\"",
+                                isPresented: $mediaDetailViewModel.isShowingConfirmationDialog,
+                                titleVisibility: .visible) {
+                Button("Yes") {
+                    dismiss()
                     Task {
                         await mediaDetailViewModel.didTapDeleteButton()
-                        dismiss()
                     }
                 }
+                Button("No", role: .destructive) { }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("Are you sure you want to remove this item from your collection?")
             }
         }
         .environmentObject( mediaDetailViewModel)
@@ -197,7 +228,6 @@ struct StatusButton: ButtonStyle {
         Group {
             if isSelected {
                 configuration.label
-                    .foregroundStyle(.white)
                     .padding(.horizontal)
                     .padding(.vertical, 8)
                     .background {

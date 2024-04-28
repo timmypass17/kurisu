@@ -28,19 +28,36 @@ class AppState: ObservableObject {
     }
     
     var homeViewModel: HomeViewModel!
-    
+    let mediaService = MALService()
+
     init() {
         Task {
             await loadUser()
-            await loadUserAnimeList(status: .all)
-            await loadUserAnimeList(status: .watching)
-            await loadUserAnimeList(status: .completed)
-            await loadUserAnimeList(status: .planToWatch)
+            
+            await loadUserList(status: AnimeWatchListStatus.watching)
+            await loadUserList(status: AnimeWatchListStatus.all)
+            await loadUserList(status: AnimeWatchListStatus.completed)
+            await loadUserList(status: AnimeWatchListStatus.planToWatch)
+
+//            await loadUserList(status: MangaReadListStatus.all) // all doesn't work with manga, maybe just add the results of the previous
+            await loadUserList(status: MangaReadListStatus.reading)
+            await loadUserList(status: MangaReadListStatus.completed)
+            await loadUserList(status: MangaReadListStatus.planToRead)
+            
+            userMangaList[.all] = userMangaList[.reading, default: []] + userMangaList[.completed, default: []] + userMangaList[.planToRead, default: []] + userMangaList[.onHold, default: []]
+            
+            // Sort by most recent
+            userMangaList[.all]?.sort { mangaA, mangaB in
+                let formatter = ISO8601DateFormatter()
+                guard let dateStringA = mangaA.myMangaListStatus?.updatedAt,
+                      let dateStringB = mangaB.myMangaListStatus?.updatedAt,
+                      let dateA = formatter.date(from: dateStringA),
+                      let dateB = formatter.date(from: dateStringB)
+                else { return false }
+                
+                return dateA > dateB
+            }
         }
-        
-//        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [self] _ in
-//            print("App State Progress: \(userAnimeList[.watching]?[0].myListStatus?.progress)")
-//        }
     }
     
     func loadUser() async {
@@ -49,7 +66,6 @@ class AppState: ObservableObject {
                 print("No access token found")
                 return
             }
-            let mediaService = MALService()
             print("Fetching user.. Access Token:")
             let user = try await mediaService.getUser(accessToken: accessToken)
             print("Got User!")
@@ -58,44 +74,42 @@ class AppState: ObservableObject {
             print("[ProfileViewModel] Error fetching user: \(error)")
         }
     }
-    
-    func loadUserAnimeList(status: AnimeWatchListStatus) async {
-        guard userAnimeList[status, default: []].isEmpty else { return }
-        print(status.rawValue)
-        do {
-            let mediaService = MALService()
-            userAnimeList[status] = try await mediaService.getUserList(status: status, sort: AnimeSort.listUpdatedAt)
-            print(userAnimeList[status]?.count)
-        } catch {
-            userAnimeList[status] = []
-            print("Error getting user anime list. Check if access token is valid: \(error)")
+
+    func loadUserList(status: any MediaListStatus) async {
+        if let animeWatchListStatus = status as? AnimeWatchListStatus {
+            guard userAnimeList[animeWatchListStatus, default: []].isEmpty else { return }
+
+            do {
+                userAnimeList[animeWatchListStatus] = try await mediaService.getUserList(status: status, sort: AnimeSort.listUpdatedAt)
+            } catch {
+                userAnimeList[animeWatchListStatus] = []
+                print("Error getting user anime list. Check if access token is valid: \(error)")
+            }
+        } else if let mangaWatchListStatus = status as? MangaReadListStatus {
+            guard userMangaList[mangaWatchListStatus, default: []].isEmpty else { return }
+
+            do {
+                userMangaList[mangaWatchListStatus] = try await mediaService.getUserList(status: status, sort: MangaSort.listUpdatedAt)
+            } catch {
+                userMangaList[mangaWatchListStatus] = []
+                print("Error getting user anime list. Check if access token is valid: \(error)")
+            }
         }
     }
-    
-//    func loadUserMangaList() async {
-//        guard userMangaList[selectedMangaStatus, default: []].isEmpty else { return }
-//        print(#function)
-//        do {
-//            userMangaList[selectedMangaStatus] = try await mediaService.getUserList(status: selectedMangaStatus, sort: MangaSort.listUpdatedAt, fields: Manga.fields)
-//        } catch {
-//            userMangaList[selectedMangaStatus] = []
-//            print("Error getting user manga list. Check if access token is valid: \(error)")
-//        }
-//    }
-    
+
     func getListStatus(for id: Int) -> ListStatus? {
         for (_, animes) in userAnimeList {
             if let anime = animes.first(where: { $0.id == id }) {
                 return anime.myListStatus
             }
         }
-//
-//        for (_, mangas) in userMangaList {
-//            if let manga = mangas.first(where: { $0.id == id }) {
-//                return manga.myListStatus
-//            }
-//        }
-//
+
+        for (_, mangas) in userMangaList {
+            if let manga = mangas.first(where: { $0.id == id }) {
+                return manga.myListStatus
+            }
+        }
+
         return nil
     }
     
@@ -113,19 +127,8 @@ class AppState: ObservableObject {
                 return (mangaStatus, index)
             }
         }
-        return nil
-    }
-    
-    // Update media's status. Does nothing if media not in user's list
-    func updateListStatus(id: Int, listStatus: ListStatus) {
-        if listStatus is AnimeListStatus {
-            guard let (status, i) = getSectionAndIndex(id: id) as? (AnimeWatchListStatus, Int) else { return }
-            userAnimeList[status]?[i].myListStatus = listStatus
-        } else if listStatus is MangaListStatus {
-            guard let (status, i) = getSectionAndIndex(id: id) as? (MangaReadListStatus, Int) else { return }
-            userMangaList[status]?[i].myListStatus = listStatus
-        }
         
+        return nil
     }
     
     func addMedia(media: Media, myListStatus: ListStatus) {
@@ -146,6 +149,21 @@ class AppState: ObservableObject {
             }
             // Insert new item to top of 'all'
             userAnimeList[.all]?.insert(anime, at: 0)
+        } else if let manga = media as? Manga,
+                  let myMangaListStatus = myListStatus as? MangaListStatus {
+            // Delete old item (if it exists)
+            if let (oldStatus, i) = getSectionAndIndex(id: media.id) as? (MangaReadListStatus, Int) {
+                print("User changed section from \(oldStatus.rawValue) -> \(myMangaListStatus.status)")
+                userMangaList[oldStatus]?.remove(at: i)
+            }
+            
+            userMangaList[MangaReadListStatus(rawValue: myMangaListStatus.status)!]?.insert(manga, at: 0)
+            
+            if let i = userMangaList[.all]?.firstIndex(where: { $0.id == media.id }) {
+                userMangaList[.all]?.remove(at: i)
+            }
+            // Insert new item to top of 'all'
+            userMangaList[.all]?.insert(manga, at: 0)
         }
     }
     
