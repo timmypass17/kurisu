@@ -61,7 +61,7 @@ class MALAuthService: OAuthService {
         }
     }
     
-    private func buildAuthorizationURL() -> URL? {
+    func buildAuthorizationURL() -> URL? {
         let codeVerifier = createCodeVerifier()
         self.codeVerifier = codeVerifier    // side effect: store and used to generate access token later
         let baseURLString = "https://myanimelist.net/v1/oauth2/authorize"

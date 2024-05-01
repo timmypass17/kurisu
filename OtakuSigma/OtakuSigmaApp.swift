@@ -62,6 +62,7 @@ struct OtakuSigmaApp: App {
             }
             .environmentObject(appState)
             .onOpenURL { url in
+                print("onOpenURL")
                 Task {
                     await handleLogin(url)
                 }

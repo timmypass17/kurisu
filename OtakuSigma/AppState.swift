@@ -47,7 +47,6 @@ class AppState: ObservableObject {
         
         Task {
             await loadUser()
-            await loadUserList()
         }
     }
     
@@ -89,6 +88,7 @@ class AppState: ObservableObject {
             let user = try await mediaService.getUser()
             print("Got User!")
             state = .loggedIn(user)
+            await loadUserList()
         } catch {
             print("[ProfileViewModel] Error fetching user: \(error)")
         }
