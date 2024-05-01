@@ -13,7 +13,8 @@ class AppState: ObservableObject {
     @Published var userAnimeList: [AnimeWatchListStatus : [Anime]] = [:]
     @Published var userMangaList: [MangaReadListStatus : [Manga]] = [:]
     @Published var state: State = .unregistered
-
+    @Published var isPresentWebView: Bool = false
+    
     var userInfo: UserInfo? {
         if case .loggedIn(let userInfo) = state {
             return userInfo

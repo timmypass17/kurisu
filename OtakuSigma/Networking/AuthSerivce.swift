@@ -56,7 +56,7 @@ class MALAuthService: OAuthService {
             }
             return tokenResponse
         } catch {
-            print("Erroring generating access token: \(error)")
+            print("Error generating access token: \(error)")
             return nil
         }
     }

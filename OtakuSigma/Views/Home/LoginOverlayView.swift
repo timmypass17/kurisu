@@ -22,7 +22,8 @@ struct LoginOverlayView: View {
                 .foregroundColor(.secondary)
             
             Button("Login") {
-                appState.didTapLoginButton()
+//                appState.didTapLoginButton()
+                appState.isPresentWebView = true
             }
             .font(.title3)
             .fontWeight(.semibold)

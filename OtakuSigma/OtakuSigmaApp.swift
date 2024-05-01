@@ -63,9 +63,17 @@ struct OtakuSigmaApp: App {
             .environmentObject(appState)
             .onOpenURL { url in
                 print("onOpenURL")
+                appState.isPresentWebView = false
                 Task {
                     await handleLogin(url)
                 }
+            }
+            .fullScreenCover(isPresented: $appState.isPresentWebView) {
+                if let url = authService.buildAuthorizationURL() {
+                    SafariWebView(url: url)
+                        .ignoresSafeArea()
+                }
+                
             }
         }
     }
@@ -78,7 +86,6 @@ struct OtakuSigmaApp: App {
             print("Got user")
             appState.state = .loggedIn(user)
             await appState.loadUserList()
-//            await discoverViewModel.loadMedia() 
         } catch {
             print("Error logging in: \(error)")
             appState.state = .unregistered
@@ -93,4 +100,19 @@ extension Color {
     struct UI {
         let background = Color("background")
     }
+}
+
+import SafariServices
+
+struct SafariWebView: UIViewControllerRepresentable {
+    let url: URL
+    
+    func makeUIViewController(context: Context) -> SFSafariViewController {
+        return SFSafariViewController(url: url)
+    }
+    
+    func updateUIViewController(_ uiViewController: SFSafariViewController, context: Context) {
+        
+    }
+    
 }
