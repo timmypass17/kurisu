@@ -10,7 +10,7 @@ import UIKit
 
 protocol OAuthService {
     func showLogin()
-    func refreshAccessToken() async
+    func refreshAccessTokenIfNeeded() async
 }
 
 class MALAuthService: OAuthService {
@@ -46,6 +46,7 @@ class MALAuthService: OAuthService {
         do {
             let tokenResponse = try await sendRequest(tokenRequest)
             
+            print("Expires in \(tokenResponse.expiresIn) seconds") // Expires in 30 days
             Settings.shared.accessToken = tokenResponse.accessToken
             Settings.shared.refreshToken = tokenResponse.refreshToken
             let firstTimeLogIn = Settings.shared.accessTokenLastUpdated == nil
@@ -61,7 +62,6 @@ class MALAuthService: OAuthService {
     }
     
     private func buildAuthorizationURL() -> URL? {
-        print(#function)
         let codeVerifier = createCodeVerifier()
         self.codeVerifier = codeVerifier    // side effect: store and used to generate access token later
         let baseURLString = "https://myanimelist.net/v1/oauth2/authorize"
@@ -78,9 +78,10 @@ class MALAuthService: OAuthService {
         return authorizationURL
     }
     
-    // Note: Access Token lasts 1 hour. Refresh Token last 31 days.
+    // Note: Access Token lasts 1 hour. Refresh Token last ~30 days.
     // - Refresh token is used to create a new access token (and new refresh token?) which extends the user's session without them having to log in again.
-    func refreshAccessToken() async {
+    func refreshAccessTokenIfNeeded() async {
+        print(#function)
         guard let refreshToken = Settings.shared.refreshToken,
               let tokenLastUpdated = Settings.shared.accessTokenLastUpdated
         else { return }
@@ -88,8 +89,8 @@ class MALAuthService: OAuthService {
         do {
             print("User has access token")
             // Refresh access token (expires every month)
-            let oneMonth: TimeInterval = 2682000    // 2592000
-            let tokenExpirationDate = tokenLastUpdated.addingTimeInterval(oneMonth)
+            let twoWeeks: TimeInterval = 14 * 86400
+            let tokenExpirationDate = tokenLastUpdated.addingTimeInterval(twoWeeks)
             let isTokenExpired = tokenExpirationDate < .now
             if isTokenExpired {
                 print("Token Expired...refreshing token")
@@ -99,7 +100,9 @@ class MALAuthService: OAuthService {
                 // Update tokens with new values
                 Settings.shared.accessToken = tokenResponse.accessToken
                 Settings.shared.refreshToken = tokenResponse.refreshToken
-                Settings.shared.accessTokenLastUpdated = Date()
+                Settings.shared.accessTokenLastUpdated = .now
+            } else {
+                print("Token is not expired")
             }
         } catch {
             print("Error refreshing access token: \(error)")

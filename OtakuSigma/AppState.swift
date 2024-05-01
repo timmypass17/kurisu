@@ -73,7 +73,8 @@ class AppState: ObservableObject {
     
     func loadUser() async {
         do {
-            guard Settings.shared.accessToken != nil else { 
+            await authService.refreshAccessTokenIfNeeded()
+            guard Settings.shared.accessToken != nil else {
                 print("No access token found")
                 return
             }
