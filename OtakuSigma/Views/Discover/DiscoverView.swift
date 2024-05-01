@@ -31,10 +31,12 @@ struct DiscoverView: View {
                 text: $discoverViewModel.searchText,
                 prompt: discoverViewModel.hint
             ) {
-                if discoverViewModel.selectedMediaType == .anime {
-                    SearchListView<Anime>()
-                } else {
-                    SearchListView<Manga>()
+                Group {
+                    if discoverViewModel.selectedMediaType == .anime {
+                        SearchListView<Anime>()
+                    } else {
+                        SearchListView<Manga>()
+                    }
                 }
             }
             .autocorrectionDisabled(true)
@@ -43,11 +45,7 @@ struct DiscoverView: View {
             }
             .navigationTitle(discoverViewModel.title)
             .background(Color.ui.background)
-            .overlay {
-                if !appState.isLoggedIn {
-                    LoginOverlayView()
-                }
-            }
+
         }
     }
 }

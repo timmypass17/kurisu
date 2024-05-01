@@ -43,6 +43,10 @@ class MediaDetailViewModel<T: Media>: ObservableObject {
         return false
     }
     
+    var addEditButton: String {
+        return isInUserList ? "square.and.pencil" : "plus"
+    }
+    
     init(media: T, userListStatus: ListStatus?, appState: AppState) {
         self.mediaState = .success(media: media)
         self.appState = appState

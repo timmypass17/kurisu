@@ -56,12 +56,7 @@ class DiscoverViewModel: ObservableObject {
             print("[DiscoverViewModel] Error loading animes: \(error)")
         }
     }
-    
-    func clearMedia() {
-        animeList.removeAll()
-        mangaList.removeAll()
-    }
-    
+
     func submitButtonTapped() {
         fetchAnimeOrManga()
     }

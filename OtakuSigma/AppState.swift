@@ -14,6 +14,13 @@ class AppState: ObservableObject {
     @Published var userMangaList: [MangaReadListStatus : [Manga]] = [:]
     @Published var state: State = .unregistered
 
+    var userInfo: UserInfo? {
+        if case .loggedIn(let userInfo) = state {
+            return userInfo
+        }
+        return nil
+    }
+    
     var mediaTask: Task<Void, Never>? = nil
     var animeMediaPage: [AnimeWatchListStatus: Int] = [:]
     var mangaMediaPage: [MangaReadListStatus: Int] = [:]
@@ -23,7 +30,7 @@ class AppState: ObservableObject {
         if case .loggedIn(_) = state { return true }
         return false
     }
-    
+        
     enum State {
         case unregistered
         case loggedIn(UserInfo)
@@ -216,9 +223,7 @@ class AppState: ObservableObject {
         for (status, _) in userMangaList {
             userMangaList[status]?.removeAll()
         }
-        
-        discoverViewModel.clearMedia()
-        
+                
         // remove token
         Settings.shared.accessToken = nil
         Settings.shared.refreshToken = nil

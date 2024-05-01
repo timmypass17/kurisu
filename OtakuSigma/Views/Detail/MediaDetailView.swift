@@ -90,13 +90,9 @@ struct MediaDetailView<T: Media>: View {
                     Button {
                         mediaDetailViewModel.isShowingAddMediaView = true
                     } label: {
-                        if mediaDetailViewModel.isInUserList {
-                            Image(systemName: "square.and.pencil")
-                        } else {
-                            Image(systemName: "plus")
-                        }
+                        Image(systemName: mediaDetailViewModel.addEditButton)
                     }
-
+                    .disabled(!mediaDetailViewModel.appState.isLoggedIn)
                 }
             }
             .background(Color.ui.background)

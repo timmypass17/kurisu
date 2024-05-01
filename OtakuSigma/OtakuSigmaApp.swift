@@ -77,7 +77,7 @@ struct OtakuSigmaApp: App {
             print("Got user")
             appState.state = .loggedIn(user)
             await appState.loadUserList()
-            await discoverViewModel.loadMedia()
+//            await discoverViewModel.loadMedia() 
         } catch {
             print("Error logging in: \(error)")
             appState.state = .unregistered

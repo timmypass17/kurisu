@@ -19,6 +19,8 @@ struct MediaDetailAPIRequest<T: Media>: APIRequest {
         var request = URLRequest(url: urlComponents.url!)
         if let accessToken = Settings.shared.accessToken {
             request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        } else {
+            request.setValue(apiKey, forHTTPHeaderField: "X-MAL-CLIENT-ID")
         }
 
         return request
