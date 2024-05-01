@@ -90,6 +90,7 @@ class AppState: ObservableObject {
             print("Got User!")
             state = .loggedIn(user)
             await loadUserList()
+            await discoverViewModel.loadMedia()
         } catch {
             print("[ProfileViewModel] Error fetching user: \(error)")
         }
@@ -225,6 +226,9 @@ class AppState: ObservableObject {
             userMangaList[status]?.removeAll()
         }
                 
+        discoverViewModel.animeList.removeAll()
+        discoverViewModel.mangaList.removeAll()
+        
         // remove token
         Settings.shared.accessToken = nil
         Settings.shared.refreshToken = nil
@@ -252,9 +256,5 @@ class AppState: ObservableObject {
                 print("Error loading media: \(error)")
             }
         }
-    }
-    
-    func didTapLoginButton() {
-        authService.showLogin()
     }
 }

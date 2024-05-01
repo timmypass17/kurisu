@@ -62,7 +62,6 @@ struct OtakuSigmaApp: App {
             }
             .environmentObject(appState)
             .onOpenURL { url in
-                print("onOpenURL")
                 appState.isPresentWebView = false
                 Task {
                     await handleLogin(url)
@@ -73,7 +72,6 @@ struct OtakuSigmaApp: App {
                     SafariWebView(url: url)
                         .ignoresSafeArea()
                 }
-                
             }
         }
     }
@@ -86,6 +84,7 @@ struct OtakuSigmaApp: App {
             print("Got user")
             appState.state = .loggedIn(user)
             await appState.loadUserList()
+            await discoverViewModel.loadMedia()
         } catch {
             print("Error logging in: \(error)")
             appState.state = .unregistered
