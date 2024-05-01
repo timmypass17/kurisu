@@ -33,9 +33,3 @@ struct ScoreCellView: View {
         .font(.caption)
     }
 }
-
-//struct ScoreCellView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ScoreCellView(title: "Score", description: "8.65", imageString: "star.fill")
-//    }
-//}

@@ -27,7 +27,6 @@ class MALAuthService: OAuthService {
     
     // Returns access token on success
     func handleLogin(url: URL) async -> TokenResponse? {
-        print(#function)
         guard let codeVerifier = codeVerifier else { return nil }
         return await generateAccessToken(from: url, codeVerifier: codeVerifier)
     }

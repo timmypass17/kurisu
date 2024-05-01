@@ -42,21 +42,12 @@ struct HomeView: View {
                 }
             }
         }
-        .navigationTitle("Anime Tracker")
+        .navigationTitle(homeViewModel.title)
         .overlay {
-//            if !homeViewModel.isLoggedIn {
-//                LoginOverlayView()
-//            }
+            if !appState.isLoggedIn {
+                LoginOverlayView()
+            }
         }
         .background(Color.ui.background)
     }
 }
-
-//struct HomeView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        NavigationStack {
-//            HomeView()
-//                .environmentObject(HomeViewModel(appState: AppState(), mediaService: MALService()))
-//        }
-//    }
-//}

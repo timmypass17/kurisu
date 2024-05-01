@@ -21,15 +21,12 @@ struct UpdateMediaListStatusAPIRequest: APIRequest {
             "status": listStatus.status,
             "score": listStatus.score,
             listStatus.progressKey: listStatus.progress
-//            "comments": listStatus.comments
         ]
         
         if let comments = listStatus.comments {
             params["comments"] = comments
         }
-        
-        print(params)
-        
+                
         let queryString = params.map { "\($0.key)=\($0.value)" }.joined(separator: "&")
         request.httpBody = queryString.data(using: .utf8)
 

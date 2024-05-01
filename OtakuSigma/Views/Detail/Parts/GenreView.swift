@@ -42,3 +42,21 @@ struct GenreView_Previews: PreviewProvider {
         GenreView(item: sampleAnimes[0])
     }
 }
+
+struct BorderedTag: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .padding(.vertical, 2)
+            .padding(.horizontal, 4)
+            .background{
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(.regularMaterial)
+            }
+    }
+}
+
+extension View {
+    func borderedTag() -> some View {
+        modifier(BorderedTag())
+    }
+}

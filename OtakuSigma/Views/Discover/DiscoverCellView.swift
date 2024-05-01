@@ -15,16 +15,7 @@ struct DiscoverCellView<T: Media>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             PosterView(imageURL: media.mainPicture.large, width: width, height: height, includeBorder: false)
-//            AsyncImage(url: URL(string: media.mainPicture.large)) { image in
-//                image
-//                    .resizable()
-//                    .scaledToFill()
-//            } placeholder: {
-//                Color(uiColor: UIColor.tertiarySystemFill)
-//            }
-//            .frame(width: width, height: height)
-//            .clipShape(RoundedRectangle(cornerRadius: 5))
-            
+
             Text(media.getTitle())
                 .font(.system(size: 14))
                 .lineLimit(1)
@@ -41,7 +32,6 @@ struct DiscoverCellView<T: Media>: View {
                         
         }
         .frame(width: width)
-//        .contentShape(RoundedRectangle(cornerRadius: 5)) // fixes overlap click area
     }
 }
 

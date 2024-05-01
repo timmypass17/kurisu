@@ -19,11 +19,3 @@ struct DiscoverTabView: View {
         .pickerStyle(.segmented)
     }
 }
-
-//struct DiscoverTabView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        DiscoverTabView()
-//            .environmentObject(DiscoverViewModel(mediaService: MALService()))
-//    }
-//}
-//

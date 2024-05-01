@@ -11,11 +11,7 @@ import SwiftUI
 protocol WeebItemConfiguration {
     static var baseURL: String { get }
     static var userBaseURL: String{ get }
-    static var numEpisodesOrChaptersKey: String { get }
     static var fields: [String] { get }
-//    static var episodesOrChaptersString: String { get }
-//    static var episodeOrChapterString: String { get }
-    static var minutesOrVolumesString: String { get }
     static var relatedItemString: String { get }
 }
 
@@ -42,42 +38,29 @@ protocol Media: Codable, WeebItemConfiguration {
     var relatedManga: [RelatedItem] { get set }
     var mediaType: String { get }
     var recommendations: [RecommendedItem] { get set }
-        
-//    mutating func updateListStatus(status: String, score: Int, progress: Int, comments: String?)
-    
-    var nextReleaseString: String { get }
-    
-    func changeTitle() 
-    
+                    
+    func getNextReleaseString() -> String
     func getTitle() -> String
     func getEpisodeOrChapterString() -> String
     func getStatusString() -> String
+    func getMinutesOrVolumesString() -> String
 }
 
 extension Media {
     
-    // Default implementations
     func getTitle() -> String {
         if alternativeTitles.en.isEmpty {
             return title    // japanese title
         }
         return alternativeTitles.en
     }
-    
-    func changeTitle() {
-//        title = "New Title"
-    }
-    
+
     var startSeasonString: String {
         if let startSeason {
             return "\(startSeason.season.capitalized) \(startSeason.year)"
         }
         return "No Date"
     }
-    
-//    var nextEpisodeFormatted: String {
-//
-//    }
     
     var scoreString: String {
         if let mean {
@@ -218,8 +201,6 @@ let sampleAnimes: [Anime] = [
         statistics: Statistics(status: Status(watching: "", completed: "", onHold: "", dropped: "", planToWatch: ""), numListUsers: 0)
     )
 ]
-
-//let sampleListStatus = AnimeListStatus(status: "watching", score: 8, numEpisodesWatched: 11, comments: "", updatedAt: <#String#>)
 
 extension String {
     func snakeToRegularCase() -> String {

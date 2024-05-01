@@ -12,6 +12,20 @@ struct DetailTopSection<T: Media>: View {
     @State var isJapaneseTitleExpanded = false
     let media: T
     
+    var mediaIcon: String {
+        if media is Anime {
+            return "tv"
+        }
+        return "book"
+    }
+    
+    var secondaryIcon: String {
+        if media is Anime {
+            return "clock"
+        }
+        return "books.vertical"
+    }
+    
     var body: some View {
         HStack(alignment: .top) {
             PosterView(imageURL: media.mainPicture.large, width: 120, height: 200)
@@ -27,19 +41,19 @@ struct DetailTopSection<T: Media>: View {
                     .lineLimit(isTitleExpanded ? nil : 2)
                     .shadow(radius: 5, x: 1, y: 2)
 
-                Text(media.getTitle())
+                Text(media.title) // jsp title
                     .lineLimit(1)
                     .foregroundStyle(.secondary)
                     .shadow(radius: 1, x: 1, y: 2)
                 
                 HStack {
-                    Label("\(media.numEpisodesOrChapters) \(media.getEpisodeOrChapterString().capitalized)s", systemImage: "tv")
+                    Label("\(media.numEpisodesOrChapters) \(media.getEpisodeOrChapterString().capitalized)s", systemImage: mediaIcon)
                         .font(.system(size: 12))
                     
                     Circle()
                         .frame(width: 3)
                     
-                    Label("\(media.minutesOrVolumes) \(T.minutesOrVolumesString)", systemImage: "clock")
+                    Label("\(media.minutesOrVolumes) \(media.getMinutesOrVolumesString())", systemImage: secondaryIcon)
                         .font(.system(size: 12))
                 }
                 .padding(.top, 8)

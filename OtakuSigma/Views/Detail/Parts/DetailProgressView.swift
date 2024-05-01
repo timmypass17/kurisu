@@ -42,15 +42,6 @@ struct DetailProgressView<T: Media>: View {
             .progressViewStyle(.linear)
             
             MediaStatusView(item: media)
-//            Label("Next Episode: ", systemImage: "clock")
-//                .foregroundColor(.secondary)
-//                .font(.caption)
         }
     }
 }
-
-//struct DetailProgressView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        DetailProgressView(media: sampleAnimes[0])
-//    }
-//}

@@ -8,6 +8,7 @@
 import Foundation
 
 struct Manga: Media {
+    
     var id: Int
     var title: String
     var alternativeTitles: AlternativeTitles
@@ -48,7 +49,11 @@ struct Manga: Media {
         return "chapter"
     }
     
-    var nextReleaseString: String {
+    func getMinutesOrVolumesString() -> String {
+        return "Volumes"
+    }
+    
+    func getNextReleaseString() -> String {
         return "N/A"
     }
     
@@ -85,11 +90,8 @@ struct AuthorNode: Codable {
 extension Manga: Decodable {
     static var baseURL: String { "https://api.myanimelist.net/v2/manga" }
     static var userBaseURL: String { "https://api.myanimelist.net/v2/users/@me/mangalist" }
-    static var numEpisodesOrChaptersKey: String { CodingKeys.numChapters.rawValue }
-    static var fields: [String] { CodingKeys.allCases.map { $0.rawValue } + [numEpisodesOrChaptersKey, ",authors{first_name,last_name}"] }
-//    static var episodeOrChapterString: String { "Chapters" }
-//    static var episodesOrChaptersString: String { "Chapter" }
-    static var minutesOrVolumesString: String { "Volumes" }
+    static var fields: [String] { CodingKeys.allCases.map { $0.rawValue } + [",authors{first_name,last_name}"] }
+//    static var minutesOrVolumesString: String { "Volumes" }
     static var relatedItemString: String { "Related Mangas" }
 
     enum CodingKeys: String, CodingKey, CaseIterable {

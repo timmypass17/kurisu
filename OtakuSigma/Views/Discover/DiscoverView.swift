@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct DiscoverView: View {
+    @EnvironmentObject var appState: AppState
     @EnvironmentObject var discoverViewModel: DiscoverViewModel
     
     var body: some View {
@@ -28,9 +29,8 @@ struct DiscoverView: View {
             }
             .searchable(
                 text: $discoverViewModel.searchText,
-                prompt: discoverViewModel.selectedMediaType == .anime ? "Search Anime" : "Search Mangas, Novels, etc"
+                prompt: discoverViewModel.hint
             ) {
-                
                 if discoverViewModel.selectedMediaType == .anime {
                     SearchListView<Anime>()
                 } else {
@@ -41,22 +41,13 @@ struct DiscoverView: View {
             .onSubmit(of: .search) {
                 discoverViewModel.submitButtonTapped()
             }
-//            .onReceive(discoverViewModel.$searchText.debounce(for: 1.0, scheduler: RunLoop.main)
-//            ) { _ in
-//                discoverViewModel.searchTextValueChanged()
-//            }
             .navigationTitle(discoverViewModel.title)
             .background(Color.ui.background)
+            .overlay {
+                if !appState.isLoggedIn {
+                    LoginOverlayView()
+                }
+            }
         }
     }
 }
-
-//struct DiscoverView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        NavigationStack {
-//            DiscoverView()
-//                .environmentObject(DiscoverViewModel(mediaService: MALService()))
-//        }
-//    }
-//}
-

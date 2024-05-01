@@ -22,7 +22,9 @@ struct RankingAPIRequest<T: Media>: APIRequest {
             "offset": "\(offset)"
         ].map { URLQueryItem(name: $0.key, value: $0.value) }
         var request = URLRequest(url: urlComponents.url!)
-        request.setValue(apiKey, forHTTPHeaderField: "X-MAL-CLIENT-ID")
+        if let accessToken = Settings.shared.accessToken {
+            request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        } 
         return request
     }
 

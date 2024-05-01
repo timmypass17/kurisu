@@ -32,13 +32,6 @@ struct SearchListView<T: Media>: View {
                 }
             }
         }
-//        .scrollDismissesKeyboard(.immediately)
     }
     
 }
-//struct SearchListView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SearchListView<Anime>()
-//            .environmentObject(DiscoverViewModel(mediaService: MALService()))
-//    }
-//}

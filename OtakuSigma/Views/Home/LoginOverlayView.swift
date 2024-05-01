@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct LoginOverlayView: View {
-    @EnvironmentObject var homeViewModel: HomeViewModel
-
+    @EnvironmentObject var appState: AppState
+    
     var body: some View {
         VStack(alignment: .center) {
             Text("Log into MyAnimeList")
@@ -22,13 +22,12 @@ struct LoginOverlayView: View {
                 .foregroundColor(.secondary)
             
             Button("Login") {
-                homeViewModel.didTapLoginButton()
+                appState.didTapLoginButton()
             }
             .font(.title3)
             .fontWeight(.semibold)
 
         }
         .padding()
-           
     }
 }

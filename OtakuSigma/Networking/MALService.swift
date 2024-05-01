@@ -9,7 +9,7 @@ import Foundation
 
 // any MediaStatus. 'any' is used because MediaStatus is a protocol
 protocol MediaService {
-    func getUserList<T: Media>(status: any MediaListStatus, sort: any MediaSort, fields: [String]) async throws -> [T]
+    func getUserList<T: Media>(status: any MediaListStatus, sort: any MediaSort, fields: [String], limit: Int, offset: Int) async throws -> [T]
     func getMediaItems<T: Media>(title: String) async throws -> [T]
     func getMediaRanking<T: Media>(rankingType: String, limit: Int, offset: Int) async throws -> [T]
     func getSeasonalAnime<T: Media>(year: String, season: Season, sort: RankingSort, limit: Int, offset: Int) async throws -> [T]
@@ -25,9 +25,8 @@ protocol MediaService {
 // Object that can do api stuff
 struct MALService: MediaService {
     
-    func getUserList<T: Media>(status: any MediaListStatus, sort: any MediaSort, fields: [String] = T.fields) async throws -> [T] {
-//        print(T.fields)
-        let request = UserListAPIRequest<T>(status: status, sort: sort, fields: fields)
+    func getUserList<T: Media>(status: any MediaListStatus, sort: any MediaSort, fields: [String] = T.fields, limit: Int = 100, offset: Int = 0) async throws -> [T] {
+        let request = UserListAPIRequest<T>(status: status, sort: sort, fields: fields, limit: limit, offset: offset)
         let animeListResponse = try await sendRequest(request)
         return animeListResponse
     }

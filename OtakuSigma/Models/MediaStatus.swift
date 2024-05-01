@@ -12,7 +12,6 @@ protocol MediaStatus: Codable {
     var description: String { get }
     var color: Color { get }
     var systemImage: String { get }
-//    var 
 }
 
 enum AnimeStatus: String, MediaStatus {

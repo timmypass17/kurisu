@@ -20,25 +20,25 @@ struct InfoView<T: Media>: View {
                 StatsCell(title: "Status", image: "leaf", value: media.status.description)
                 StatsCell(title: "Aired", image: "calendar", value: anime.airedString)
                 StatsCell(title: "Premiered", image: "calendar", value: media.startSeasonString)
-                StatsCell(title: "Broadcast", image: "calendar", value: anime.broadcastString)
-                StatsCell(title: "Studios", image: "calendar", value: anime.studios.map { $0.name }.joined(separator: ", "))
-                StatsCell(title: "Source", image: "calendar", value: anime.source.capitalized)
-                StatsCell(title: "Genres", image: "calendar", value: media.genres.map { $0.name }.joined(separator: ", "))
+                StatsCell(title: "Broadcast", image: "record.circle", value: anime.broadcastString)
+                StatsCell(title: "Studios", image: "building", value: anime.studios.map { $0.name }.joined(separator: ", "))
+                StatsCell(title: "Source", image: "leaf", value: anime.source.capitalized)
+                StatsCell(title: "Genres", image: "book.closed", value: media.genres.map { $0.name }.joined(separator: ", "))
                 // theme
                 // demographic
-                StatsCell(title: "Duration", image: "calendar", value: "\(anime.minutesOrVolumes) min. per epi.")
-                StatsCell(title: "Rating", image: "calendar", value: anime.rating ?? "-")
+                StatsCell(title: "Duration", image: "clock", value: "\(anime.minutesOrVolumes) min. per epi.")
+                StatsCell(title: "Rating", image: "star.fill", value: anime.rating ?? "-")
             } else if let manga = media as? Manga {
                 StatsCell(title: "Type", image: "magnifyingglass", value: manga.mediaType.uppercased())
-                StatsCell(title: "Volumes", image: "magnifyingglass", value: manga.minutesOrVolumes)
-                StatsCell(title: "Chapters", image: "tv", value: manga.numEpisodesOrChapters)
+                StatsCell(title: "Volumes", image: "books.vertical", value: manga.minutesOrVolumes)
+                StatsCell(title: "Chapters", image: "book", value: manga.numEpisodesOrChapters)
                 StatsCell(title: "Status", image: "leaf", value: media.status.description)
                 StatsCell(title: "Published", image: "calendar", value: manga.airedString)
-                StatsCell(title: "Genres", image: "calendar", value: manga.genres.map { $0.name }.joined(separator: ", "))
+                StatsCell(title: "Genres", image: "book.closed", value: manga.genres.map { $0.name }.joined(separator: ", "))
                 // theme
                 // demographic
                 // *serialization
-                StatsCell(title: "Authors", image: "calendar", value: manga.authors.map { "\($0.node.lastName), \($0.node.firstName) (\($0.role))" }.joined(separator: "\n"))
+                StatsCell(title: "Authors", image: "person.fill", value: manga.authors.map { "\($0.node.lastName), \($0.node.firstName) (\($0.role))" }.joined(separator: "\n"))
             }
         }
         .padding()

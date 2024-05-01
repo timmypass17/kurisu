@@ -7,13 +7,11 @@
 
 import SwiftUI
 
-struct WatchListView<T: Media/*, U: MediaListStatus*/>: View {
+struct WatchListView<T: Media>: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var homeViewModel: HomeViewModel
     var data: [T]
-    
-    let service = MALService()
-    
+        
     var body: some View {
         LazyVStack(spacing: 16) {
             Divider()
@@ -35,6 +33,18 @@ struct WatchListView<T: Media/*, U: MediaListStatus*/>: View {
                 Divider()
                     .padding(.horizontal, 16)
             }
+            
+            ProgressView()
+                .opacity(0)
+                .onAppear {
+                    Task {
+                        if homeViewModel.selectedMediaType == .anime {
+                            await appState.loadMedia(selectedStatus: homeViewModel.selectedAnimeStatus)
+                        } else {
+                            await appState.loadMedia(selectedStatus: homeViewModel.selectedMangaStatus)
+                        }
+                    }
+                }
         }
         .padding(.top, 8)
     }

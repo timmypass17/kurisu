@@ -9,20 +9,20 @@ import Foundation
 
 // note: related animes/mangas are not available with this request (requires detail request)
 struct UserListAPIRequest<T: Media>: APIRequest {
-    // TODO: Move Status and Sort into Media (like fields ex. T.fields)
     var status: any MediaListStatus
     var sort: any MediaSort
     var fields: [String]
-    var limit: Int = 100
-    // limit, offset (may need to add for pagination)
+    var limit: Int
+    var offset: Int
     
     var urlRequest: URLRequest {
         var urlComponents = URLComponents(string: T.userBaseURL)!
         urlComponents.queryItems = [
             "status": status.key,
             "sort": sort.key,
-            "fields": fields.joined(separator: ",")
-//            "fields": T.fields.joined(separator: ",") + ",list_status"
+            "fields": fields.joined(separator: ","),
+            "limit": "\(limit)",
+            "offset": "\(offset)"
         ].map { URLQueryItem(name: $0.key, value: $0.value) }
         var request = URLRequest(url: urlComponents.url!)
         if let accessToken = Settings.shared.accessToken {

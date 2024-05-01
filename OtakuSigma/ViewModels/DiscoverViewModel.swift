@@ -24,29 +24,42 @@ class DiscoverViewModel: ObservableObject {
     var title: String {
         return selectedMediaType == .anime ? "Discover Anime" : "Discover Manga"
     }
+    
+    var hint: String {
+        return selectedMediaType == .anime ? "Search Anime" : "Search Mangas, Novels, etc"
+    }
         
     // Dependency Injection (allows different implementations, modular)
     init(mediaService: MediaService) {
         self.mediaService = mediaService
 
         Task {
-            do {
-                for ranking in AnimeRanking.allCases {
-                    let animes: [Anime] = try await mediaService.getMediaRanking(rankingType: ranking.type, limit: 10, offset: 0)
-                    let section = MediaSection(ranking: ranking, items: animes)
-                    animeList.append(section)
-                }
-                
-                for ranking in MangaRanking.allCases {
-                    let mangas: [Manga] = try await mediaService.getMediaRanking(rankingType: ranking.type,  limit: 10, offset: 0)
-                    let section = MediaSection(ranking: ranking, items: mangas)
-                    mangaList.append(section)
-                }
-                
-            } catch {
-                print("[DiscoverViewModel] Error loading animes: \(error)")
-            }
+            await loadMedia()
         }
+    }
+    
+    func loadMedia() async {
+        do {
+            for ranking in AnimeRanking.allCases {
+                let animes: [Anime] = try await mediaService.getMediaRanking(rankingType: ranking.type, limit: 10, offset: 0)
+                let section = MediaSection(ranking: ranking, items: animes)
+                animeList.append(section)
+            }
+            
+            for ranking in MangaRanking.allCases {
+                let mangas: [Manga] = try await mediaService.getMediaRanking(rankingType: ranking.type,  limit: 10, offset: 0)
+                let section = MediaSection(ranking: ranking, items: mangas)
+                mangaList.append(section)
+            }
+            
+        } catch {
+            print("[DiscoverViewModel] Error loading animes: \(error)")
+        }
+    }
+    
+    func clearMedia() {
+        animeList.removeAll()
+        mangaList.removeAll()
     }
     
     func submitButtonTapped() {

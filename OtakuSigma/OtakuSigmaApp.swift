@@ -7,21 +7,25 @@
 
 import SwiftUI
 
-// AppState: Dont add user's anime list here cause arrays/dictionaries are passed by value so 'injecting' the anime list into the other view model will only make a copy :(. Information like user's login state is fine cause we are just reading the value
 @main
 struct OtakuSigmaApp: App {
+    @StateObject var appState: AppState
     @StateObject var homeViewModel: HomeViewModel
     @StateObject var discoverViewModel: DiscoverViewModel
-//    @StateObject var profileViewModel = ProfileViewModel()
     let authService = MALAuthService()
     let mediaService = MALService()
-    @StateObject var appState = AppState()   // inject into viewmodels (contains user data)
 
     init() {
+        let appState = AppState(authService: authService)
         let homeViewModel = HomeViewModel(mediaService: mediaService, authService: authService)
         let discoverViewModel = DiscoverViewModel(mediaService: mediaService)
+        _appState = StateObject(wrappedValue: appState)
         _homeViewModel = StateObject(wrappedValue: homeViewModel)
         _discoverViewModel = StateObject(wrappedValue: discoverViewModel)
+        
+        appState.homeViewModel = homeViewModel
+        appState.discoverViewModel = discoverViewModel
+        homeViewModel.appState = appState
     }
     
     var body: some Scene {
@@ -41,7 +45,7 @@ struct OtakuSigmaApp: App {
                 
                 NavigationStack {
                     ProfileView()
-                        .environmentObject(appState)
+                        .environmentObject(homeViewModel)
                         .onAppear {
                             Task {
                                 do {
@@ -62,19 +66,18 @@ struct OtakuSigmaApp: App {
                     await handleLogin(url)
                 }
             }
-            .onAppear {
-                homeViewModel.appState = appState
-                appState.homeViewModel = homeViewModel
-            }
         }
     }
     
     func handleLogin(_ url: URL) async {
         guard let tokenResponse = await authService.handleLogin(url: url) else { return }
         do {
+            print("Getting user")
             let user = try await mediaService.getUser()
+            print("Got user")
             appState.state = .loggedIn(user)
-            await appState.loadUserList(status: homeViewModel.selectedAnimeStatus)
+            await appState.loadUserList()
+            await discoverViewModel.loadMedia()
         } catch {
             print("Error logging in: \(error)")
             appState.state = .unregistered

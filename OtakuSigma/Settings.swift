@@ -28,7 +28,7 @@ struct Settings {
             return nil
         }
         
-        return try! JSONDecoder().decode(T.self, from: data)
+        return try? JSONDecoder().decode(T.self, from: data)
     }
     
     var accessToken: String? {

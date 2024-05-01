@@ -8,7 +8,6 @@
 import Foundation
 
 struct UserAPIRequest: APIRequest {
-//    let accessToken: String
     
     var urlRequest: URLRequest {
         var urlComponents = URLComponents(string: "https://api.myanimelist.net/v2/users/@me")!
@@ -21,7 +20,6 @@ struct UserAPIRequest: APIRequest {
         if let accessToken = Settings.shared.accessToken {
             request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         }
-//        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         
         return request
     }

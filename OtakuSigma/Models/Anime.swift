@@ -29,9 +29,7 @@ struct Anime: Media {
     
     var myListStatus: ListStatus? {
         get { return myAnimeListStatus }
-        set {
-            myAnimeListStatus = newValue as? AnimeListStatus
-        }
+        set { myAnimeListStatus = newValue as? AnimeListStatus }
     }
     var averageEpisodeDuration: Int
     var minutesOrVolumes: Int { averageEpisodeDuration / 60 }
@@ -80,7 +78,15 @@ struct Anime: Media {
         return "episode"
     }
     
-    var nextReleaseString: String {
+    func getMinutesOrVolumesString() -> String {
+        return "Minutes"
+    }
+    
+    func getRelatedItemString() -> String {
+        return "Related Animes"
+    }
+    
+    func getNextReleaseString() -> String {
         switch animeStatus {
         case .currentlyAiring:
             guard let weekday = broadcast?.dayOfTheWeek,
@@ -115,9 +121,9 @@ struct Anime: Media {
     func getStatusString() -> String {
         switch animeStatus {
         case .currentlyAiring:
-            return "Next Episode: \(nextReleaseString)"
+            return "Next Episode: \(getNextReleaseString())"
         case .notYetAired:
-            return "Airing Date: \(nextReleaseString)"
+            return "Airing Date: \(getNextReleaseString())"
         case .finishedAiring:
             return "Finished Airing"
         }
@@ -169,11 +175,7 @@ struct Studio: Codable {
 extension Anime: Decodable {
     static var baseURL: String { "https://api.myanimelist.net/v2/anime" }
     static var userBaseURL: String { "https://api.myanimelist.net/v2/users/@me/animelist" }
-    static var numEpisodesOrChaptersKey: String { CodingKeys.numEpisodes.rawValue }
     static var fields: [String] { CodingKeys.allCases.map { $0.rawValue } }
-//    static var episodesOrChaptersString: String { "Episodes" }
-//    static var episodeOrChapterString: String { "Episode" }
-    static var minutesOrVolumesString: String { "Minutes" }
     static var relatedItemString: String { "Related Animes" }
     
     enum CodingKeys: String, CodingKey, CaseIterable {
@@ -273,13 +275,6 @@ func getWeekdayNumber(weekday: String) -> Int {
     let calendar = Calendar.current
     return calendar.component(.weekday, from: date)
 }
-
-//// Example usage
-//if let convertedTime = convertTimeToCurrentUserTimeZone(weekday: "tuesday", militaryTime: "13:30") {
-//    print(convertedTime.formatted(date: .abbreviated, time: .shortened))
-//} else {
-//    print("Unable to convert the time.")
-//}
 
 extension Date {
     func convertToTimeZone(initTimeZone: TimeZone, timeZone: TimeZone) -> Date {

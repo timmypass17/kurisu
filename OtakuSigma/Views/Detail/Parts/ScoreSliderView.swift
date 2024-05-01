@@ -18,7 +18,6 @@ struct ScoreSliderView: View {
                     Image(systemName: "minus")
                 }
                 
-                // TODO: Some animes don't have num count (ex. One Piece)
                 Slider(
                     value: $progress,
                     in: 0.0...total,

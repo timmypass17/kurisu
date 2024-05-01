@@ -9,7 +9,6 @@ import SwiftUI
 
 struct DiscoverDetailView<T: Media>: View {
     @EnvironmentObject var appState: AppState
-    @EnvironmentObject var discoverViewModel: DiscoverViewModel
     @StateObject var discoverDetailViewModel: DiscoverDetailViewModel<T>
     let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
     

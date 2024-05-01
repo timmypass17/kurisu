@@ -8,14 +8,17 @@
 import Foundation
 import SwiftUI
 
-// Contains app-level information (i.e. user info)
 @MainActor
 class AppState: ObservableObject {
-    var state: State = .unregistered
-    
     @Published var userAnimeList: [AnimeWatchListStatus : [Anime]] = [:]
     @Published var userMangaList: [MangaReadListStatus : [Manga]] = [:]
+    @Published var state: State = .unregistered
 
+    var mediaTask: Task<Void, Never>? = nil
+    var animeMediaPage: [AnimeWatchListStatus: Int] = [:]
+    var mangaMediaPage: [MangaReadListStatus: Int] = [:]
+    private let limit = 100
+    
     var isLoggedIn: Bool {
         if case .loggedIn(_) = state { return true }
         return false
@@ -28,42 +31,49 @@ class AppState: ObservableObject {
     }
     
     var homeViewModel: HomeViewModel!
+    var discoverViewModel: DiscoverViewModel!
     let mediaService = MALService()
+    let authService: OAuthService
 
-    init() {
+    init(authService: OAuthService) {
+        self.authService = authService
+        
         Task {
             await loadUser()
-            
-            await loadUserList(status: AnimeWatchListStatus.watching)
-            await loadUserList(status: AnimeWatchListStatus.all)
-            await loadUserList(status: AnimeWatchListStatus.completed)
-            await loadUserList(status: AnimeWatchListStatus.planToWatch)
+            await loadUserList()
+        }
+    }
+    
+    func loadUserList() async {
+        await loadUserList(status: AnimeWatchListStatus.watching)
+        await loadUserList(status: AnimeWatchListStatus.all)
+        await loadUserList(status: AnimeWatchListStatus.completed)
+        await loadUserList(status: AnimeWatchListStatus.planToWatch)
 
 //            await loadUserList(status: MangaReadListStatus.all) // all doesn't work with manga, maybe just add the results of the previous
-            await loadUserList(status: MangaReadListStatus.reading)
-            await loadUserList(status: MangaReadListStatus.completed)
-            await loadUserList(status: MangaReadListStatus.planToRead)
-            await loadUserList(status: MangaReadListStatus.onHold)
+        await loadUserList(status: MangaReadListStatus.reading)
+        await loadUserList(status: MangaReadListStatus.completed)
+        await loadUserList(status: MangaReadListStatus.planToRead)
+        await loadUserList(status: MangaReadListStatus.onHold)
+        
+        userMangaList[.all] = userMangaList[.reading, default: []] + userMangaList[.completed, default: []] + userMangaList[.planToRead, default: []] + userMangaList[.onHold, default: []]
+        
+        // Sort by most recent
+        userMangaList[.all]?.sort { mangaA, mangaB in
+            let formatter = ISO8601DateFormatter()
+            guard let dateStringA = mangaA.myMangaListStatus?.updatedAt,
+                  let dateStringB = mangaB.myMangaListStatus?.updatedAt,
+                  let dateA = formatter.date(from: dateStringA),
+                  let dateB = formatter.date(from: dateStringB)
+            else { return false }
             
-            userMangaList[.all] = userMangaList[.reading, default: []] + userMangaList[.completed, default: []] + userMangaList[.planToRead, default: []] + userMangaList[.onHold, default: []]
-            
-            // Sort by most recent
-            userMangaList[.all]?.sort { mangaA, mangaB in
-                let formatter = ISO8601DateFormatter()
-                guard let dateStringA = mangaA.myMangaListStatus?.updatedAt,
-                      let dateStringB = mangaB.myMangaListStatus?.updatedAt,
-                      let dateA = formatter.date(from: dateStringA),
-                      let dateB = formatter.date(from: dateStringB)
-                else { return false }
-                
-                return dateA > dateB
-            }
+            return dateA > dateB
         }
     }
     
     func loadUser() async {
         do {
-            guard let accessToken = Settings.shared.accessToken else { 
+            guard Settings.shared.accessToken != nil else { 
                 print("No access token found")
                 return
             }
@@ -81,6 +91,7 @@ class AppState: ObservableObject {
             guard userAnimeList[animeWatchListStatus, default: []].isEmpty else { return }
 
             do {
+                
                 userAnimeList[animeWatchListStatus] = try await mediaService.getUserList(status: status, sort: AnimeSort.listUpdatedAt)
             } catch {
                 userAnimeList[animeWatchListStatus] = []
@@ -194,4 +205,49 @@ class AppState: ObservableObject {
         print("Did not find item to delete")
     }
 
+    func logOut() {
+        state = .unregistered
+        
+        // clear data
+        for (status, _) in userAnimeList {
+            userAnimeList[status]?.removeAll()
+        }
+        for (status, _) in userMangaList {
+            userMangaList[status]?.removeAll()
+        }
+        
+        discoverViewModel.clearMedia()
+        
+        // remove token
+        Settings.shared.accessToken = nil
+        Settings.shared.refreshToken = nil
+        Settings.shared.accessTokenLastUpdated = nil
+    }
+    
+    func loadMedia(selectedStatus: any MediaListStatus) async {
+        mediaTask?.cancel()
+        mediaTask = Task {
+            do {
+                if let selectedAnimeStatus = selectedStatus as? AnimeWatchListStatus {
+                    let fetchedAnimes: [Anime] = try await mediaService.getUserList(status: homeViewModel.selectedAnimeStatus, sort: AnimeSort.listUpdatedAt, fields: Anime.fields, limit: limit, offset: animeMediaPage[selectedAnimeStatus, default: 1] * limit)
+                    if !fetchedAnimes.isEmpty {
+                        userAnimeList[selectedAnimeStatus]?.append(contentsOf: fetchedAnimes)
+                        animeMediaPage[selectedAnimeStatus, default: 1] += 1
+                    }
+                } else if let selectedMangaStatus = selectedStatus as? MangaReadListStatus {
+                    let fetchedMangas: [Manga] = try await mediaService.getUserList(status: selectedMangaStatus, sort: MangaSort.listUpdatedAt, fields: Manga.fields, limit: limit, offset: mangaMediaPage[selectedMangaStatus, default: 1] * limit)
+                    if !fetchedMangas.isEmpty {
+                        userMangaList[selectedMangaStatus]?.append(contentsOf: fetchedMangas)
+                        mangaMediaPage[selectedMangaStatus, default: 1] += 1
+                    }
+                }
+            } catch {
+                print("Error loading media: \(error)")
+            }
+        }
+    }
+    
+    func didTapLoginButton() {
+        authService.showLogin()
+    }
 }

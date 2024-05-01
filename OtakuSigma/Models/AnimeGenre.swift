@@ -8,7 +8,6 @@
 import Foundation
 
 protocol GenreItemProtocol: Decodable {
-    // associatedType: ListStatus
     var node: GenreNode { get }
     var myListStatus: ListStatus { get }
 }

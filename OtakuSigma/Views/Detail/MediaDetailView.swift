@@ -17,8 +17,8 @@ struct MediaDetailView<T: Media>: View {
             ScrollView(.vertical) {
                 VStack(alignment: .leading, spacing: 0) {
                     DetailTopSection(media: media)
-
-                    GenreRowView(genres: media.genres.map { $0.name })
+                    
+                    GenreRow(genres: media.genres)
                         .font(.caption)
                         .padding(.top)
 
@@ -30,7 +30,6 @@ struct MediaDetailView<T: Media>: View {
                     
                     switch mediaDetailViewModel.selectedTab {
                     case .background:
-                        
                         SynopsisView(text: media.synopsis)
                             .padding(.top)
                         
@@ -59,7 +58,6 @@ struct MediaDetailView<T: Media>: View {
                         if let anime = media as? Anime {
                             BarChartView(data: anime.statistics.toChartData())
                                 .padding(.top)
-    //                                .frame(width: .infinity)
                         }
                     }
                     
@@ -67,15 +65,13 @@ struct MediaDetailView<T: Media>: View {
 
                 }
                 .padding()
-                .padding(.top, 127) // 45, 115
+                .padding(.top, 127)
                 .background(alignment: .top) {
-                    DetailBackground(url: media.mainPicture.large)
+                    BackgroundView(url: media.mainPicture.large)
                 }
                 
-//                Spacer()
             }
             .ignoresSafeArea(edges: .top)
-//            .edgesIgnoringSafeArea(.top)
             .navigationTitle(media.getTitle())
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $mediaDetailViewModel.isShowingAddMediaView, content: {
@@ -84,10 +80,11 @@ struct MediaDetailView<T: Media>: View {
                         .onAppear {
                             mediaDetailViewModel.progress = Double(media.myListStatus?.progress ?? 0)
                             mediaDetailViewModel.score = Double(media.myListStatus?.score ?? 0)
+                            mediaDetailViewModel.comments = media.myListStatus?.comments ?? ""
                         }
                 }
             })
-            .toolbarBackground(.visible, for: .navigationBar) // always show it
+            .toolbarBackground(.visible, for: .navigationBar) // always show toolbar
             .toolbar {
                 ToolbarItemGroup {
                     Button {
@@ -127,48 +124,5 @@ struct MediaDetailView<T: Media>: View {
             Text("Error loading media. Please email timmysappstuff@gmail.com to report bugs!")
         }
 
-    }
-}
-
-//struct MediaDetailView_Previews: PreviewProvider {
-//    static var viewmodel: MediaDetailViewModel<Anime> {
-//        let vm = MediaDetailViewModel<Anime>(id: sampleAnimes[0].id, mediaService: MALService())
-//        vm.state = .success(media: sampleAnimes[0])
-//        return vm
-//    }
-//    static var previews: some View {
-//        NavigationStack {
-//            MediaDetailView<Anime>(mediaDetailViewModel: viewmodel, didSaveMedia: {_ in})
-//        }
-//    }
-//}
-
-struct DetailBackground: View {
-    let url: String
-
-    let gradient = LinearGradient(
-        gradient: Gradient(stops: [
-            .init(color: Color.ui.background, location: 0),
-            .init(color: .clear, location: 1.0) // 1.5 height of gradient
-        ]),
-        startPoint: .bottom,
-        endPoint: .top
-    )
-    
-    var body: some View {
-        AsyncImage(url: URL(string: url)) { image in
-            image
-                .resizable()
-                .scaledToFill()
-                .frame(height: 350)
-                .clipShape(Rectangle())
-                .overlay {
-                    gradient
-                }
-                .clipped()
-        } placeholder: {
-//            ProgressView()
-//                .frame(height: 350)
-        }
     }
 }

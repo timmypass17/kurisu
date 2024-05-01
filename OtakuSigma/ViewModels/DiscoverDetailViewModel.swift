@@ -14,9 +14,9 @@ class DiscoverDetailViewModel<T: Media>: ObservableObject {
     let ranking: Ranking?
     let year: Int?
     let season: Season?
-    
+
     let mediaService: MediaService
-    private let limit = 25
+    private let limit = 100
     private var page = 0
     
     var mediaTask: Task<Void, Never>? = nil
@@ -55,28 +55,6 @@ class DiscoverDetailViewModel<T: Media>: ObservableObject {
     }
 }
 
-//@MainActor
-//class DiscoverDetailViewModel<T: Media>: ObservableObject {
-//    @Published var items: [T] = []
-//    let ranking: Ranking
-//
-//    let mediaService: MediaService
-//    private let limit = 10
-//    private var page = 0
-//    private var offset: Int { return page * limit }
-//
-//    init(mediaService: MediaService, ranking: Ranking) {
-//        self.mediaService = mediaService
-//        self.ranking = ranking
-//        loadAnime()
-//    }
-//
-//    func loadAnime() {
-//        print("loadAnime()")
-//        Task {
-//            items.append(contentsOf: try await mediaService.getMediaRanking(rankingType: ranking.type, limit: limit, offset: offset))
-//            page += 1
-//
-//        }
-//    }
-//}
+enum Season: String, CaseIterable {
+    case winter, spring, summer, fall
+}

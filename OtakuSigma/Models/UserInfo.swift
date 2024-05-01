@@ -70,9 +70,6 @@ struct AnimeStatistics: Decodable {
 extension UserInfo {
     static let fields = CodingKeys.allCases.map { $0.rawValue }
     
-//    static let sampleUser = UserInfo(id: 1, name: "timmypass21", joinedAt: "2017-09-11T10:27:46+00:00",
-//                                 animeStatistics: AnimeStatistics(numItemsWatching: 10, numItemsCompleted: 10, numItemsOnHold: 10, numItemsDropped: 10, numItemsPlanToWatch: 10, numItems: 50))
-    
     static let sampleUser = UserInfo(id: 0, name: "", joinedAt: "", animeStatistics: AnimeStatistics(numItemsWatching: 0, numItemsCompleted: 0, numItemsOnHold: 0, numItemsDropped: 0, numItemsPlanToWatch: 0, numItems: 0, numDaysWatched: 0, numDaysWatching: 0, numDaysCompleted: 0, numDaysOnHold: 0, numDaysDropped: 0, numDays: 0, numEpisodes: 0, numTimesRewatched: 0, meanScore: 0)
     )
 }
