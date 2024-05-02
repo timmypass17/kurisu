@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct DetailTopSection<T: Media>: View {
+    @Environment(\.colorScheme) var colorScheme
     @State var isTitleExpanded = false
     @State var isJapaneseTitleExpanded = false
     let media: T
@@ -34,17 +35,23 @@ struct DetailTopSection<T: Media>: View {
             VStack(alignment: .leading, spacing: 0) {
                 Text(media.startSeasonString)
                     .foregroundStyle(.secondary)
-                    .shadow(radius: 1, x: 1, y: 2)
+                    .shadow(radius: colorScheme == .dark ? 1 : 0,
+                            x: colorScheme == .dark ? 1 : 0,
+                            y: colorScheme == .dark ? 2 : 0)
 
                 Text(media.getTitle())
                     .font(.system(size: 24))
                     .lineLimit(isTitleExpanded ? nil : 2)
-                    .shadow(radius: 5, x: 1, y: 2)
+                    .shadow(radius: colorScheme == .dark ? 5 : 0,
+                            x: colorScheme == .dark ? 1 : 0,
+                            y: colorScheme == .dark ? 2 : 0)
 
                 Text(media.title) // jsp title
                     .lineLimit(1)
                     .foregroundStyle(.secondary)
-                    .shadow(radius: 1, x: 1, y: 2)
+                    .shadow(radius: colorScheme == .dark ? 1 : 0,
+                            x: colorScheme == .dark ? 1 : 0,
+                            y: colorScheme == .dark ? 2 : 0)
                 
                 HStack {
                     Label("\(media.numEpisodesOrChapters) \(media.getEpisodeOrChapterString().capitalized)s", systemImage: mediaIcon)

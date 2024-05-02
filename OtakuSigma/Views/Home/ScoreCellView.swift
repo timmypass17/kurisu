@@ -15,10 +15,12 @@ struct ScoreCellView: View {
     var body: some View {
         VStack(spacing: 2) {
             Text(title.uppercased())
+                .foregroundStyle(.white)
                 .fontWeight(.semibold)
                 .padding(.vertical, 2)
                 .padding(.horizontal, 5)
                 .background(RoundedRectangle(cornerRadius: 2).fill(.blue))
+                
             
             
             HStack(spacing: 0) {

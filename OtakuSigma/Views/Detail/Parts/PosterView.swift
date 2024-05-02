@@ -8,13 +8,26 @@
 import SwiftUI
 
 struct PosterView: View {
+    @Environment(\.colorScheme) var colorScheme
+
     let imageURL: String
     let width: CGFloat
     let height: CGFloat
     var includeBorder: Bool = true
     
     var body: some View {
-        if includeBorder {
+        
+        if !includeBorder || colorScheme == .light {
+            AsyncImage(url: URL(string: imageURL)) { image in
+                image
+                    .resizable()
+                    .scaledToFill()
+            } placeholder: {
+                Color(uiColor: UIColor.tertiarySystemFill)
+            }
+            .frame(width: width, height: height)
+            .clipShape(RoundedRectangle(cornerRadius: 5))
+        } else {
             AsyncImage(url: URL(string: imageURL)) { image in
                 image
                     .resizable()
@@ -31,16 +44,6 @@ struct PosterView: View {
                     .frame(width: width, height: height)
                     .clipShape(RoundedRectangle(cornerRadius: 5))
             }
-        } else {
-            AsyncImage(url: URL(string: imageURL)) { image in
-                image
-                    .resizable()
-                    .scaledToFill()
-            } placeholder: {
-                Color(uiColor: UIColor.tertiarySystemFill)
-            }
-            .frame(width: width, height: height)
-            .clipShape(RoundedRectangle(cornerRadius: 5))
         }
     }
 }
