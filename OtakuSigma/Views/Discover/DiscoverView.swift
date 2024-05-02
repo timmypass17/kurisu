@@ -38,11 +38,11 @@ struct DiscoverView: View {
                         SearchListView<Manga>()
                     }
                 }
-                .overlay {
-                    if !appState.isLoggedIn {
-                        LoginOverlayView()
-                    }
-                }
+//                .overlay {
+//                    if !appState.isLoggedIn {
+//                        LoginOverlayView()
+//                    }
+//                }
             }
             .autocorrectionDisabled(true)
             .onSubmit(of: .search) {
@@ -50,11 +50,11 @@ struct DiscoverView: View {
             }
             .navigationTitle(discoverViewModel.title)
             .background(Color.ui.background)
-            .overlay {
-                if !appState.isLoggedIn {
-                    LoginOverlayView()
-                }
-            }
+//            .overlay {
+//                if !appState.isLoggedIn {
+//                    LoginOverlayView()
+//                }
+//            }
         }
     }
 }

@@ -13,7 +13,7 @@ struct SearchCellView: View {
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
             
-            PosterView(imageURL: item.mainPicture.large, width: 100, height: 140)
+            PosterView(imageURL: item.mainPicture.large, width: 85, height: 135)
             
             VStack(alignment: .leading, spacing: 0) {
                 HStack {

@@ -33,9 +33,9 @@ class DiscoverViewModel: ObservableObject {
     init(mediaService: MediaService) {
         self.mediaService = mediaService
 
-//        Task {
-//            await loadMedia()
-//        }
+        Task {
+            await loadMedia()
+        }
     }
     
     func loadMedia() async {

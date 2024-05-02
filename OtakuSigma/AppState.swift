@@ -13,8 +13,9 @@ class AppState: ObservableObject {
     @Published var userAnimeList: [AnimeWatchListStatus : [Anime]] = [:]
     @Published var userMangaList: [MangaReadListStatus : [Manga]] = [:]
     @Published var state: State = .unregistered
-    @Published var isPresentWebView: Bool = false
-    
+    @Published var isPresentMALLoginWebView: Bool = false
+    @Published var isPresentDeleteAccountWebView: Bool = false
+
     var userInfo: UserInfo? {
         if case .loggedIn(let userInfo) = state {
             return userInfo
@@ -229,9 +230,6 @@ class AppState: ObservableObject {
             userMangaList[status]?.removeAll()
             mangaMediaPage[status] = 0
         }
-                
-        discoverViewModel.animeList.removeAll()
-        discoverViewModel.mangaList.removeAll()
         
         // remove token
         Settings.shared.accessToken = nil

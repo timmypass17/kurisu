@@ -63,16 +63,20 @@ struct OtakuSigmaApp: App {
             }
             .environmentObject(appState)
             .onOpenURL { url in
-                appState.isPresentWebView = false
+                appState.isPresentMALLoginWebView = false
                 Task {
                     await handleLogin(url)
                 }
             }
-            .fullScreenCover(isPresented: $appState.isPresentWebView) {
+            .fullScreenCover(isPresented: $appState.isPresentMALLoginWebView) {
                 if let url = authService.buildAuthorizationURL() {
                     SafariWebView(url: url)
                         .ignoresSafeArea()
                 }
+            }
+            .fullScreenCover(isPresented: $appState.isPresentDeleteAccountWebView) {
+                SafariWebView(url: URL(string: "https://myanimelist.net/account_deletion")!)
+                    .ignoresSafeArea()
             }
         }
     }
@@ -85,7 +89,7 @@ struct OtakuSigmaApp: App {
             print("Got user")
             appState.state = .loggedIn(user)
             await appState.loadUserList()
-            await discoverViewModel.loadMedia()
+//            await discoverViewModel.loadMedia()
         } catch {
             print("Error logging in: \(error)")
             appState.state = .unregistered

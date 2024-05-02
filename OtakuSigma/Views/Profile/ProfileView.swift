@@ -13,14 +13,15 @@ struct ProfileView: View {
     @EnvironmentObject var homeViewModel: HomeViewModel
     @Environment(\.dismiss) private var dismiss
     @State var isShowingLogOutConfirmation: Bool = false
-    
+    @State var isShowingDeleteConfirmation: Bool = false
+
     var body: some View {
         List {
             
             Section("MyAnimeList Info") {
                 if !appState.isLoggedIn {
                     Button("Sign In") {
-                        appState.isPresentWebView = true
+                        appState.isPresentMALLoginWebView = true
                     }
                 } else {
                     ProfileCell(title: "Name", description: "\(appState.userInfo?.name ?? "N/A")", systemName: "person.fill")
@@ -102,12 +103,22 @@ struct ProfileView: View {
             }
             
             if appState.isLoggedIn {
-                Button("Sign Out", role: .destructive) {
-                    isShowingLogOutConfirmation.toggle()
+                Section {
+                    Button("Sign Out", role: .destructive) {
+                        isShowingLogOutConfirmation.toggle()
+                    }
+                }
+            }
+            
+            if appState.isLoggedIn {
+                Section {
+                    Button("Delete Account", role: .destructive) {
+                        isShowingDeleteConfirmation.toggle()
+                    }
                 }
             }
         }
-        .confirmationDialog("Are you sure you want to log out?",
+        .confirmationDialog("Are you sure you want to sign out?",
                             isPresented: $isShowingLogOutConfirmation,
                             titleVisibility: .visible) {
             Button("Yes") {
@@ -116,6 +127,15 @@ struct ProfileView: View {
             }
             Button("No", role: .destructive) { }
             Button("Cancel", role: .cancel) {}
+        }
+        .confirmationDialog("Delete MAL Account?",
+                            isPresented: $isShowingDeleteConfirmation,
+                            titleVisibility: .visible) {
+            Button("Yes") { appState.isPresentDeleteAccountWebView = true }
+            Button("No", role: .destructive) { }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Are you sure you want to delete your account? You will be sent to the MyAnimeList website to request deletion.")
         }
         .navigationTitle("My Profile")
         .refreshable {
