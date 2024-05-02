@@ -46,16 +46,17 @@ struct OtakuSigmaApp: App {
                 NavigationStack {
                     ProfileView()
                         .environmentObject(homeViewModel)
-                        .onAppear {
-                            Task {
-                                do {
-                                    let user = try await mediaService.getUser()
-                                    appState.state = .loggedIn(user)
-                                } catch {
-                                    print("Fail to fetch user")
-                                }
-                            }
-                        }
+//                        .onAppear {
+//                            print("profile on Appear")
+//                            Task {
+//                                do {
+//                                    let user = try await mediaService.getUser()
+//                                    appState.state = .loggedIn(user)
+//                                } catch {
+//                                    print("Fail to fetch user")
+//                                }
+//                            }
+//                        }
                     
                 }
                 .tabItem { Label("Profile", systemImage: "person") }
@@ -101,17 +102,3 @@ extension Color {
     }
 }
 
-import SafariServices
-
-struct SafariWebView: UIViewControllerRepresentable {
-    let url: URL
-    
-    func makeUIViewController(context: Context) -> SFSafariViewController {
-        return SFSafariViewController(url: url)
-    }
-    
-    func updateUIViewController(_ uiViewController: SFSafariViewController, context: Context) {
-        
-    }
-    
-}

@@ -56,6 +56,8 @@ class AppState: ObservableObject {
         await loadUserList(status: AnimeWatchListStatus.all)
         await loadUserList(status: AnimeWatchListStatus.completed)
         await loadUserList(status: AnimeWatchListStatus.planToWatch)
+        await loadUserList(status: AnimeWatchListStatus.onHold)
+        await loadUserList(status: AnimeWatchListStatus.dropped)
 
 //            await loadUserList(status: MangaReadListStatus.all) // all doesn't work with manga, maybe just add the results of the previous
         await loadUserList(status: MangaReadListStatus.reading)
@@ -221,9 +223,11 @@ class AppState: ObservableObject {
         // clear data
         for (status, _) in userAnimeList {
             userAnimeList[status]?.removeAll()
+            animeMediaPage[status] = 0
         }
         for (status, _) in userMangaList {
             userMangaList[status]?.removeAll()
+            mangaMediaPage[status] = 0
         }
                 
         discoverViewModel.animeList.removeAll()

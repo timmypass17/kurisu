@@ -74,6 +74,7 @@
 		32CCAB3D2B16B08400C5C18C /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CCAB3C2B16B08400C5C18C /* AppState.swift */; };
 		32CCAB3F2B16B0E500C5C18C /* UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CCAB3E2B16B0E500C5C18C /* UserInfo.swift */; };
 		32CCAB412B16B15B00C5C18C /* UserAPIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CCAB402B16B15B00C5C18C /* UserAPIRequest.swift */; };
+		32DBAAFC2BE3062E005D84FE /* SafariWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32DBAAFB2BE3062E005D84FE /* SafariWebView.swift */; };
 		32F37ECE2B0969470015F225 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F37ECD2B0969470015F225 /* StatsView.swift */; };
 		32F37ED02B0972E40015F225 /* BarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F37ECF2B0972E40015F225 /* BarChartView.swift */; };
 		32F37ED22B0C24830015F225 /* AddMediaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F37ED12B0C24830015F225 /* AddMediaView.swift */; };
@@ -152,6 +153,7 @@
 		32CCAB3C2B16B08400C5C18C /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		32CCAB3E2B16B0E500C5C18C /* UserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfo.swift; sourceTree = "<group>"; };
 		32CCAB402B16B15B00C5C18C /* UserAPIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPIRequest.swift; sourceTree = "<group>"; };
+		32DBAAFB2BE3062E005D84FE /* SafariWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebView.swift; sourceTree = "<group>"; };
 		32F37ECD2B0969470015F225 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		32F37ECF2B0972E40015F225 /* BarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartView.swift; sourceTree = "<group>"; };
 		32F37ED12B0C24830015F225 /* AddMediaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMediaView.swift; sourceTree = "<group>"; };
@@ -248,6 +250,7 @@
 				322BBF6B2AE5C12F00DB9ACD /* Models */,
 				322BBF5F2AE5BD7700DB9ACD /* Assets.xcassets */,
 				322BBF612AE5BD7700DB9ACD /* Preview Content */,
+				32DBAAFB2BE3062E005D84FE /* SafariWebView.swift */,
 			);
 			path = OtakuSigma;
 			sourceTree = "<group>";
@@ -471,6 +474,7 @@
 				326CA7302AE9843A004EFB16 /* Manga.swift in Sources */,
 				3219EE502BC5B1D300F57A95 /* LoginOverlayView.swift in Sources */,
 				328382332B198ACF00EFCE1F /* UserAddtionalAPIRequest.swift in Sources */,
+				32DBAAFC2BE3062E005D84FE /* SafariWebView.swift in Sources */,
 				322BBF892AE5F94300DB9ACD /* WeebResponse.swift in Sources */,
 				326CC95A2AF96F7400EAEFDC /* DiscoverDetailViewModel.swift in Sources */,
 				32B002152B08185000D9C5D6 /* RecommendedRowView.swift in Sources */,
