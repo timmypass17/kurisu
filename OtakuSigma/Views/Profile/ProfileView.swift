@@ -14,7 +14,7 @@ struct ProfileView: View {
     @Environment(\.dismiss) private var dismiss
     @State var isShowingLogOutConfirmation: Bool = false
     @State var isShowingDeleteConfirmation: Bool = false
-
+    
     var body: some View {
         List {
             
@@ -31,7 +31,7 @@ struct ProfileView: View {
             
             
             Section("Anime Statistics") {
-
+                
                 NavigationLink {
                     ScrollView {
                         WatchListView(data: appState.userAnimeList[.all] ?? [])
@@ -102,20 +102,18 @@ struct ProfileView: View {
                 ProfileCell(title: "Rewatch Count", description: "\(appState.userInfo?.animeStatistics.numTimesRewatched ?? 0)", systemName: "arrow.clockwise")
             }
             
-            if appState.isLoggedIn {
-                Section {
-                    Button("Sign Out", role: .destructive) {
-                        isShowingLogOutConfirmation.toggle()
-                    }
+            Section {
+                Button("Sign Out", role: .destructive) {
+                    isShowingLogOutConfirmation.toggle()
                 }
+                .disabled(!appState.isLoggedIn)
             }
             
-            if appState.isLoggedIn {
-                Section {
-                    Button("Delete Account", role: .destructive) {
-                        isShowingDeleteConfirmation.toggle()
-                    }
+            Section {
+                Button("Delete Account", role: .destructive) {
+                    isShowingDeleteConfirmation.toggle()
                 }
+                .disabled(!appState.isLoggedIn)
             }
         }
         .confirmationDialog("Are you sure you want to sign out?",
@@ -128,27 +126,27 @@ struct ProfileView: View {
             Button("No", role: .destructive) { }
             Button("Cancel", role: .cancel) {}
         }
-        .confirmationDialog("Delete MAL Account?",
-                            isPresented: $isShowingDeleteConfirmation,
-                            titleVisibility: .visible) {
-            Button("Yes") { appState.isPresentDeleteAccountWebView = true }
-            Button("No", role: .destructive) { }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("Are you sure you want to delete your account? You will be sent to the MyAnimeList website to request deletion.")
-        }
-        .navigationTitle("My Profile")
-        .refreshable {
-            print("Refresh user")
-            Task {
-                do {
-                    let user = try await appState.mediaService.getUser()
-                    appState.state = .loggedIn(user)
-                } catch {
-                    print("Fail to fetch user")
-                }
-            }
-        }
+                            .confirmationDialog("Delete MAL Account?",
+                                                isPresented: $isShowingDeleteConfirmation,
+                                                titleVisibility: .visible) {
+                                Button("Yes") { appState.isPresentDeleteAccountWebView = true }
+                                Button("No", role: .destructive) { }
+                                Button("Cancel", role: .cancel) {}
+                            } message: {
+                                Text("Are you sure you want to delete your account? You will be sent to the MyAnimeList website to request deletion.")
+                            }
+                            .navigationTitle("My Profile")
+                            .refreshable {
+                                print("Refresh user")
+                                Task {
+                                    do {
+                                        let user = try await appState.mediaService.getUser()
+                                        appState.state = .loggedIn(user)
+                                    } catch {
+                                        print("Fail to fetch user")
+                                    }
+                                }
+                            }
         
     }
 }
