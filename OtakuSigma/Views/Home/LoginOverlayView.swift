@@ -12,20 +12,22 @@ struct LoginOverlayView: View {
     
     var body: some View {
         VStack(alignment: .center) {
-            Text("Log into MyAnimeList")
+            Text("Login to your MAL account")
                 .font(.title2)
+                .multilineTextAlignment(.center)
                 .fontWeight(.semibold)
-                .foregroundColor(.secondary)
             
-            Text("Authorize account to access app's full functionality")
+            Text("Saving viewing progression, score, and notes requires a MyAnimeList account.")
                 .multilineTextAlignment(.center)
                 .foregroundColor(.secondary)
             
             Button("Login") {
-                appState.isPresentMALLoginWebView = true
+                
+                appState.isPresentingLoginConfirmation = true
             }
-            .font(.title3)
-            .fontWeight(.semibold)
+            .buttonStyle(.borderedProminent)
+//            .font(.title3)
+            .padding(.top, 4)
 
         }
         .padding()

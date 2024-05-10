@@ -15,6 +15,7 @@ class AppState: ObservableObject {
     @Published var state: State = .unregistered
     @Published var isPresentMALLoginWebView: Bool = false
     @Published var isPresentDeleteAccountWebView: Bool = false
+    @Published var isPresentingLoginConfirmation: Bool = false
 
     var userInfo: UserInfo? {
         if case .loggedIn(let userInfo) = state {

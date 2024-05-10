@@ -78,6 +78,16 @@ struct OtakuSigmaApp: App {
                 SafariWebView(url: URL(string: "https://myanimelist.net/account_deletion")!)
                     .ignoresSafeArea()
             }
+            .alert("\"Kurisu\" Wants to Use \"myanimelist.net\" to Sign In", isPresented: $appState.isPresentingLoginConfirmation, actions: {
+                // 1
+                Button("Cancel", role: .cancel, action: {})
+                
+                Button("Continue") {
+                    appState.isPresentMALLoginWebView = true
+                }
+            }, message: {
+                Text("This allows the app and website to share information about you.")
+            })
         }
     }
     

@@ -17,7 +17,7 @@ class MALAuthService: OAuthService {
     var codeVerifier: String? = nil
 
     let clientID = "9e125d96227fd516e34636ecf192b7f6"
-    let redirectURI = "myanimeapp://auth" // same value from mal redirect uri
+    let redirectURI = "myanimeapp://auth" // app redirect uri
     
     func showLogin() {
         print(#function)

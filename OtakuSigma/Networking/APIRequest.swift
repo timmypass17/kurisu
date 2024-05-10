@@ -7,7 +7,7 @@
 
 import Foundation
 
-let apiKey = "e7bc56aa1b0ea0afe3299d889922e5b8"
+let apiKey = "9e125d96227fd516e34636ecf192b7f6"
 
 protocol APIRequest {
     associatedtype Response
