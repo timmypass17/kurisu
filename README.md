@@ -2,10 +2,11 @@
 An unofficial [MyAnimeList](https://myanimelist.net/) iOS app to track anime and manga.
 
 <a href="https://apps.apple.com/us/app/kurisu/id6501975040">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store" width="200"/>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store" width="200 style="padding-bottom: 20px;"/>
 </a>
 
-<div style="display: flex; overflow-x: auto;">
+## App Screenshots
+<div style="display: flex; overflow-x: auto; margin-top: 20px;">
     <img src="https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/94/c4/e5/94c4e5ac-47d8-729a-e977-e28fa908ab05/ef0248cb-5739-4de6-b50f-84b58d2075f0_home.png/400x800bb.png" alt="Home" width="200" style="margin-right: 10px;">
     <img src="https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/7a/53/af/7a53af0d-19e1-a7c4-7bd3-158677da5627/56673475-d460-4d66-ac35-03909cd9a064_detail.png/400x800bb.png" alt="Detail" width="200" style="margin-right: 10px;">
     <img src="https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/46/56/0f/46560f5e-9f7b-ddca-464e-d6c8fd1564c0/df2baa08-c16c-4df8-af4c-cbec5ee1d09c_add.png/400x800bb.png" alt="Review" width="200" style="margin-right: 10px;">
