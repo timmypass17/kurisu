@@ -25,7 +25,7 @@ An unofficial [MyAnimeList](https://myanimelist.net/) iOS app to track anime and
   
 ## Installation
 
-### Prerequisite
+### Prerequisites
 - iOS 16.0+
 - Xcode 14.0+
 
